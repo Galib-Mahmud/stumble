@@ -1,6 +1,7 @@
 
 
 import 'package:get/get.dart';
+import 'package:stumble/feature/home/main_screen.dart';
 import 'package:stumble/feature/splash/screen/onboarding_screen1.dart';
 import 'package:stumble/route/route_name.dart';
 
@@ -41,6 +42,14 @@ class AppRoute {
   transition: Transition.rightToLeft,
   transitionDuration: Duration(milliseconds: 300),
   ),
+    GetPage(
+  name: RouteName.mainScreen,
+  page: () => MainScreen(),
+  transition: Transition.rightToLeft,
+  transitionDuration: Duration(milliseconds: 300),
+  ),
+
+
 
 ];
 }

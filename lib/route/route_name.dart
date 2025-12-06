@@ -8,6 +8,8 @@ class RouteName{
   static const String onboarding3 = '/onboarding3';
   static const String startQuiz = '/startQuiz';
   static const String question = '/question';
+  static const String mainScreen = '/mainScreen';
+
 
 
 
