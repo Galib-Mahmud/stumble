@@ -205,7 +205,7 @@ class AppRoute {
       transition: Transition.rightToLeft,
       transitionDuration: Duration(milliseconds: 300),
     ),
-
+//
 
 
   ];
