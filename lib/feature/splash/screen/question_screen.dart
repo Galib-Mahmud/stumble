@@ -76,11 +76,12 @@ class _QuestionScreenState extends State<QuestionScreen> {
                           borderRadius: BorderRadius.circular(10.r),
                           child: LinearProgressIndicator(
                             value: 1 / 15, // Current question / total questions
-                            backgroundColor: Colors.white.withOpacity(0.3),
+                            backgroundColor: Colors.white,
                             valueColor: const AlwaysStoppedAnimation<Color>(
-                              Colors.white,
+
+                              Colors.orange,
                             ),
-                            minHeight: 8.h,
+                            minHeight: 20.h,
                           ),
                         ),
                       ),
