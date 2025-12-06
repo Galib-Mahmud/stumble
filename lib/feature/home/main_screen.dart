@@ -22,10 +22,10 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   final List<Widget> _pages = [
-   OnboardingScreen1(),
-   OnboardingScreen1(),
-   OnboardingScreen1(),
-   OnboardingScreen1(),
+    OnboardingScreen1(),
+    OnboardingScreen1(),
+    OnboardingScreen1(),
+    OnboardingScreen1(),
   ];
 
   @override

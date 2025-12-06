@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
 
-          initialRoute: RouteName.question, // Changed from question1
+          initialRoute: RouteName.editProfile, // Changed from question1
           getPages: AppRoute.pages,
         );
       },
