@@ -13,6 +13,8 @@ class QuestionScreen extends StatefulWidget {
 
 class _QuestionScreenState extends State<QuestionScreen> {
   int? selectedOption;
+  final int currentStep = 1;
+  final int totalSteps = 15;
 
   final List<String> options = [
     "I feel heavy. I'm trying to keep it together",
@@ -57,8 +59,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                   Center(
                     child: Image.asset(
                       'assets/images/splash/stumble.png',
-                      width: 48.w,
-                      height: 48.w,
+
                       fit: BoxFit.contain,
 
 
@@ -68,34 +69,67 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
                   SizedBox(height: 20.h),
 
-                  // Progress bar
+                  // Progress Bar Row
                   Row(
                     children: [
+                      // Progress Bar
                       Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.r),
-                          child: LinearProgressIndicator(
-                            value: 1 / 15, // Current question / total questions
-                            backgroundColor: Colors.white.withOpacity(0.3),
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
-                            minHeight: 8.h,
+                        child: Container(
+                          height: 10.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(9.r),
+                          ),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                flex: currentStep,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFF09AFB9),
+                                        Color(0xFFFFAD72),
+                                        Color(0xFFF96D01),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(3.r),
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                flex: totalSteps - currentStep,
+                                child: const SizedBox(),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                       SizedBox(width: 12.w),
-                      Text(
-                        '1/15',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
+                      // Step Text
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '$currentStep',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' / $totalSteps',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.5),
+                                fontSize: 13.sp,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-
                   SizedBox(height: 32.h),
 
                   // Category
@@ -197,7 +231,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
                     CustomButton(
                       text: 'Next',
                       onTap: () {
-                        // Navigate to next question
+
+
 
                       },
                     )
