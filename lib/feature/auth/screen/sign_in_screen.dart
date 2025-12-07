@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../route/route_name.dart';
 import '../../widget/onboarding/custom_button.dart';
 
 
@@ -62,7 +63,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 28.sp,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                         SizedBox(height: 30.h),
@@ -91,12 +92,15 @@ class _SignInScreenState extends State<SignInScreen> {
                           child: TextButton(
                             onPressed: () {
 
+                              Get.toNamed(RouteName.forgetPassword);
+
                             },
                             child: Text(
                               'Forgot password?',
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.7),
-                                fontSize: 14.sp,
+                                fontSize: 16.sp,
+                                letterSpacing: 0.9,
                               ),
                             ),
                           ),
@@ -115,6 +119,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     CustomButton(
                       text: 'Sign in',
                       onTap: () {
+                        Get.toNamed(RouteName.username);
 
                       },
                     ),
@@ -124,7 +129,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       children: [
                         Expanded(
                           child: Container(
-                            height: 1,
+                            height: 2,
                             color: Colors.white.withOpacity(0.2),
                           ),
                         ),
@@ -140,7 +145,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         Expanded(
                           child: Container(
-                            height: 1,
+                            height: 2,
                             color: Colors.white.withOpacity(0.2),
                           ),
                         ),
@@ -179,19 +184,21 @@ class _SignInScreenState extends State<SignInScreen> {
                         Text(
                           "Don't you have an account? ",
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.6),
-                            fontSize: 14.sp,
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 15.sp,
                           ),
                         ),
                         GestureDetector(
                           onTap: () {
+
+                            Get.toNamed(RouteName.signUp);
 
                           },
                           child: Text(
                             'Sign Up',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 14.sp,
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -220,7 +227,7 @@ class _SignInScreenState extends State<SignInScreen> {
       height: 52.h,
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(32.r),
         border: Border.all(
           color: Colors.white.withOpacity(0.1),
           width: 1,
@@ -269,7 +276,7 @@ class _SignInScreenState extends State<SignInScreen> {
         height: 52.h,
         decoration: BoxDecoration(
           color: const Color(0xFF1E1E2E),
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(32.r),
           border: Border.all(
             color: Colors.white.withOpacity(0.1),
             width: 1,

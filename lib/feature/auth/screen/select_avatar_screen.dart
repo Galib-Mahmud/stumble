@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import '../../../route/route_name.dart';
 import '../../widget/onboarding/custom_button.dart';
 
 class SelectAvatarScreen extends StatefulWidget {
@@ -100,9 +101,9 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                         // Progress Bar
                         Expanded(
                           child: Container(
-                            height: 6.h,
+                            height:7.h,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(3.r),
                             ),
                             child: Row(
@@ -140,16 +141,16 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                               TextSpan(
                                 text: '$currentStep',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13.sp,
+                                  color: Colors.white.withOpacity(0.5),
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               TextSpan(
                                 text: ' / $totalSteps',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.5),
-                                  fontSize: 13.sp,
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ],
@@ -174,7 +175,7 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                             : "Create your Stumble Avatar",
                         style: TextStyle(
                           fontSize: 22.sp,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w400,
                           color: Colors.white,
                         ),
                       ),
@@ -222,15 +223,33 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
 
                       SizedBox(height: 20.h),
 
-                      // "or" text
-                      Text(
-                        "or",
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: Colors.white.withOpacity(0.5),
-                        ),
+                      // Or Divider
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 2,
+                              color: Colors.white.withOpacity(0.2),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Text(
+                              'or',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.6),
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 2,
+                              color: Colors.white.withOpacity(0.2),
+                            ),
+                          ),
+                        ],
                       ),
-
                       SizedBox(height: 16.h),
 
                       // Add your photo button
@@ -239,11 +258,9 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2A2A3E),
+                            color: const Color(0xFF183A37),
                             borderRadius: BorderRadius.circular(25.r),
-                            border: _pickedImage != null
-                                ? Border.all(color: const Color(0xFF09AFB9), width: 2)
-                                : null,
+
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -258,7 +275,7 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                                 "Add your photo",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14.sp,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -285,7 +302,7 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                         CustomButton(
                           text: "Next",
                           onTap: () {
-                            Get.toNamed('/introduce_yourself');
+                          Get.toNamed(RouteName.shareYourMind);
                           },
                         )
                       else

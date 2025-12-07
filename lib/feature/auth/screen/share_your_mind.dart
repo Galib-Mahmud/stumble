@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
 
@@ -18,7 +19,7 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
   final int totalSteps = 8;
 
   // Selected avatar from previous screen (pass this via arguments)
-  final String selectedAvatar = 'assets/images/avatar/avatar2.png';
+  final String selectedAvatar = 'assets/images/avatar/avatar5.png';
 
   @override
   void dispose() {
@@ -82,9 +83,9 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
                         // Progress Bar
                         Expanded(
                           child: Container(
-                            height: 6.h,
+                            height: 7.h,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(3.r),
                             ),
                             child: Row(
@@ -122,16 +123,16 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
                               TextSpan(
                                 text: '$currentStep',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13.sp,
+                                  color: Colors.white.withOpacity(0.5),
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               TextSpan(
                                 text: ' / $totalSteps',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.5),
-                                  fontSize: 13.sp,
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ],
@@ -189,8 +190,8 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
                           height: 150.h,
                           padding: EdgeInsets.all(16.w),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF1A1A2E),
-                            borderRadius: BorderRadius.circular(16.r),
+                            color: const Color(0xFF1D1D1D),
+                            borderRadius: BorderRadius.circular(20.r),
                             border: Border.all(
                               color: Colors.white.withOpacity(0.1),
                               width: 1,
@@ -241,7 +242,7 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
                     CustomButton(
                       text: "Next",
                       onTap: () {
-                        Get.toNamed('/terms');
+                        Get.toNamed(RouteName.terms);
                       },
                     ),
                     SizedBox(height: 30.h),

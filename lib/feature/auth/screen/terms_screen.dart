@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
 
@@ -71,9 +72,9 @@ class _TermsScreenState extends State<TermsScreen> {
                         // Progress Bar
                         Expanded(
                           child: Container(
-                            height: 6.h,
+                            height: 7.h,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(3.r),
                             ),
                             child: Row(
@@ -109,16 +110,16 @@ class _TermsScreenState extends State<TermsScreen> {
                               TextSpan(
                                 text: '$currentStep',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13.sp,
+                                  color: Colors.white.withOpacity(0.5),
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               TextSpan(
                                 text: ' / $totalSteps',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.5),
-                                  fontSize: 13.sp,
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ],
@@ -238,7 +239,7 @@ class _TermsScreenState extends State<TermsScreen> {
                     CustomButton(
                       text: "I agree",
                       onTap: () {
-                        Get.toNamed('/home');
+                        Get.toNamed(RouteName.mainScreen);
                       },
                     ),
                     SizedBox(height: 16.h),

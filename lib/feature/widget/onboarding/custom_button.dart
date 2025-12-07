@@ -27,12 +27,12 @@ class CustomButton extends StatelessWidget {
               Color(0xFFFFAD72), // 53% - Orange
               Color(0xFFF96D01), // 100% - Dark Orange
             ],
-            stops: [0.0, 0.53, 1.0],
+            stops: [0.0, 0.53, 6.0],
           ),
           borderRadius: BorderRadius.circular(23.r),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFF96D01).withOpacity(0.3),
+              color: const Color(0xFFF96D01).withOpacity(0.2),
               blurRadius: 12.r,
               offset: Offset(0, 4.h),
             ),
@@ -43,7 +43,7 @@ class CustomButton extends StatelessWidget {
             text,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 16.sp,
+              fontSize: 17.sp,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
             ),

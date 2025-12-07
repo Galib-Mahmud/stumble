@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
 
@@ -14,11 +15,11 @@ class ForgetPasswordOtpScreen extends StatefulWidget {
 
 class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
   final List<TextEditingController> _otpControllers = List.generate(
-    4,
+    6,
         (index) => TextEditingController(),
   );
   final List<FocusNode> _focusNodes = List.generate(
-    4,
+    6,
         (index) => FocusNode(),
   );
 
@@ -71,7 +72,7 @@ class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 28.sp,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                         SizedBox(height: 30.h),
@@ -79,7 +80,7 @@ class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: List.generate(
-                            4,
+                            6,
                                 (index) => _buildOtpField(index),
                           ),
                         ),
@@ -108,7 +109,7 @@ class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
                           TextSpan(
                             text: 'Resend',
                             style: TextStyle(
-                              color: const Color(0xFFF96D01),
+                              color:Colors.white,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -120,8 +121,7 @@ class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
                     CustomButton(
                       text: 'Submit',
                       onTap: () {
-                        // Navigate to Reset Password screen
-                        Get.toNamed('/reset_password');
+                        Get.toNamed(RouteName.resetPassword);
                       },
                     ),
                     SizedBox(height: 30.h),
@@ -137,7 +137,7 @@ class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
 
   Widget _buildOtpField(int index) {
     return Container(
-      width: 70.w,
+      width: 50.w,  // Changed from 70.w to fit 6 boxes
       height: 52.h,
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.08),
@@ -171,7 +171,7 @@ class _ForgetPasswordOtpScreenState extends State<ForgetPasswordOtpScreen> {
           ),
         ),
         onChanged: (value) {
-          if (value.isNotEmpty && index < 3) {
+          if (value.isNotEmpty && index < 5) {  // Fixed: changed from 3 to 5
             _focusNodes[index + 1].requestFocus();
           } else if (value.isEmpty && index > 0) {
             _focusNodes[index - 1].requestFocus();

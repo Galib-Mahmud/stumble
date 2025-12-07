@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:stumble/feature/splash/screen/onboarding_screen1.dart';
+
 import 'package:stumble/route/route_name.dart';
 
 import '../feature/auth/screen/birthday_screen.dart';
@@ -25,31 +25,22 @@ import '../feature/constellation/screen/sky_tora_screen.dart';
 import '../feature/home/main_screen.dart';
 import '../feature/home/screen/edit_profile_screen.dart';
 import '../feature/home/screen/profile_screen.dart';
-import '../feature/splash/screen/onboarding_screen2.dart';
-import '../feature/splash/screen/onboarding_screen3.dart';
+import '../feature/splash/screen/onboarding_screen.dart';
 import '../feature/splash/screen/question_screen.dart';
 import '../feature/splash/screen/start_quiz_screen.dart';
+import '../feature/splash/screen/your_badge_screen.dart';
 
 class AppRoute {
   static final List<GetPage> pages = [
-    GetPage(
-      name: RouteName.onboarding1,
-      page: () => OnboardingScreen1(),
-      transition: Transition.rightToLeft,
+  GetPage(
+      name: RouteName.onboarding,
+      page: () => OnboardingScreen(),
+      transition: Transition.leftToRight,
       transitionDuration: Duration(milliseconds: 300),
     ),
-    GetPage(
-      name: RouteName.onboarding2,
-      page: () => OnboardingScreen2(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
-    ),
-    GetPage(
-      name: RouteName.onboarding3,
-      page: () => OnboardingScreen3(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
-    ),
+
+
+
     GetPage(
       name: RouteName.startQuiz,
       page: () => StartQuizScreen(),
@@ -202,6 +193,13 @@ class AppRoute {
     GetPage(
       name: RouteName.editProfile,
       page: () => EditProfileScreen(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 300),
+    ),
+
+    GetPage(
+      name: RouteName.yourBadges,
+      page: () => YourBadgesScreen(),
       transition: Transition.rightToLeft,
       transitionDuration: Duration(milliseconds: 300),
     ),

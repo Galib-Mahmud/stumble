@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
 
@@ -64,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 28.sp,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                         SizedBox(height: 30.h),
@@ -107,7 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             textAlign: TextAlign.center,
                             text: TextSpan(
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.6),
+                                color: Colors.white.withOpacity(0.7),
                                 fontSize: 12.sp,
                               ),
                               children: [
@@ -119,6 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.8),
                                     fontWeight: FontWeight.w500,
+                                    fontSize: 12.5.sp,
                                   ),
                                 ),
                               ],
@@ -140,7 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       text: 'Sign up',
                       onTap: () {
                         // Navigate to OTP screen
-                        Get.toNamed('/sign_up_otp');
+                        Get.toNamed(RouteName.signUpOtp);
                       },
                     ),
                     SizedBox(height: 24.h),
@@ -149,7 +151,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       children: [
                         Expanded(
                           child: Container(
-                            height: 1,
+                            height: 2,
                             color: Colors.white.withOpacity(0.2),
                           ),
                         ),
@@ -165,7 +167,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         Expanded(
                           child: Container(
-                            height: 1,
+                            height: 2,
                             color: Colors.white.withOpacity(0.2),
                           ),
                         ),
@@ -204,7 +206,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Text(
                           "Already have an account? ",
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.6),
+                            color: Colors.white.withOpacity(0.7),
                             fontSize: 14.sp,
                           ),
                         ),
@@ -216,7 +218,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             'Sign In',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 14.sp,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -245,7 +247,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       height: 52.h,
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(32.r),
         border: Border.all(
           color: Colors.white.withOpacity(0.1),
           width: 1,
@@ -294,7 +296,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         height: 52.h,
         decoration: BoxDecoration(
           color: const Color(0xFF1E1E2E),
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(32.r),
           border: Border.all(
             color: Colors.white.withOpacity(0.1),
             width: 1,

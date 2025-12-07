@@ -58,9 +58,9 @@ class _UsernameScreenState extends State<UsernameScreen> {
                         // Progress Bar
                         Expanded(
                           child: Container(
-                            height: 6.h,
+                            height: 7.h,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(3.r),
                             ),
                             child: Row(
@@ -96,16 +96,16 @@ class _UsernameScreenState extends State<UsernameScreen> {
                               TextSpan(
                                 text: '$currentStep',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13.sp,
+                                  color: Colors.white.withOpacity(0.5),
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               TextSpan(
                                 text: ' / $totalSteps',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.5),
-                                  fontSize: 13.sp,
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ],
@@ -128,7 +128,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
                         "Choose your username",
                         style: TextStyle(
                           fontSize: 22.sp,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w400,
                           color: Colors.white,
                         ),
                       ),

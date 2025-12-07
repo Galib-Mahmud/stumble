@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../route/route_name.dart';
 import '../../widget/onboarding/custom_button.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
@@ -58,7 +59,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 28.sp,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                         SizedBox(height: 30.h),
@@ -82,7 +83,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       text: 'Send OTP',
                       onTap: () {
                         // Navigate to Forget Password OTP screen
-                        Get.toNamed('/forget_password_otp');
+                        Get.toNamed(RouteName.forgetPasswordOtp);
                       },
                     ),
                     SizedBox(height: 30.h),
@@ -104,7 +105,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       height: 52.h,
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(32.r),
         border: Border.all(
           color: Colors.white.withOpacity(0.1),
           width: 1,

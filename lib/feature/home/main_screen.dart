@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:stumble/feature/splash/screen/question_screen.dart';
 
-import 'package:stumble/feature/splash/screen/onboarding_screen1.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, this.initialIndex = 0});
@@ -22,10 +22,10 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   final List<Widget> _pages = [
-    OnboardingScreen1(),
-    OnboardingScreen1(),
-    OnboardingScreen1(),
-    OnboardingScreen1(),
+     QuestionScreen(),
+     QuestionScreen(),
+     QuestionScreen(),
+     QuestionScreen(),
   ];
 
   @override

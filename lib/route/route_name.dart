@@ -4,6 +4,7 @@ class RouteName{
 
 
   static const String onboarding1 = '/onboarding1';
+  static const String onboarding = '/onboarding';
   static const String onboarding2 = '/onboarding2';
   static const String onboarding3 = '/onboarding3';
   static const String startQuiz = '/startQuiz';
@@ -31,6 +32,7 @@ class RouteName{
   //home
   static const String profile = '/profile';
   static const String editProfile = '/editProfile';
+  static const String yourBadges = '/yourBadges';
 
 
   //Condition

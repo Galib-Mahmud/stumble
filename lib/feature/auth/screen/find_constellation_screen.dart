@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
 
@@ -71,9 +72,9 @@ class _FindConstellationScreenState extends State<FindConstellationScreen> {
                         // Progress Bar
                         Expanded(
                           child: Container(
-                            height: 6.h,
+                            height: 7.h,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(3.r),
                             ),
                             child: Row(
@@ -111,16 +112,16 @@ class _FindConstellationScreenState extends State<FindConstellationScreen> {
                               TextSpan(
                                 text: '$currentStep',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13.sp,
+                                  color: Colors.white.withOpacity(0.5),
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               TextSpan(
                                 text: ' / $totalSteps',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.5),
-                                  fontSize: 13.sp,
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ],
@@ -172,7 +173,8 @@ class _FindConstellationScreenState extends State<FindConstellationScreen> {
                     CustomButton(
                       text: "Take a quiz",
                       onTap: () {
-                        Get.toNamed('/quiz');
+                        Get.toNamed(RouteName.selectAvatar);
+
                       },
                     ),
                     SizedBox(height: 20.h),
@@ -181,7 +183,7 @@ class _FindConstellationScreenState extends State<FindConstellationScreen> {
                       "\$2.49/month, billed yearly\nat \$29.99",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 13.sp,
+                        fontSize: 14.sp,
                         color: Colors.white.withOpacity(0.6),
                         height: 1.5,
                       ),
@@ -195,9 +197,9 @@ class _FindConstellationScreenState extends State<FindConstellationScreen> {
                       child: Text(
                         "Restore purchases",
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                           color: Colors.white,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),

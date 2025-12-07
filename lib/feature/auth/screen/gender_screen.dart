@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
 
@@ -73,9 +74,9 @@ class _GenderScreenState extends State<GenderScreen> {
                         // Progress Bar
                         Expanded(
                           child: Container(
-                            height: 6.h,
+                            height: 7.h,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(3.r),
                             ),
                             child: Row(
@@ -111,16 +112,16 @@ class _GenderScreenState extends State<GenderScreen> {
                               TextSpan(
                                 text: '$currentStep',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13.sp,
+                                  color: Colors.white.withOpacity(0.5),
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               TextSpan(
                                 text: ' / $totalSteps',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.5),
-                                  fontSize: 13.sp,
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ],
@@ -143,7 +144,7 @@ class _GenderScreenState extends State<GenderScreen> {
                         "What is your gender",
                         style: TextStyle(
                           fontSize: 22.sp,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w400,
                           color: Colors.white,
                         ),
                       ),
@@ -189,7 +190,7 @@ class _GenderScreenState extends State<GenderScreen> {
                         text: "Next",
                         onTap: () {
                           if (selectedGender != null) {
-                            Get.toNamed('/find_constellation');
+                           Get.toNamed(RouteName.findConstellation);
                           }
                         },
                       ),
@@ -220,7 +221,7 @@ class _GenderScreenState extends State<GenderScreen> {
           color: isSelected
               ? const Color(0xFF0D4D4D)
               : const Color(0xFF2A2A3E),
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(32.r),
 
         ),
         child: Row(
