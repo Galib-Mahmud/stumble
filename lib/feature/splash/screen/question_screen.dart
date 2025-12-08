@@ -51,193 +51,188 @@ class _QuestionScreenState extends State<QuestionScreen> {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 24.h),
+                  // Scrollable Content
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 24.h),
 
-                  // Logo
-                  Center(
-                    child: Image.asset(
-                      'assets/images/splash/stumble.png',
-
-                      fit: BoxFit.contain,
-
-
-
-                    ),
-                  ),
-
-                  SizedBox(height: 20.h),
-
-                  // Progress Bar Row
-                  Row(
-                    children: [
-                      // Progress Bar
-                      Expanded(
-                        child: Container(
-                          height: 10.h,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(9.r),
+                          // Logo
+                          Center(
+                            child: Image.asset(
+                              'assets/images/splash/stumble.png',
+                              fit: BoxFit.contain,
+                            ),
                           ),
-                          child: Row(
+
+                          SizedBox(height: 20.h),
+
+                          // Progress Bar Row
+                          Row(
                             children: [
-                              Flexible(
-                                flex: currentStep,
+                              // Progress Bar
+                              Expanded(
                                 child: Container(
+                                  height: 10.h,
                                   decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFF09AFB9),
-                                        Color(0xFFFFAD72),
-                                        Color(0xFFF96D01),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(3.r),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(9.r),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        flex: currentStep,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                              colors: [
+                                                Color(0xFF09AFB9),
+                                                Color(0xFFFFAD72),
+                                                Color(0xFFF96D01),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(3.r),
+                                          ),
+                                        ),
+                                      ),
+                                      Flexible(
+                                        flex: totalSteps - currentStep,
+                                        child: const SizedBox(),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                              Flexible(
-                                flex: totalSteps - currentStep,
-                                child: const SizedBox(),
+                              SizedBox(width: 12.w),
+                              // Step Text
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: '$currentStep',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: ' / $totalSteps',
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.5),
+                                        fontSize: 13.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                      SizedBox(width: 12.w),
-                      // Step Text
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: '$currentStep',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' / $totalSteps',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.5),
-                                fontSize: 13.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 32.h),
+                          SizedBox(height: 32.h),
 
-                  // Category
-                  Text(
-                    'GROUNDING & AWARENESS',
-                    style: TextStyle(
-                      color: const Color(0xFF00D9C0),
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-
-                    ),
-                  ),
-
-                  SizedBox(height: 12.h),
-
-                  // Question
-                  Text(
-                    'How would you describe how you\'re feeling today?',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.w700,
-                      height: 1.3,
-                    ),
-                  ),
-
-                  SizedBox(height: 32.h),
-
-                  // Options
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: options.length,
-                      itemBuilder: (context, index) {
-                        final isSelected = selectedOption == index;
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedOption = index;
-                            });
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 12.h),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 18.h,
-                            ),
-                            decoration: BoxDecoration(
-
-                              color: isSelected
-                                  ? const Color(0xFF00D9C0).withOpacity(0.2)
-                                  : const Color(0xFF3A3A3A).withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(25.r),
-
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 24.w,
-                                  height: 24.w,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: isSelected
-                                          ? const Color(0xFF00D9C0)
-                                          : Colors.white.withOpacity(0.5),
-                                      width: 2,
-                                    ),
-                                    color: isSelected
-                                        ? const Color(0xFF00D9C0)
-                                        : Colors.transparent,
-                                  ),
-                                ),
-                                //
-
-                                SizedBox(width: 16.w),
-                                Expanded(
-                                  child: Text(
-                                    options[index],
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w500,
-                                      height: 1.4,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                          // Category
+                          Text(
+                            'GROUNDING & AWARENESS',
+                            style: TextStyle(
+                              color: const Color(0xFF00D9C0),
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        );
-                      },
+
+                          SizedBox(height: 12.h),
+
+                          // Question
+                          Text(
+                            'How would you describe how you\'re feeling today?',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w700,
+                              height: 1.3,
+                            ),
+                          ),
+
+                          SizedBox(height: 32.h),
+
+                          // Options - Using Column instead of ListView.builder
+                          ...List.generate(options.length, (index) {
+                            final isSelected = selectedOption == index;
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedOption = index;
+                                });
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(bottom: 12.h),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w,
+                                  vertical: 18.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? const Color(0xFF00D9C0).withOpacity(0.2)
+                                      : const Color(0xFF3A3A3A).withOpacity(0.8),
+                                  borderRadius: BorderRadius.circular(25.r),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 24.w,
+                                      height: 24.w,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? const Color(0xFF00D9C0)
+                                              : Colors.white.withOpacity(0.5),
+                                          width: 2,
+                                        ),
+                                        color: isSelected
+                                            ? const Color(0xFF00D9C0)
+                                            : Colors.transparent,
+                                      ),
+                                    ),
+                                    SizedBox(width: 16.w),
+                                    Expanded(
+                                      child: Text(
+                                        options[index],
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.4,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+
+                          SizedBox(height: 20.h),
+                        ],
+                      ),
                     ),
                   ),
 
-                  SizedBox(height: 20.h),
-
-                  // Button - Shows only when option is selected
-                  if (selectedOption != null)
-                    CustomButton(
+                  // Fixed Button at Bottom
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 130.h, top: 10.h),
+                    child: selectedOption != null
+                        ? CustomButton(
                       text: 'Next',
                       onTap: () {
-
-
-
+                        // Handle next
                       },
                     )
-                  else
-                    Container(
+                        : Container(
                       height: 46.h,
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -255,8 +250,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                         ),
                       ),
                     ),
-
-                  SizedBox(height: 32.h),
+                  ),
                 ],
               ),
             ),

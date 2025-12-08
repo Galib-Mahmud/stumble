@@ -33,6 +33,10 @@ class RouteName{
   static const String profile = '/profile';
   static const String editProfile = '/editProfile';
   static const String yourBadges = '/yourBadges';
+  static const String yourJurnal = '/yourJurnal';
+  static const String createJurnal = '/createJurnal';
+  static const String homeDashboard = '/homeDashboard';
+  static const String sos = '/sos';
 
 
   //Condition

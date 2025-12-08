@@ -24,7 +24,11 @@ import '../feature/constellation/screen/constellation_tora.dart';
 import '../feature/constellation/screen/sky_tora_screen.dart';
 import '../feature/home/main_screen.dart';
 import '../feature/home/screen/edit_profile_screen.dart';
+import '../feature/home/screen/home_dashboard_screen.dart';
+import '../feature/home/screen/journals_screen.dart';
 import '../feature/home/screen/profile_screen.dart';
+import '../feature/home/screen/sos_screen.dart';
+import '../feature/home/screen/your_jurnal_screen.dart';
 import '../feature/splash/screen/onboarding_screen.dart';
 import '../feature/splash/screen/question_screen.dart';
 import '../feature/splash/screen/start_quiz_screen.dart';
@@ -203,6 +207,35 @@ class AppRoute {
       transition: Transition.rightToLeft,
       transitionDuration: Duration(milliseconds: 300),
     ),
+    GetPage(
+      name: RouteName.yourJurnal,
+      page: () => YourJurnalScreen(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 300),
+    ),
+
+    GetPage(
+      name: RouteName.createJurnal,
+      page: () => CreateJournalScreen(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 300),
+    ),
+    GetPage(
+      name: RouteName.homeDashboard,
+      page: () => HomeDashboardScreen(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 300),
+    ),
+
+    GetPage(
+      name: RouteName.sos,
+      page: () => SupportScreen(),
+      transition: Transition.rightToLeft,
+      transitionDuration: Duration(milliseconds: 300),
+    ),
+
+
+
 //
 
 

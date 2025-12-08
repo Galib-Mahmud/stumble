@@ -87,9 +87,11 @@ class _GenderScreenState extends State<GenderScreen> {
                                     decoration: BoxDecoration(
                                       gradient: const LinearGradient(
                                         colors: [
-                                          Color(0xFFF96D01),
-                                          Color(0xFFFFAD72),
                                           Color(0xFF09AFB9),
+                                          Color(0xFFFFAD72),
+                                          Color(0xFFF96D01),
+
+
                                         ],
                                       ),
                                       borderRadius: BorderRadius.circular(3.r),
