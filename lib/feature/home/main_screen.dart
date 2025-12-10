@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:stumble/feature/home/screen/app_drawer_controller.dart';
 import 'package:stumble/feature/home/screen/custom_drawer_screen.dart';
 import 'package:stumble/feature/home/screen/home_dashboard_screen.dart';
+import 'package:stumble/feature/home/screen/orbit_screen.dart';
 import 'package:stumble/feature/home/screen/sos_screen.dart';
 import 'package:stumble/feature/home/screen/your_jurnal_screen.dart';
 import 'package:stumble/feature/splash/screen/question_screen.dart';
+import 'package:stumble/route/route_name.dart';
 
 
 class MainScreen extends StatefulWidget {
@@ -18,11 +22,14 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
-  late int _currentIndex = 0;
+  late int _currentIndex = 3;
 
   late AnimationController _drawerController;
   late Animation<double> _drawerAnimation;
   bool _isDrawerOpen = false;
+
+  // ✅ ADD: Initialize drawer controller
+  final AppDrawerController _appDrawerCtrl = Get.put(AppDrawerController());
 
   @override
   void initState() {
@@ -36,6 +43,12 @@ class _MainScreenState extends State<MainScreen>
 
     _drawerAnimation = Tween<double>(begin: -1.0, end: 0.0).animate(
       CurvedAnimation(parent: _drawerController, curve: Curves.easeOutCubic),
+    );
+
+    // ✅ ADD: Register drawer functions so child screens can use them
+    _appDrawerCtrl.setDrawerFunctions(
+      open: _openDrawer,
+      close: _closeDrawer,
     );
   }
 
@@ -61,8 +74,8 @@ class _MainScreenState extends State<MainScreen>
   }
 
   final List<Widget> _pages = [
-    QuestionScreen(),
-     SupportScreen(),
+    OrbitQuotesScreen() ,
+    SupportScreen(),
     YourJurnalScreen(),
     HomeDashboardScreen(),
   ];
@@ -80,10 +93,9 @@ class _MainScreenState extends State<MainScreen>
       },
       child: Scaffold(
         extendBody: true,
-        // Remove bottomNavigationBar from here - move it inside body
         body: Stack(
           children: [
-            // Main Content with Bottom Nav inside
+            // Main Content
             Column(
               children: [
                 Expanded(
@@ -92,7 +104,7 @@ class _MainScreenState extends State<MainScreen>
               ],
             ),
 
-            // Bottom Navigation Bar - now inside Stack
+            // Bottom Navigation Bar
             Positioned(
               left: 0,
               right: 0,
@@ -152,7 +164,6 @@ class _MainScreenState extends State<MainScreen>
         alignment: Alignment.topCenter,
         clipBehavior: Clip.none,
         children: [
-          // Bottom Navigation Bar
           Container(
             height: 78.h,
             decoration: BoxDecoration(
@@ -204,13 +215,11 @@ class _MainScreenState extends State<MainScreen>
               ],
             ),
           ),
-
-          // Center FAB Button
           Positioned(
             top: -25.h,
             child: GestureDetector(
               onTap: () {
-                // Center button action
+                Get.toNamed(RouteName.innerCircleChat);
               },
               child: Container(
                 height: 55.w,

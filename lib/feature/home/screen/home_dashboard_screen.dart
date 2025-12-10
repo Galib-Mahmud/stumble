@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+// Import the controller
+import 'app_drawer_controller.dart';
 
 class HomeDashboardScreen extends StatefulWidget {
   const HomeDashboardScreen({super.key});
@@ -9,12 +13,15 @@ class HomeDashboardScreen extends StatefulWidget {
 }
 
 class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
-  // Task completion status
   List<bool> taskCompleted = [true, false];
+
+  // ❌ REMOVED: _scaffoldKey - not needed anymore
+  // ❌ REMOVED: drawer - it's now in MainScreen
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // ❌ REMOVED: key, drawer, drawerEnableOpenDragGesture
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.black,
       body: Container(
@@ -33,30 +40,15 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 10.h),
-
-                // Top App Bar
                 _buildTopBar(),
-
                 SizedBox(height: 24.h),
-
-                // Welcome Text
                 _buildWelcomeText(),
-
                 SizedBox(height: 24.h),
-
-                // XP Gauge Card (Your Image)
                 _buildXPGaugeCard(),
-
                 SizedBox(height: 24.h),
-
-                // Stumble Events Section
                 _buildStumbleEventsSection(),
-
                 SizedBox(height: 24.h),
-
-                // Your Tasks Section
                 _buildYourTasksSection(),
-
                 SizedBox(height: 100.h),
               ],
             ),
@@ -66,36 +58,49 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-  // Top Bar with logo and profile icons
+  // ❌ REMOVED: _buildDrawer() method - not needed anymore
+
   Widget _buildTopBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Logo
         Image.asset(
           'assets/images/avatar/Frame2.png',
-         fit: BoxFit.cover,
+          fit: BoxFit.cover,
         ),
-        // Right side icons
         Row(
           children: [
-            _buildTopIcon('assets/images/avatar/notification.png'),
+            _buildTopIcon(
+              'assets/images/avatar/notification.png',
+              onTap: () {
+                // Handle notification tap
+              },
+            ),
             SizedBox(width: 12.w),
-            _buildTopIcon('assets/images/avatar/settings.png'),
-
+            _buildTopIcon(
+              'assets/images/avatar/settings.png',
+              onTap: () {
+                // ✅ CHANGED: Now calls MainScreen's drawer
+                Get.find<AppDrawerController>().open();
+              },
+            ),
             SizedBox(width: 12.w),
-            // Profile avatar
-            Container(
-              width: 36.w,
-              height: 36.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-
-              ),
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/images/avatar/profile.png',
-                  fit: BoxFit.cover,
+            GestureDetector(
+              onTap: () {
+                // ✅ CHANGED: Now calls MainScreen's drawer
+                Get.find<AppDrawerController>().open();
+              },
+              child: Container(
+                width: 36.w,
+                height: 36.w,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/avatar/profile.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -105,25 +110,27 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-  Widget _buildTopIcon(String iconPath) {
-    return Container(
-      width: 36.w,
-      height: 36.w,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white.withOpacity(0.2),
-      ),
-      child: Center(
-        child: Image.asset(
-          iconPath,
-          width: 20.w,
-          height: 20.w,
+  Widget _buildTopIcon(String iconPath, {required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 36.w,
+        height: 36.w,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white.withOpacity(0.2),
+        ),
+        child: Center(
+          child: Image.asset(
+            iconPath,
+            width: 20.w,
+            height: 20.w,
+          ),
         ),
       ),
     );
   }
 
-  // Welcome Text
   Widget _buildWelcomeText() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,12 +157,9 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-  // XP Gauge Card - Using your image
   Widget _buildXPGaugeCard() {
     return GestureDetector(
-      onTap: () {
-        // Navigate to XP details
-      },
+      onTap: () {},
       child: Image.asset(
         'assets/images/avatar/xpDetails.png',
         width: double.infinity,
@@ -164,7 +168,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-  // Stumble Events Section
   Widget _buildStumbleEventsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,28 +200,22 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-  // Event Card - Using your images
   Widget _buildEventCard({required String imagePath}) {
     return GestureDetector(
-      onTap: () {
-        // Navigate to event details
-      },
+      onTap: () {},
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.r),
         child: Image.asset(
           imagePath,
-
           fit: BoxFit.cover,
         ),
       ),
     );
   }
 
-// Your Tasks Section
   Widget _buildYourTasksSection() {
     return Column(
       children: [
-        // Header
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -250,8 +247,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           ],
         ),
         SizedBox(height: 20.h),
-
-        // Task items
         _buildTaskItem(
           title: "Participate in my Tribe",
           subtitle: "15-30 min",
@@ -283,14 +278,12 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       },
       child: Row(
         children: [
-
-          // Checkbox
           Container(
             width: 35.w,
             height: 35.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isCompleted ? Color(0xFF1E3D38) : Colors.transparent,
+              color: isCompleted ? const Color(0xFF1E3D38) : Colors.transparent,
               border: Border.all(
                 color: isCompleted
                     ? Colors.transparent
@@ -302,14 +295,11 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 ? Icon(
               Icons.check,
               size: 18.sp,
-              fontWeight: FontWeight.bold,
               color: Colors.greenAccent,
-
             )
                 : null,
           ),
           SizedBox(width: 16.w),
-          // Task details
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -229,7 +229,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                         ? CustomButton(
                       text: 'Next',
                       onTap: () {
-                        // Handle next
+                       Get.toNamed(RouteName.constellationTora);
                       },
                     )
                         : Container(

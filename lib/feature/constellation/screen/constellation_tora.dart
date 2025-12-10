@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
 
@@ -140,7 +142,7 @@ class ConstellationScreen extends StatelessWidget {
                       CustomButton(
                         text: 'About this constellation',
                         onTap: () {
-                          // Handle tap
+                         Get.toNamed(RouteName.skyTora);
                         },
                       ),
                       SizedBox(height: 12.h),
@@ -148,7 +150,7 @@ class ConstellationScreen extends StatelessWidget {
                       CustomOutlineButton(
                         text: 'See your path',
                         onTap: () {
-                          // Handle tap
+                          Get.toNamed(RouteName.progressPath);
                         },
                       ),
                     ],

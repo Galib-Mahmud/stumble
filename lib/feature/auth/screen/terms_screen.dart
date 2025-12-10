@@ -60,8 +60,7 @@ class _TermsScreenState extends State<TermsScreen> {
                         // Logo
                         Image.asset(
                           'assets/images/splash/stumble.png',
-                          height: 44.h,
-                          width: 44.w,
+                         fit: BoxFit.cover,
                         ),
                       ],
                     ),
@@ -239,7 +238,7 @@ class _TermsScreenState extends State<TermsScreen> {
                     CustomButton(
                       text: "I agree",
                       onTap: () {
-                        Get.toNamed(RouteName.mainScreen);
+                        Get.toNamed(RouteName.yourBadges);
                       },
                     ),
                     SizedBox(height: 16.h),

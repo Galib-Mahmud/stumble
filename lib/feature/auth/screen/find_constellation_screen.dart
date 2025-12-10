@@ -60,8 +60,7 @@ class _FindConstellationScreenState extends State<FindConstellationScreen> {
                         // Logo
                         Image.asset(
                           'assets/images/splash/stumble.png',
-                          height: 44.h,
-                          width: 44.w,
+                           fit: BoxFit.cover,
                         ),
                       ],
                     ),

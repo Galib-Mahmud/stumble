@@ -121,7 +121,7 @@ class _SignUpOtpScreenState extends State<SignUpOtpScreen> {
                     CustomButton(
                       text: 'Submit',
                       onTap: () {
-                        Get.toNamed(RouteName.resetPassword);
+                        Get.toNamed(RouteName.username);
                       },
                     ),
                     SizedBox(height: 30.h),

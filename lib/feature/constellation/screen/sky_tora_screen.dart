@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
+import '../../../route/route_name.dart';
 import '../../widget/onboarding/custom_button.dart';
 
 // Outline Button Widget
@@ -111,7 +113,7 @@ class YourSkyScreen extends StatelessWidget {
                       CustomButton(
                         text: 'Begin your path',
                         onTap: () {
-                          // Handle tap
+                          Get.toNamed(RouteName.progressPath);
                         },
                       ),
                       SizedBox(height: 12.h),
@@ -119,7 +121,7 @@ class YourSkyScreen extends StatelessWidget {
                       CustomOutlineButton(
                         text: 'See the StumbleSky',
                         onTap: () {
-                          // Handle tap
+                         Get.toNamed(RouteName.mainScreen);
                         },
                       ),
                     ],

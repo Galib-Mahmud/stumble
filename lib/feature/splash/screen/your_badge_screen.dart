@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 class YourBadgesScreen extends StatelessWidget {
   const YourBadgesScreen({Key? key}) : super(key: key);
@@ -55,11 +56,7 @@ class YourBadgesScreen extends StatelessWidget {
                           color: Colors.white.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
-                          Icons.share,
-                          color: Colors.white,
-                          size: 20.sp,
-                        ),
+                        child: Image.asset('assets/images/avatar/Capa_1 (1).png')
                       ),
                     ),
                   ],
@@ -76,7 +73,7 @@ class YourBadgesScreen extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 28.sp,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ),
@@ -158,7 +155,7 @@ class YourBadgesScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigate to next screen
+                    Get.toNamed(RouteName.startQuiz);
                   },
                   child: Container(
                     height: 46.h,

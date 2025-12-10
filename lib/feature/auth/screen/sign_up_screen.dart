@@ -101,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             });
                           },
                         ),
-                        SizedBox(height: 24.h),
+                        SizedBox(height: 120.h),
                         // Privacy Policy Text
                         Center(
                           child: RichText(

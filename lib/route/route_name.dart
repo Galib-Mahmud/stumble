@@ -37,6 +37,9 @@ class RouteName{
   static const String createJurnal = '/createJurnal';
   static const String homeDashboard = '/homeDashboard';
   static const String sos = '/sos';
+  static const String progressPath = '/progressPath';
+  static const String orbit = '/orbit';
+  static const String innerCircleChat = '/innerCircleChat';
 
 
   //Condition

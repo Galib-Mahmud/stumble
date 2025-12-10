@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:stumble/feature/home/screen/orbit_screen.dart';
 
 import 'package:stumble/route/route_name.dart';
 
@@ -25,8 +26,10 @@ import '../feature/constellation/screen/sky_tora_screen.dart';
 import '../feature/home/main_screen.dart';
 import '../feature/home/screen/edit_profile_screen.dart';
 import '../feature/home/screen/home_dashboard_screen.dart';
+import '../feature/home/screen/inner_circle_chat_screen.dart';
 import '../feature/home/screen/journals_screen.dart';
 import '../feature/home/screen/profile_screen.dart';
+import '../feature/home/screen/progress_screen.dart';
 import '../feature/home/screen/sos_screen.dart';
 import '../feature/home/screen/your_jurnal_screen.dart';
 import '../feature/splash/screen/onboarding_screen.dart';
@@ -39,8 +42,8 @@ class AppRoute {
   GetPage(
       name: RouteName.onboarding,
       page: () => OnboardingScreen(),
-      transition: Transition.leftToRight,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
 
 
@@ -48,190 +51,208 @@ class AppRoute {
     GetPage(
       name: RouteName.startQuiz,
       page: () => StartQuizScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.question,
       page: () => QuestionScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.termsAndUse,
       page: () => TermsAndUseScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
 
     GetPage(
       name: RouteName.privacyPolicy,
       page: () => PrivacyPolicyScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
 
     GetPage(
       name: RouteName.disclaimers,
       page: () => DisclaimersScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.dataRetention,
       page: () => DataRetentionDeletionPolicyScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.mainScreen,
       page: () => MainScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
 
     GetPage(
       name: RouteName.constellationTora,
       page: () => ConstellationScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
 
     GetPage(
       name: RouteName.skyTora,
       page: () => YourSkyScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.signIn,
       page: () => SignInScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.signUp,
       page: () => SignUpScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.signUpOtp,
       page: () => SignUpOtpScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.forgetPassword,
       page: () => ForgetPasswordScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.forgetPasswordOtp,
       page: () => ForgetPasswordOtpScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.resetPassword,
       page: () => ResetPasswordScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
 
     GetPage(
       name: RouteName.settings,
       page: () => SettingsScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.birthday,
       page: () => BirthdayScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.username,
       page: () => UsernameScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.gender,
       page: () => GenderScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.findConstellation,
       page: () => FindConstellationScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.selectAvatar,
       page: () => SelectAvatarScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.terms,
       page: () => TermsScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.shareYourMind,
       page: () => ShareYourMindScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.profile,
       page: () => ProfileScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.editProfile,
       page: () => EditProfileScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
 
     GetPage(
       name: RouteName.yourBadges,
       page: () => YourBadgesScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.yourJurnal,
       page: () => YourJurnalScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
 
     GetPage(
       name: RouteName.createJurnal,
       page: () => CreateJournalScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
     GetPage(
       name: RouteName.homeDashboard,
       page: () => HomeDashboardScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
     ),
 
     GetPage(
       name: RouteName.sos,
       page: () => SupportScreen(),
-      transition: Transition.rightToLeft,
-      transitionDuration: Duration(milliseconds: 300),
+      transition: Transition.noTransition,
+
+    ),
+    GetPage(
+      name: RouteName.progressPath,
+      page: () => ProgressPathScreen(),
+      transition: Transition.noTransition,
+
+    ),
+    GetPage(
+      name: RouteName.orbit,
+      page: () => OrbitQuotesScreen(),
+      transition: Transition.noTransition,
+
+    ),
+    GetPage(
+      name: RouteName.innerCircleChat,
+      page: () => InnerCircleChatScreen(),
+      transition: Transition.noTransition,
+
     ),
 
 
