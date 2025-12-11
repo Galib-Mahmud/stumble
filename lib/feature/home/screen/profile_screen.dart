@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
 
@@ -80,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Settings Icon
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed('/settings');
+                        Get.toNamed(RouteName.settings);
                       },
                       child: Icon(
                         Icons.settings_outlined,
@@ -229,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         CustomButton(
                           text: 'Edit',
                           onTap: () {
-                            Get.toNamed('/edit_profile');
+                            Get.toNamed(RouteName.editProfile);
                           },
                         ),
                         SizedBox(height: 20.h),

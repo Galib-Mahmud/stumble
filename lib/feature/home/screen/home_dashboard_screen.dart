@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 // Import the controller
 import 'app_drawer_controller.dart';
@@ -87,8 +88,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             SizedBox(width: 12.w),
             GestureDetector(
               onTap: () {
-                // ✅ CHANGED: Now calls MainScreen's drawer
-                Get.find<AppDrawerController>().open();
+                Get.toNamed(RouteName.profile);
               },
               child: Container(
                 width: 36.w,

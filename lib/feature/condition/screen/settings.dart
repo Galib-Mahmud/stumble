@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 import '../../widget/condition/custom_appbar2.dart';
 
@@ -10,10 +11,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar2(
-        title: 'Settings',
-        onBack: () => Get.back(),
-      ),
+      appBar: CustomAppBar2(title: 'Settings', onBack: () => Get.back()),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -35,35 +33,42 @@ class SettingsScreen extends StatelessWidget {
                 iconPath: 'assets/images/splash/newPassword.png',
                 title: 'New Password',
                 onTap: () {
-                  // Navigate to New Password screen
+                 Get.toNamed(RouteName.forgetPassword);
                 },
               ),
               _buildSettingsItem(
                 iconPath: 'assets/images/splash/termsofuse.png',
                 title: 'Terms of Use',
                 onTap: () {
-                  Get.toNamed('/terms_of_use');
+                  Get.toNamed(RouteName.terms);
                 },
               ),
               _buildSettingsItem(
                 iconPath: 'assets/images/splash/privacypolicy.png',
                 title: 'Privacy Policy',
                 onTap: () {
-                  Get.toNamed('/privacy_policy');
+                  Get.toNamed(RouteName.privacyPolicy);
                 },
               ),
               _buildSettingsItem(
                 iconPath: 'assets/images/splash/disclaimers.png',
                 title: 'Disclaimers',
                 onTap: () {
-                  Get.toNamed('/disclaimers');
+                  Get.toNamed(RouteName.disclaimers);
                 },
               ),
               _buildSettingsItem(
                 iconPath: 'assets/images/splash/dataRetention.png',
                 title: 'Data Retention',
                 onTap: () {
-                  Get.toNamed('/data_retention');
+                  Get.toNamed(RouteName.dataRetention);
+                },
+              ),
+              _buildSettingsItem(
+                iconPath: 'assets/images/splash/dataRetention.png',
+                title: 'Your path',
+                onTap: () {
+                  Get.toNamed(RouteName.progressPath);
                 },
               ),
               SizedBox(height: 24.h),
@@ -120,21 +125,13 @@ class SettingsScreen extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 8.h),
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         decoration: BoxDecoration(
-          color: isDanger?
-
-          const Color(0xFF202232):
-          const Color(0xFF47286F),
+          color: isDanger ? const Color(0xFF202232) : const Color(0xFF47286F),
           borderRadius: BorderRadius.circular(12.r),
-
         ),
         child: Row(
           children: [
             // Icon
-            Image.asset(
-              iconPath,
-              width: 40.w,
-              height: 40.h,
-            ),
+            Image.asset(iconPath, width: 40.w, height: 40.h),
             SizedBox(width: 14.w),
             // Title
             Expanded(
@@ -158,8 +155,6 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
   }
-
-
 
   void _showDeleteAccountDialog(BuildContext context) {
     showDialog(

@@ -194,8 +194,8 @@ class _CreateJournalScreenState extends State<CreateJournalScreen> {
                     color: isSelected ? Color(0xFFECEDF0): Colors.white,
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
-                      color: isSelected ? Colors.black : Colors.grey.shade300,
-                      width: 1,
+                      color:  Colors.grey.shade300,
+
                     ),
                   ),
                   child: Text(
@@ -203,7 +203,7 @@ class _CreateJournalScreenState extends State<CreateJournalScreen> {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
-                      color: isSelected ? Colors.white : Colors.black87,
+                      color:  Colors.black,
                     ),
                   ),
                 ),
@@ -302,9 +302,9 @@ class _CreateJournalScreenState extends State<CreateJournalScreen> {
           Row(
             children: [
               _buildBottomIcon("assets/images/avatar/clip.png"),
-              SizedBox(width: 16.w),
+              SizedBox(width: 17.w),
               _buildBottomIcon("assets/images/avatar/gallary.png"),
-              SizedBox(width: 16.w),
+              SizedBox(width: 18.w),
               _buildBottomIcon("assets/images/avatar/micro.png"),
             ],
           ),
@@ -322,7 +322,7 @@ class _CreateJournalScreenState extends State<CreateJournalScreen> {
         assetPath,
         width: 24.w,
         height: 24.w,
-        color: Colors.grey.shade600,
+
       ),
     );
   }

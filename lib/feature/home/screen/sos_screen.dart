@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+import '../../../route/route_name.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
@@ -36,18 +39,19 @@ class _SupportScreenState extends State<SupportScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        // Background image
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/avatar/sos.png"),
-            fit: BoxFit.cover,
-          ),
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/avatar/sos.png"),
+          fit: BoxFit.cover,
         ),
-        child: SafeArea(
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: 140.h), // Navbar padding
           child: Column(
             children: [
               SizedBox(height: 16.h),
@@ -59,7 +63,6 @@ class _SupportScreenState extends State<SupportScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title text
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -67,7 +70,7 @@ class _SupportScreenState extends State<SupportScreen>
                           "Choose the support",
                           style: TextStyle(
                             fontSize: 22.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w400,
                             color: Colors.white,
                             height: 1.3,
                           ),
@@ -76,82 +79,81 @@ class _SupportScreenState extends State<SupportScreen>
                           "you need",
                           style: TextStyle(
                             fontSize: 22.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w400,
                             color: Colors.white,
                             height: 1.3,
                           ),
                         ),
                       ],
                     ),
-                    // Settings icon
-                    Container(
-                      width: 36.w,
-                      height: 36.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.15),
-                      ),
-                      child: Icon(
-                        Icons.settings,
-                        color: Colors.white.withOpacity(0.8),
-                        size: 20.w,
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed(RouteName.settings);
+                      },
+                      child: Container(
+                        width: 36.w,
+                        height: 36.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.15),
+                        ),
+                        child: Icon(
+                          Icons.settings,
+                          color: Colors.white.withOpacity(0.8),
+                          size: 20.w,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
 
-              // Support Circle - Aligned to left
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: _buildSupportCircle(),
-                ),
-              ),
+              SizedBox(height: 40.h),
+
+              // Support Circle - Centered
+              _buildSupportCircle(),
+
+              SizedBox(height: 40.h),
 
               // Record Button
               _buildRecordButton(),
 
-              SizedBox(height: 28.h),
+              SizedBox(height: 60.h),
 
               // Support Modes Title
               Text(
                 "Support Modes",
                 style: TextStyle(
-                  fontSize: 15.sp,
+                  fontSize: 17.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.white.withOpacity(0.9),
                 ),
               ),
 
-              SizedBox(height: 16.h),
+              SizedBox(height: 20.h),
 
               // Support Mode Buttons
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40.w),
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildModeItem(
-                      label: 'Gentle',
                       index: 0,
-                      color: const Color(0xFFFFD93D), // Yellow
+                      iconPath: 'assets/images/icon/gentle.png',
                     ),
+                    SizedBox(width: 12.w),
                     _buildModeItem(
-                      label: 'Critical',
                       index: 1,
-                      color: const Color(0xFFFF9500), // Orange
+                      iconPath: 'assets/images/icon/critical.png',
                     ),
+                    SizedBox(width: 12.w),
                     _buildModeItem(
-                      label: 'Urgent',
                       index: 2,
-                      color: const Color(0xFFFF6B35), // Red-Orange
+                      iconPath: 'assets/images/icon/urgent.png',
                     ),
                   ],
                 ),
               ),
-
-              SizedBox(height: 50.h),
             ],
           ),
         ),
@@ -159,27 +161,25 @@ class _SupportScreenState extends State<SupportScreen>
     );
   }
 
-  // Support Circle - Using image asset with pulse animation
+  // Support Circle
   Widget _buildSupportCircle() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 110),
-      child: AnimatedBuilder(
-        animation: _pulseController,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _pulseAnimation.value,
-            child: child,
-          );
+    return AnimatedBuilder(
+      animation: _pulseController,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _pulseAnimation.value,
+          child: child,
+        );
+      },
+      child: GestureDetector(
+        onTap: () {
+          // Handle tap
         },
-        child: GestureDetector(
-          onTap: () {
-            // Handle tap
-          },
-          child: Image.asset(
-            'assets/images/avatar/support.png',
-
-            fit: BoxFit.contain,
-          ),
+        child: Image.asset(
+          'assets/images/avatar/support.png',
+          width: 250.w,
+          height: 250.w,
+          fit: BoxFit.contain,
         ),
       ),
     );
@@ -194,41 +194,24 @@ class _SupportScreenState extends State<SupportScreen>
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.12),
-          borderRadius: BorderRadius.circular(25.r),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.1),
-            width: 1,
-          ),
+          color: Color(0xFF253F5A),
+          borderRadius: BorderRadius.circular(32.r),
+
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Red record icon
-            Container(
-              width: 20.w,
-              height: 20.w,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color(0xFFFF3B30),
-              ),
-              child: Center(
-                child: Container(
-                  width: 6.w,
-                  height: 6.w,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(1.r),
-                  ),
-                ),
-              ),
+            Image.asset(
+              'assets/images/icon/video_record.png',
+              width: 30.w,
+              height: 25.w,
             ),
             SizedBox(width: 10.w),
             Text(
               "Record a grounding Message",
               style: TextStyle(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w500,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w400,
                 color: Colors.white,
               ),
             ),
@@ -240,62 +223,36 @@ class _SupportScreenState extends State<SupportScreen>
 
   // Mode Item Button
   Widget _buildModeItem({
-    required String label,
     required int index,
-    required Color color,
+    required String iconPath,
   }) {
     bool isSelected = selectedModeIndex == index;
 
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedModeIndex = index;
-        });
-      },
-      child: Column(
-        children: [
-          Container(
-            width: 75.w,
-            height: 75.w,
-            decoration: BoxDecoration(
-              color: const Color(0xFF1C1C2E),
-              borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(
-                color: isSelected
-                    ? const Color(0xFF4EFFEE)
-                    : const Color(0xFF2A2A3E),
-                width: isSelected ? 2 : 1,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            selectedModeIndex = index;
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: isSelected
+                ? [
+              BoxShadow(
+                color: const Color(0xFF4EFFEE).withOpacity(0.3),
+                blurRadius: 12,
+                spreadRadius: 2,
               ),
-              boxShadow: isSelected
-                  ? [
-                BoxShadow(
-                  color: const Color(0xFF4EFFEE).withOpacity(0.2),
-                  blurRadius: 10,
-                  spreadRadius: 1,
-                ),
-              ]
-                  : null,
-            ),
-            child: Center(
-              child: Icon(
-                Icons.warning_amber_rounded,
-                color: color,
-                size: 34.w,
-              ),
-            ),
+            ]
+                : null,
           ),
-          SizedBox(height: 8.h),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-              color: isSelected
-                  ? const Color(0xFF4EFFEE)
-                  : Colors.white.withOpacity(0.5),
-            ),
+          child: Image.asset(
+            iconPath,
+            fit: BoxFit.contain,
           ),
-        ],
+        ),
       ),
     );
   }

@@ -10,11 +10,13 @@ import 'package:stumble/feature/home/screen/your_jurnal_screen.dart';
 import 'package:stumble/feature/splash/screen/question_screen.dart';
 import 'package:stumble/route/route_name.dart';
 
-
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, this.initialIndex = 0});
 
   final int initialIndex;
+
+  // ✅ Static getter so child screens can access navbar height for bottom padding
+  static double get navBarHeight => 120.h;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -22,13 +24,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
-  late int _currentIndex = 3;
+      int _currentIndex = 3;
 
   late AnimationController _drawerController;
   late Animation<double> _drawerAnimation;
   bool _isDrawerOpen = false;
 
-  // ✅ ADD: Initialize drawer controller
   final AppDrawerController _appDrawerCtrl = Get.put(AppDrawerController());
 
   @override
@@ -45,7 +46,6 @@ class _MainScreenState extends State<MainScreen>
       CurvedAnimation(parent: _drawerController, curve: Curves.easeOutCubic),
     );
 
-    // ✅ ADD: Register drawer functions so child screens can use them
     _appDrawerCtrl.setDrawerFunctions(
       open: _openDrawer,
       close: _closeDrawer,
@@ -95,16 +95,10 @@ class _MainScreenState extends State<MainScreen>
         extendBody: true,
         body: Stack(
           children: [
-            // Main Content
-            Column(
-              children: [
-                Expanded(
-                  child: _pages[_currentIndex],
-                ),
-              ],
-            ),
+            // Main Content - NO wrapper, screens handle their own bottom padding
+            _pages[_currentIndex],
 
-            // Bottom Navigation Bar
+            // Bottom Navigation Bar (floating)
             Positioned(
               left: 0,
               right: 0,
@@ -135,7 +129,7 @@ class _MainScreenState extends State<MainScreen>
                 },
               ),
 
-            // Drawer - on top of everything
+            // Drawer
             AnimatedBuilder(
               animation: _drawerAnimation,
               builder: (context, child) {
@@ -260,6 +254,7 @@ class _MainScreenState extends State<MainScreen>
     return GestureDetector(
       onTap: () => setState(() {
         _currentIndex = index;
+
       }),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -275,7 +270,7 @@ class _MainScreenState extends State<MainScreen>
                   ? const Color(0xFF4EFFEE)
                   : Colors.white.withOpacity(0.4),
             ),
-            SizedBox(height: 6.h),
+            SizedBox(height: 7.h),
             Text(
               label,
               style: TextStyle(

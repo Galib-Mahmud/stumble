@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
+import 'package:get/get.dart';
+
+import '../../../route/route_name.dart';
+
 
 class YourJurnalScreen extends StatelessWidget {
   const YourJurnalScreen({super.key});
@@ -41,7 +45,7 @@ class YourJurnalScreen extends StatelessWidget {
                     // Add Button
                     GestureDetector(
                       onTap: () {
-                        // Add new journal action
+                       Get.toNamed(RouteName.createJurnal);
                       },
                       child: Container(
                         width: 36.w,

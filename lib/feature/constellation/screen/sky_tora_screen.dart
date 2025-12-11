@@ -113,7 +113,7 @@ class YourSkyScreen extends StatelessWidget {
                       CustomButton(
                         text: 'Begin your path',
                         onTap: () {
-                          Get.toNamed(RouteName.progressPath);
+                          Get.toNamed(RouteName.mainScreen);
                         },
                       ),
                       SizedBox(height: 12.h),

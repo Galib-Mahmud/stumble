@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:stumble/route/route_name.dart';
 
 class CustomDrawer extends StatelessWidget {
   final VoidCallback onClose;
@@ -30,23 +32,24 @@ class CustomDrawer extends StatelessWidget {
                 children: [
                   // Logo
                   Image.asset(
-                    'assets/images/splash/stumble.png', // Replace with your logo
-                   fit: BoxFit.cover,
+                    'assets/images/splash/stumble.png',
+                    fit: BoxFit.cover,
                   ),
                   // Close button
                   GestureDetector(
                     onTap: onClose,
                     child: Container(
-                      width: 32.w,
-                      height: 32.w,
+                      width: 40.w,
+                      height: 40.w,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withOpacity(0.3),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         Icons.close,
-                        color: Colors.white.withOpacity(0.6),
-                        size: 18.w,
+                        color: Colors.white.withOpacity(0.9),
+                        size: 24.w,
+
                       ),
                     ),
                   ),
@@ -77,7 +80,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                     child: ClipOval(
                       child: Image.asset(
-                        'assets/images/avatar/profile.png', // Replace with your avatar
+                        'assets/images/avatar/profile.png',
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Icon(
@@ -124,7 +127,7 @@ class CustomDrawer extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1A3A2F),
+                  color: const Color(0xFF232244),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Row(
@@ -139,7 +142,7 @@ class CustomDrawer extends StatelessWidget {
                     Text(
                       "Founder's Badge",
                       style: TextStyle(
-                        color: const Color(0xFF4CAF50),
+                        color: Colors.white,
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
                       ),
@@ -151,59 +154,38 @@ class CustomDrawer extends StatelessWidget {
 
             SizedBox(height: 30.h),
 
-            // Menu Items
+            // Menu Items - All using asset image paths
             _buildMenuItem(
-              icon: Icons.play_circle_outline,
+              icon: 'assets/images/icon/video_icon.png',
               label: 'My Videos',
               onTap: () {},
             ),
             _buildMenuItem(
-              icon: Icons.dashboard_outlined,
+              icon: 'assets/images/icon/dashboard_icon.png',
               label: 'Dashboard',
               onTap: () {},
             ),
             _buildMenuItem(
-              icon: Icons.settings_outlined,
+              icon: 'assets/images/icon/settings_icon.png',
               label: 'Settings',
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(RouteName.settings);
+              },
             ),
 
             const Spacer(),
 
             // Logout
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
-              child: GestureDetector(
-                onTap: () {
-                  // Handle logout
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.logout,
-                      color: const Color(0xFFFF5252),
-                      size: 22.w,
-                    ),
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: Text(
-                        'Log out',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      Icons.chevron_right,
-                      color: Colors.white.withOpacity(0.4),
-                      size: 22.w,
-                    ),
-                  ],
-                ),
-              ),
+            _buildMenuItem(
+              icon: 'assets/images/icon/logout.png',
+              label: 'Log out',
+              onTap: () {
+                // Handle logout
+              },
+              isLogout: true,
             ),
+
+            SizedBox(height: 30.h),
           ],
         ),
       ),
@@ -211,9 +193,10 @@ class CustomDrawer extends StatelessWidget {
   }
 
   Widget _buildMenuItem({
-    required IconData icon,
+    required String icon,
     required String label,
     required VoidCallback onTap,
+    bool isLogout = false,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -226,26 +209,33 @@ class CustomDrawer extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
+            Image.asset(
               icon,
-              color: Colors.white.withOpacity(0.8),
-              size: 22.w,
+             fit: BoxFit.cover,
+              color: isLogout ? const Color(0xFFFF5252) : null,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(
+                  Icons.image_not_supported,
+                  color: Colors.white.withOpacity(0.5),
+                  size: 24.w,
+                );
+              },
             ),
-            SizedBox(width: 16.w),
+            SizedBox(width: 18.w),
             Expanded(
               child: Text(
                 label,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ),
             Icon(
               Icons.chevron_right,
-              color: Colors.white.withOpacity(0.4),
-              size: 22.w,
+              color: Colors.white,
+              size: 24.w,
             ),
           ],
         ),

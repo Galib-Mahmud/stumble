@@ -150,7 +150,7 @@ class ConstellationScreen extends StatelessWidget {
                       CustomOutlineButton(
                         text: 'See your path',
                         onTap: () {
-                          Get.toNamed(RouteName.progressPath);
+                          Get.toNamed(RouteName.skyTora);
                         },
                       ),
                     ],
