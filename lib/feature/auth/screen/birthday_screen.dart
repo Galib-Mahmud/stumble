@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
+import '../controller/birthday_controller.dart';
 
 class BirthdayScreen extends StatefulWidget {
   const BirthdayScreen({super.key});
@@ -14,9 +15,8 @@ class BirthdayScreen extends StatefulWidget {
 }
 
 class _BirthdayScreenState extends State<BirthdayScreen> {
-  final TextEditingController _monthController = TextEditingController();
-  final TextEditingController _dayController = TextEditingController();
-  final TextEditingController _yearController = TextEditingController();
+
+  final BirthdayController controller = Get.put(BirthdayController());
 
   final FocusNode _monthFocus = FocusNode();
   final FocusNode _dayFocus = FocusNode();
@@ -27,9 +27,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
 
   @override
   void dispose() {
-    _monthController.dispose();
-    _dayController.dispose();
-    _yearController.dispose();
+
     _monthFocus.dispose();
     _dayFocus.dispose();
     _yearFocus.dispose();
@@ -176,7 +174,8 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                         children: [
                           // Month Field
                           _buildDateTextField(
-                            controller: _monthController,
+                            controller: controller.monthController,
+
                             focusNode: _monthFocus,
                             hint: 'MM',
                             maxLength: 2,
@@ -189,7 +188,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                           SizedBox(width: 12.w),
                           // Day Field
                           _buildDateTextField(
-                            controller: _dayController,
+                            controller: controller.dayController,
                             focusNode: _dayFocus,
                             hint: 'DD',
                             maxLength: 2,
@@ -202,7 +201,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                           SizedBox(width: 12.w),
                           // Year Field
                           _buildDateTextField(
-                            controller: _yearController,
+                            controller: controller.yearController,
                             focusNode: _yearFocus,
                             hint: 'YYYY',
                             maxLength: 4,
@@ -233,7 +232,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                       CustomButton(
                         text: "Next",
                         onTap: () {
-                     Get.toNamed(RouteName.gender);
+                         controller.submitBirthday();
                         },
                       ),
                       SizedBox(height: 30.h),

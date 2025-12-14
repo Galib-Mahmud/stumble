@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
+import '../controller/signup_controller.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -13,17 +14,14 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _reTypePasswordController = TextEditingController();
+  final SignupController controller = Get.put(SignupController());
+
   bool _obscurePassword = true;
   bool _obscureReTypePassword = true;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _reTypePasswordController.dispose();
+
     super.dispose();
   }
 
@@ -71,14 +69,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         SizedBox(height: 30.h),
                         // Email Field
                         _buildTextField(
-                          controller: _emailController,
+                          controller: controller.emailController,
                           hintText: 'E-mail',
                           isPassword: false,
                         ),
                         SizedBox(height: 16.h),
                         // Password Field
                         _buildTextField(
-                          controller: _passwordController,
+                          controller: controller.passwordController,
                           hintText: 'Password',
                           isPassword: true,
                           obscureText: _obscurePassword,
@@ -91,7 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         SizedBox(height: 16.h),
                         // Re-Type Password Field
                         _buildTextField(
-                          controller: _reTypePasswordController,
+                          controller: controller.confirmPasswordController,
                           hintText: 'Re-Type Password',
                           isPassword: true,
                           obscureText: _obscureReTypePassword,
@@ -141,8 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CustomButton(
                       text: 'Sign up',
                       onTap: () {
-                        // Navigate to OTP screen
-                        Get.toNamed(RouteName.signUpOtp);
+                        controller.register();
                       },
                     ),
                     SizedBox(height: 24.h),
@@ -212,7 +209,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.back();
+
+                            Get.toNamed(RouteName.signIn);
                           },
                           child: Text(
                             'Sign In',

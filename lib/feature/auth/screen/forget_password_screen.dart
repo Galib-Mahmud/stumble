@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../route/route_name.dart';
 import '../../widget/onboarding/custom_button.dart';
+import '../controller/forget_pass_controller.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({Key? key}) : super(key: key);
@@ -13,11 +14,14 @@ class ForgetPasswordScreen extends StatefulWidget {
 }
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
-  final TextEditingController _emailController = TextEditingController();
+  final
+  ForgetPassController controller = Get.put(ForgetPassController());
+
+
 
   @override
   void dispose() {
-    _emailController.dispose();
+
     super.dispose();
   }
 
@@ -65,7 +69,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                         SizedBox(height: 30.h),
                         // Email Field
                         _buildTextField(
-                          controller: _emailController,
+                          controller: controller.emailController,
                           hintText: 'E-mail',
                         ),
                       ],
@@ -80,10 +84,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   children: [
                     // Send OTP Button
                     CustomButton(
-                      text: 'Send OTP',
+                      text: 'Send ',
                       onTap: () {
-                        // Navigate to Forget Password OTP screen
-                        Get.toNamed(RouteName.forgetPasswordOtp);
+                        controller.forgetPass();
                       },
                     ),
                     SizedBox(height: 30.h),

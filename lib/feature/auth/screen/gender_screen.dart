@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
+import '../controller/gender_controller.dart';
 
 class GenderScreen extends StatefulWidget {
   const GenderScreen({super.key});
@@ -13,6 +14,8 @@ class GenderScreen extends StatefulWidget {
 }
 
 class _GenderScreenState extends State<GenderScreen> {
+  final GenderController controller = Get.put(GenderController());
+
   String? selectedGender;
 
   final int currentStep = 3;
@@ -190,9 +193,10 @@ class _GenderScreenState extends State<GenderScreen> {
                       CustomButton(
                         text: "Next",
                         onTap: () {
-                          if (selectedGender != null) {
-                           Get.toNamed(RouteName.findConstellation);
-                          }
+                          controller.setGender(selectedGender);
+                          controller.submitGender();
+
+
                         },
                       ),
                       SizedBox(height: 30.h),

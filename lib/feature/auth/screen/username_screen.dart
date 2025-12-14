@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../widget/onboarding/custom_button.dart';
+import '../controller/user_name_controller.dart';
 
 class UsernameScreen extends StatefulWidget {
   const UsernameScreen({super.key});
@@ -12,14 +13,15 @@ class UsernameScreen extends StatefulWidget {
 }
 
 class _UsernameScreenState extends State<UsernameScreen> {
-  final TextEditingController _usernameController = TextEditingController();
+  final UserNameController controller = Get.put(UserNameController());
+
 
   final int currentStep = 1;
   final int totalSteps = 8;
 
   @override
   void dispose() {
-    _usernameController.dispose();
+
     super.dispose();
   }
 
@@ -139,7 +141,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
                       Padding(
                         padding:  EdgeInsets.only(left: 50.w, right: 50.w),
                         child: TextField(
-                          controller: _usernameController,
+                          controller: controller.nameController,
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.white, fontSize: 16.sp),
                           decoration: InputDecoration(
@@ -181,8 +183,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
                       CustomButton(
                         text: "Next",
                         onTap: () {
-                          // Navigate to birthday screen
-                          Get.toNamed('/birthday');
+                          controller.updateUserName();
                         },
                       ),
                       SizedBox(height: 30.h),

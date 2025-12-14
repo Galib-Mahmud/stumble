@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
+import '../controller/reset_password_controller.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({Key? key}) : super(key: key);
@@ -13,15 +14,14 @@ class ResetPasswordScreen extends StatefulWidget {
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _reTypePasswordController = TextEditingController();
+  final ResetPasswordController controller = Get.put(ResetPasswordController());
+
   bool _obscurePassword = true;
   bool _obscureReTypePassword = true;
 
   @override
   void dispose() {
-    _passwordController.dispose();
-    _reTypePasswordController.dispose();
+
     super.dispose();
   }
 
@@ -69,7 +69,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         SizedBox(height: 30.h),
                         // Password Field
                         _buildTextField(
-                          controller: _passwordController,
+                          controller: controller.passwordController,
                           hintText: 'Password',
                           isPassword: true,
                           obscureText: _obscurePassword,
@@ -82,7 +82,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         SizedBox(height: 16.h),
                         // Re-Type Password Field
                         _buildTextField(
-                          controller: _reTypePasswordController,
+                          controller: controller.confirmPasswordController,
                           hintText: 'Re-Type Password',
                           isPassword: true,
                           obscureText: _obscureReTypePassword,
@@ -106,9 +106,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     CustomButton(
                       text: 'Confirm',
                       onTap: () {
-                        // Handle password reset confirmation
-                        // Navigate back to Sign In
-                        Get.offAllNamed(RouteName.signIn);
+                        controller.resetPassword();
                       },
                     ),
                     SizedBox(height: 30.h),

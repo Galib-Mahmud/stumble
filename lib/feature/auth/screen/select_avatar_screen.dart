@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
-import '../../../route/route_name.dart';
 import '../../widget/onboarding/custom_button.dart';
+import '../controller/avatar_controller.dart';
 
 class SelectAvatarScreen extends StatefulWidget {
   const SelectAvatarScreen({super.key});
@@ -15,34 +13,15 @@ class SelectAvatarScreen extends StatefulWidget {
 }
 
 class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
-  int? _selectedIndex;
-  File? _pickedImage;
+  late AvatarController controller;
 
   final int currentStep = 5;
   final int totalSteps = 8;
 
-  // Example avatar list (replace with your asset paths)
-  final List<String> avatars = [
-    'assets/images/avatar/avatar1.png',
-    'assets/images/avatar/avatar2.png',
-    'assets/images/avatar/avatar3.png',
-    'assets/images/avatar/avatar4.png',
-    'assets/images/avatar/avatar5.png',
-    'assets/images/avatar/avatar6.png',
-  ];
-
-  bool get isAvatarSelected => _selectedIndex != null || _pickedImage != null;
-
-  Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      setState(() {
-        _pickedImage = File(image.path);
-        _selectedIndex = null; // Deselect avatar when photo is picked
-      });
-    }
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(AvatarController());
   }
 
   @override
@@ -60,16 +39,14 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              // Top Header
+              // Header
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 child: Column(
                   children: [
-                    // Row with Back Button and Logo
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Back Button
                         GestureDetector(
                           onTap: () => Get.back(),
                           child: Container(
@@ -86,21 +63,19 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                             ),
                           ),
                         ),
-                        // Logo
                         Image.asset(
                           'assets/images/splash/stumble.png',
-                        fit: BoxFit.cover,
+                          fit: BoxFit.cover,
                         ),
                       ],
                     ),
                     SizedBox(height: 12.h),
-                    // Progress Bar Row
+                    // Progress Bar
                     Row(
                       children: [
-                        // Progress Bar
                         Expanded(
                           child: Container(
-                            height:7.h,
+                            height: 7.h,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(3.r),
@@ -116,8 +91,6 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                                           Color(0xFF09AFB9),
                                           Color(0xFFFFAD72),
                                           Color(0xFFF96D01),
-
-
                                         ],
                                       ),
                                       borderRadius: BorderRadius.circular(3.r),
@@ -133,7 +106,6 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                           ),
                         ),
                         SizedBox(width: 12.w),
-                        // Step Text
                         RichText(
                           text: TextSpan(
                             children: [
@@ -161,68 +133,105 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                 ),
               ),
 
+              // Main Content - Scrollable
               Expanded(
-                child: Padding(
+                child: SingleChildScrollView(
                   padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Column(
                     children: [
                       SizedBox(height: 20.h),
-                      // Title - changes based on selection
-                      Text(
-                        isAvatarSelected
-                            ? "Select a avatar"
+
+                      // Title
+                      Obx(() => Text(
+                        controller.hasSelection
+                            ? "Select an avatar"
                             : "Create your Stumble Avatar",
                         style: TextStyle(
                           fontSize: 22.sp,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
                         ),
-                      ),
+                      )),
                       SizedBox(height: 30.h),
 
-                      // Avatar Grid
+                      // Avatar Grid (Local Assets)
                       GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: avatars.length,
+                        itemCount: controller.avatars.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
                           mainAxisSpacing: 16.h,
                           crossAxisSpacing: 16.w,
                         ),
                         itemBuilder: (context, index) {
-                          final isSelected = _selectedIndex == index;
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedIndex = index;
-                                _pickedImage = null; // Deselect photo when avatar is selected
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? const Color(0xFF09AFB9)
-                                      : Colors.transparent,
-                                  width: 3,
+                          return Obx(() {
+                            final isSelected = controller.selectedAvatarIndex.value == index;
+                            return GestureDetector(
+                              onTap: () => controller.selectAvatar(index),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? const Color(0xFF09AFB9)
+                                        : Colors.transparent,
+                                    width: 3,
+                                  ),
+                                ),
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    controller.avatars[index],
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
-                              child: ClipOval(
-                                child: Image.asset(
-                                  avatars[index],
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          );
+                            );
+                          });
                         },
                       ),
 
                       SizedBox(height: 20.h),
 
-                      // Or Divider
+                      // Picked image preview
+                      Obx(() {
+                        final pickedFile = controller.pickedImage.value;
+                        if (pickedFile != null) {
+                          return Column(
+                            children: [
+                              Container(
+                                width: 80.w,
+                                height: 80.w,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: const Color(0xFF09AFB9),
+                                    width: 3,
+                                  ),
+                                ),
+                                child: ClipOval(
+                                  child: Image.file(
+                                    pickedFile,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 8.h),
+                              Text(
+                                "Your photo selected",
+                                style: TextStyle(
+                                  color: const Color(0xFF09AFB9),
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                              SizedBox(height: 12.h),
+                            ],
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      }),
+
+                      // Divider
                       Row(
                         children: [
                           Expanded(
@@ -251,24 +260,19 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                       ),
                       SizedBox(height: 16.h),
 
-                      // Add your photo button
+                      // Add photo button
                       GestureDetector(
-                        onTap: _pickImage,
+                        onTap: () => controller.pickImageFromGallery(),
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                           decoration: BoxDecoration(
                             color: const Color(0xFF183A37),
                             borderRadius: BorderRadius.circular(25.r),
-
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 20.sp,
-                              ),
+                              Icon(Icons.add, color: Colors.white, size: 20.sp),
                               SizedBox(width: 8.w),
                               Text(
                                 "Add your photo",
@@ -283,50 +287,74 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                         ),
                       ),
 
-                      const Spacer(),
+                      SizedBox(height: 40.h),
+                    ],
+                  ),
+                ),
+              ),
 
-                      // Bottom Text
-                      Text(
-                        "This helps you stay anonymous",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          color: Colors.white.withOpacity(0.6),
-                        ),
+              // Bottom Section (Fixed)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                child: Column(
+                  children: [
+                    Text(
+                      "This helps you stay anonymous",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        color: Colors.white.withOpacity(0.6),
                       ),
-                      SizedBox(height: 20.h),
+                    ),
+                    SizedBox(height: 20.h),
 
-                      // Next Button - only visible when avatar is selected
-                      if (isAvatarSelected)
-                        CustomButton(
-                          text: "Next",
-                          onTap: () {
-                          Get.toNamed(RouteName.shareYourMind);
-                          },
-                        )
-                      else
-                      // Disabled button appearance
-                        Container(
+                    // Next Button
+                    Obx(() {
+                      if (controller.isSubmitting.value) {
+                        return Container(
                           height: 46.h,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2A2A3E),
+                            color: const Color(0xFF09AFB9),
                             borderRadius: BorderRadius.circular(23.r),
                           ),
-                          child: Center(
-                            child: Text(
-                              'Next',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.4),
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          ),
+                        );
+                      }
+
+                      if (controller.hasSelection) {
+                        return CustomButton(
+                          text: "Next",
+                          onTap: () => controller.submitAvatar(),
+                        );
+                      }
+
+                      return Container(
+                        height: 46.h,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2A2A3E),
+                          borderRadius: BorderRadius.circular(23.r),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Next',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.4),
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                      SizedBox(height: 30.h),
-                    ],
-                  ),
+                      );
+                    }),
+                    SizedBox(height: 30.h),
+                  ],
                 ),
               ),
             ],

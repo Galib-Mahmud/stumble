@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../route/route_name.dart';
 import '../../widget/onboarding/custom_button.dart';
+import '../controller/sign_in_controller.dart';
 
 
 class SignInScreen extends StatefulWidget {
@@ -14,14 +15,13 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final SignInController controller = Get.put(SignInController());
+
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+
     super.dispose();
   }
 
@@ -67,9 +67,16 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                         SizedBox(height: 30.h),
+                        // Email Field
+                        _buildTextField(
+                          controller: controller.emailController,
+                          hintText: 'E-mail',
+                          isPassword: false,
+                        ),
+                        SizedBox(height: 16.h),
                         // Password Field
                         _buildTextField(
-                          controller: _passwordController,
+                          controller: controller.passwordController,
                           hintText: 'Password',
                           isPassword: true,
                           obscureText: _obscurePassword,
@@ -79,13 +86,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             });
                           },
                         ),
-                        SizedBox(height: 16.h),
-                        // Email Field
-                        _buildTextField(
-                          controller: _emailController,
-                          hintText: 'E-mail',
-                          isPassword: false,
-                        ),
+
                         SizedBox(height: 16.h),
                         // Forgot Password
                         Center(
@@ -119,7 +120,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     CustomButton(
                       text: 'Sign in',
                       onTap: () {
-                        Get.toNamed(RouteName.username);
+                        controller.loginUser();
 
                       },
                     ),

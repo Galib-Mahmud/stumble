@@ -1,30 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:stumble/route/route_name.dart';
+
+import '../../auth/controller/question_controller.dart';
 import '../../widget/onboarding/custom_button.dart';
 
-class QuestionScreen extends StatefulWidget {
-  const QuestionScreen({Key? key}) : super(key: key);
+class QuestionScreen extends StatelessWidget {
+  QuestionScreen({Key? key}) : super(key: key);
 
-  @override
-  State<QuestionScreen> createState() => _QuestionScreenState();
-}
-
-class _QuestionScreenState extends State<QuestionScreen> {
-  int? selectedOption;
-  final int currentStep = 1;
-  final int totalSteps = 15;
-
-  final List<String> options = [
-    "I feel heavy. I'm trying to keep it together",
-    "I'm a bit all over the place, but I'm okay",
-    "I'm feeling more like myself lately",
-    "I'm calm and just reflecting",
-  ];
+  final GetQuestionController controller = Get.put(GetQuestionController());
 
   @override
   Widget build(BuildContext context) {
+    // Fetch questions once
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (controller.questions.isEmpty) {
+        controller.getQuestion();
+      }
+    });
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -50,209 +44,245 @@ class _QuestionScreenState extends State<QuestionScreen> {
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Column(
-                children: [
-                  // Scrollable Content
-                  Expanded(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 24.h),
+              child: Obx(() {
+                // Loading
+                if (controller.isLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Color(0xFF00D9C0),
+                    ),
+                  );
+                }
 
-                          // Logo
-                          Center(
-                            child: Image.asset(
-                              'assets/images/splash/stumble.png',
-                              fit: BoxFit.contain,
+                // Empty
+                if (controller.questions.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No questions available',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                }
+
+                final options = controller.currentOptions;
+
+                return Column(
+                  children: [
+                    // Scrollable Content
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 24.h),
+
+                            // Logo
+                            Center(
+                              child: Image.asset(
+                                'assets/images/splash/stumble.png',
+                                fit: BoxFit.contain,
+                              ),
                             ),
-                          ),
 
-                          SizedBox(height: 20.h),
+                            SizedBox(height: 20.h),
 
-                          // Progress Bar Row
-                          Row(
-                            children: [
-                              // Progress Bar
-                              Expanded(
-                                child: Container(
-                                  height: 10.h,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(9.r),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Flexible(
-                                        flex: currentStep,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            gradient: const LinearGradient(
-                                              colors: [
-                                                Color(0xFF09AFB9),
-                                                Color(0xFFFFAD72),
-                                                Color(0xFFF96D01),
-                                              ],
+                            // Progress Bar Row
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 8.h,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(32.r),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                          flex: controller.currentStep,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  Color(0xFF09AFB9),
+                                                  Color(0xFFFFAD72),
+                                                  Color(0xFFF96D01),
+                                                ],
+                                              ),
+                                              borderRadius: BorderRadius.circular(3.r),
                                             ),
-                                            borderRadius: BorderRadius.circular(3.r),
                                           ),
                                         ),
+                                        if (controller.totalSteps > controller.currentStep)
+                                          Flexible(
+                                            flex: controller.totalSteps - controller.currentStep,
+                                            child: const SizedBox(),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 12.w),
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: '${controller.currentStep}',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                      Flexible(
-                                        flex: totalSteps - currentStep,
-                                        child: const SizedBox(),
+                                      TextSpan(
+                                        text: ' / ${controller.totalSteps}',
+                                        style: TextStyle(
+                                          color: Colors.white.withOpacity(0.5),
+                                          fontSize: 13.sp,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                              SizedBox(width: 12.w),
-                              // Step Text
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: '$currentStep',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: ' / $totalSteps',
-                                      style: TextStyle(
-                                        color: Colors.white.withOpacity(0.5),
-                                        fontSize: 13.sp,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 32.h),
-
-                          // Category
-                          Text(
-                            'GROUNDING & AWARENESS',
-                            style: TextStyle(
-                              color: const Color(0xFF00D9C0),
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
+                              ],
                             ),
-                          ),
+                            SizedBox(height: 32.h),
 
-                          SizedBox(height: 12.h),
-
-                          // Question
-                          Text(
-                            'How would you describe how you\'re feeling today?',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.w700,
-                              height: 1.3,
-                            ),
-                          ),
-
-                          SizedBox(height: 32.h),
-
-                          // Options - Using Column instead of ListView.builder
-                          ...List.generate(options.length, (index) {
-                            final isSelected = selectedOption == index;
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedOption = index;
-                                });
-                              },
-                              child: Container(
-                                margin: EdgeInsets.only(bottom: 12.h),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 20.w,
-                                  vertical: 18.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? const Color(0xFF00D9C0).withOpacity(0.2)
-                                      : const Color(0xFF3A3A3A).withOpacity(0.8),
-                                  borderRadius: BorderRadius.circular(25.r),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 24.w,
-                                      height: 24.w,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? const Color(0xFF00D9C0)
-                                              : Colors.white.withOpacity(0.5),
-                                          width: 2,
-                                        ),
-                                        color: isSelected
-                                            ? const Color(0xFF00D9C0)
-                                            : Colors.transparent,
-                                      ),
-                                    ),
-                                    SizedBox(width: 16.w),
-                                    Expanded(
-                                      child: Text(
-                                        options[index],
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.4,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            // Category
+                            Text(
+                              controller.categoryText.toUpperCase(),
+                              style: TextStyle(
+                                color: const Color(0xFF00D9C0),
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
                               ),
-                            );
-                          }),
+                            ),
 
-                          SizedBox(height: 20.h),
-                        ],
-                      ),
-                    ),
-                  ),
+                            SizedBox(height: 12.h),
 
-                  // Fixed Button at Bottom
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 130.h, top: 10.h),
-                    child: selectedOption != null
-                        ? CustomButton(
-                      text: 'Next',
-                      onTap: () {
-                       Get.toNamed(RouteName.constellationTora);
-                      },
-                    )
-                        : Container(
-                      height: 46.h,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF4A4A4A),
-                        borderRadius: BorderRadius.circular(23.r),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Next',
-                          style: TextStyle(
-                            color: const Color(0xFF8A8A8A),
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
+                            // Question
+                            Text(
+                              controller.questionText,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24.sp,
+                                fontWeight: FontWeight.w700,
+                                height: 1.3,
+                              ),
+                            ),
+
+                            SizedBox(height: 32.h),
+
+                            // Options
+                            ...List.generate(options.length, (index) {
+                              final option = options[index];
+                              final optionId = option['id'] as int;
+                              final optionText = option['option_text'] ?? '';
+
+                              return Obx(() {
+                                final isSelected = controller.isSelected(optionId);
+
+                                return GestureDetector(
+                                  onTap: () {
+                                    controller.selectOption(optionId);
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(bottom: 12.h),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 20.w,
+                                      vertical: 18.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? const Color(0xFF00D9C0).withOpacity(0.2)
+                                          : const Color(0xFF3A3A3A).withOpacity(0.8),
+                                      borderRadius: BorderRadius.circular(25.r),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 24.w,
+                                          height: 24.w,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: isSelected
+                                                  ? const Color(0xFF00D9C0)
+                                                  : Colors.white.withOpacity(0.5),
+                                              width: 2,
+                                            ),
+                                            color: isSelected
+                                                ? const Color(0xFF00D9C0)
+                                                : Colors.transparent,
+                                          ),
+                                          child: isSelected
+                                              ? Icon(
+                                            Icons.check,
+                                            size: 14.w,
+                                            color: Colors.white,
+                                          )
+                                              : null,
+                                        ),
+                                        SizedBox(width: 16.w),
+                                        Expanded(
+                                          child: Text(
+                                            optionText,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.w500,
+                                              height: 1.4,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              });
+                            }),
+
+                            SizedBox(height: 20.h),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+
+                    // Fixed Button at Bottom
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 80.h, top: 10.h),
+                      child: Obx(() {
+                        return controller.hasSelection
+                            ? CustomButton(
+                          text: controller.currentStep == controller.totalSteps
+                              ? 'Finish'
+                              : 'Next',
+                          onTap: () => controller.nextQuestion(),
+                        )
+                            : Container(
+                          height: 46.h,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF4A4A4A),
+                            borderRadius: BorderRadius.circular(23.r),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Next',
+                              style: TextStyle(
+                                color: const Color(0xFF8A8A8A),
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                );
+              }),
             ),
           ),
         ),

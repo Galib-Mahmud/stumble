@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
 import '../../widget/onboarding/custom_button.dart';
+import '../controller/share_your_mind_controller.dart';
 
 class ShareYourMindScreen extends StatefulWidget {
   const ShareYourMindScreen({super.key});
@@ -13,7 +14,8 @@ class ShareYourMindScreen extends StatefulWidget {
 }
 
 class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
-  final TextEditingController _thoughtsController = TextEditingController();
+  final ShareYourMindController controller = Get.put(ShareYourMindController());
+
 
   final int currentStep = 6;
   final int totalSteps = 8;
@@ -23,7 +25,7 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
 
   @override
   void dispose() {
-    _thoughtsController.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -197,7 +199,7 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
                             ),
                           ),
                           child: TextField(
-                            controller: _thoughtsController,
+                            controller: controller.introductionController,
                             maxLines: null,
                             expands: true,
                             style: TextStyle(
@@ -241,7 +243,7 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
                     CustomButton(
                       text: "Next",
                       onTap: () {
-                        Get.toNamed(RouteName.terms);
+                        controller.submitIntroduction();
                       },
                     ),
                     SizedBox(height: 30.h),
