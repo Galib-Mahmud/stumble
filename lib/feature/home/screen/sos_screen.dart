@@ -1,8 +1,10 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../route/route_name.dart';
+import '../../auth/controller/video_record_controller.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
@@ -13,6 +15,8 @@ class SupportScreen extends StatefulWidget {
 
 class _SupportScreenState extends State<SupportScreen>
     with SingleTickerProviderStateMixin {
+  final VideoRecordController controller = Get.put(VideoRecordController());
+
   int selectedModeIndex = 0; // 0: Gentle, 1: Critical, 2: Urgent
 
   late AnimationController _pulseController;
@@ -51,7 +55,7 @@ class _SupportScreenState extends State<SupportScreen>
       child: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: 140.h), // Navbar padding
+          padding: EdgeInsets.only(bottom: 140.h),
           child: Column(
             children: [
               SizedBox(height: 16.h),
@@ -187,28 +191,39 @@ class _SupportScreenState extends State<SupportScreen>
 
   // Record Button
   Widget _buildRecordButton() {
-    return GestureDetector(
-      onTap: () {
-        // Handle record tap
-      },
+    return Obx(() => GestureDetector(
+      onTap: controller.isUploading.value ? null : () => _showRecordingDialog(),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color: Color(0xFF253F5A),
+          color: controller.isUploading.value
+              ? const Color(0xFF253F5A).withOpacity(0.6)
+              : const Color(0xFF253F5A),
           borderRadius: BorderRadius.circular(32.r),
-
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              'assets/images/icon/video_record.png',
-              width: 30.w,
-              height: 25.w,
-            ),
+            if (controller.isUploading.value)
+              SizedBox(
+                width: 25.w,
+                height: 25.w,
+                child: const CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            else
+              Image.asset(
+                'assets/images/icon/video_record.png',
+                width: 30.w,
+                height: 25.w,
+              ),
             SizedBox(width: 10.w),
             Text(
-              "Record a grounding Message",
+              controller.isUploading.value
+                  ? "Uploading..."
+                  : "Record a grounding Message",
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w400,
@@ -218,6 +233,225 @@ class _SupportScreenState extends State<SupportScreen>
           ],
         ),
       ),
+    ));
+  }
+
+  // Show Recording Dialog
+  void _showRecordingDialog() {
+    // Initialize camera when dialog opens
+    controller.initCamera();
+
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF1A2E3D),
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF253F5A),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.r),
+                    topRight: Radius.circular(20.r),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Record Video Message",
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (controller.isRecording.value) {
+                          controller.stopRecording();
+                        }
+                        controller.disposeCamera();
+                        Get.back();
+                      },
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 24.w,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Camera Preview
+              Obx(() => Container(
+                height: 350.h,
+                width: double.infinity,
+                margin: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.r),
+                  child: controller.isCameraInitialized.value &&
+                      controller.cameraController != null
+                      ? CameraPreview(controller.cameraController!)
+                      : const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              )),
+
+              // Recording Timer
+              Obx(() => controller.isRecording.value
+                  ? Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 8.h,
+                ),
+                margin: EdgeInsets.only(bottom: 16.h),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 12.w,
+                      height: 12.w,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Obx(() => Text(
+                      controller.recordingTime.value,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    )),
+                  ],
+                ),
+              )
+                  : const SizedBox.shrink()),
+
+              // Action Buttons
+              Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Obx(() => Row(
+                  children: [
+                    // Cancel Button
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (controller.isRecording.value) {
+                            controller.stopRecording();
+                          }
+                          controller.disposeCamera();
+                          Get.back();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 14.h),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    // Record/Stop Button
+                    Expanded(
+                      flex: 2,
+                      child: GestureDetector(
+                        onTap: () async {
+                          if (controller.isRecording.value) {
+                            // Stop recording and upload
+                            final file = await controller.stopRecording();
+                            controller.disposeCamera();
+                            Get.back();
+                            if (file != null) {
+                              await controller.uploadVideo(file);
+                            }
+                          } else {
+                            // Start recording
+                            await controller.startRecording();
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 14.h),
+                          decoration: BoxDecoration(
+                            color: controller.isRecording.value
+                                ? Colors.red
+                                : const Color(0xFF4EFFEE),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  controller.isRecording.value
+                                      ? Icons.stop
+                                      : Icons.fiber_manual_record,
+                                  color: controller.isRecording.value
+                                      ? Colors.white
+                                      : Colors.black,
+                                  size: 20.w,
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  controller.isRecording.value
+                                      ? "Stop & Upload"
+                                      : "Start Recording",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: controller.isRecording.value
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
     );
   }
 

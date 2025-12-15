@@ -158,7 +158,9 @@ class CustomDrawer extends StatelessWidget {
             _buildMenuItem(
               icon: 'assets/images/icon/video_icon.png',
               label: 'My Videos',
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(RouteName.videoList);
+              },
             ),
             _buildMenuItem(
               icon: 'assets/images/icon/dashboard_icon.png',

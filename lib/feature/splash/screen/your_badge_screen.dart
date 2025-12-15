@@ -155,7 +155,7 @@ class YourBadgesScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
                 child: GestureDetector(
                   onTap: () {
-                    Get.toNamed(RouteName.startQuiz);
+                    Get.toNamed(RouteName.mainScreen);
                   },
                   child: Container(
                     height: 46.h,

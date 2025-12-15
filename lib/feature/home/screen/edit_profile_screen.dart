@@ -2,34 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../controller/profile_controller.dart';
 import '../../widget/onboarding/custom_button.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+class EditProfileScreen extends StatelessWidget {
+  EditProfileScreen({super.key});
 
-  @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
-}
-
-class _EditProfileScreenState extends State<EditProfileScreen> {
-  final TextEditingController _usernameController = TextEditingController(text: 'Very Looser');
-  final TextEditingController _emailController = TextEditingController(text: 'Itunuoluwa@gmail.com');
-
-  final TextEditingController _aboutController = TextEditingController(
-    text: 'I feel like bored when i see my face. I am so depressed with my work.',
-  );
-
-  String? _gender = 'Select';
-  String? _ageRange = 'Select';
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _emailController.dispose();
-
-    _aboutController.dispose();
-    super.dispose();
-  }
+  final ProfileController controller = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -47,52 +26,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Column(
             children: [
               // App Bar
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Back Button
-                    GestureDetector(
-                      onTap: () => Get.back(),
-                      child: Container(
-                        width: 32.w,
-                        height: 32.h,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                          size: 18.sp,
-                        ),
-                      ),
-                    ),
-                    // Title
-                    Text(
-                      'Edit Profile',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    // Settings Icon
-                    GestureDetector(
-                      onTap: () {
-                        Get.toNamed('/settings');
-                      },
-                      child: Icon(
-                        Icons.settings_outlined,
-                        color: Colors.white,
-                        size: 24.sp,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _buildAppBar(),
 
+              // Content
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -100,95 +36,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 10.h),
-                        // Profile Avatar with Edit Icon
-                        Center(
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: 90.w,
-                                height: 90.h,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: const Color(0xFF09AFB9),
-                                    width: 3,
-                                  ),
-                                ),
-                                child: ClipOval(
-                                  child: Image.asset(
-                                    'assets/images/avatar/avatar4.png',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // Change avatar
-                                  },
-                                  child: Container(
-                                    width: 28.w,
-                                    height: 28.h,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF2A2A3E),
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Colors.white.withOpacity(0.2),
-                                        width: 1,
-                                      ),
-                                    ),
-                                    child: Icon(
-                                      Icons.edit_outlined,
-                                      color: Colors.white,
-                                      size: 14.sp,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 12.h),
-                        // User Name
-                        Center(
-                          child: Text(
-                            'Itunuoluwa Abidoye',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 4.h),
-                        // User Type
-                        Center(
-                          child: Text(
-                            'Advanced User',
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
-                              fontSize: 14.sp,
-                            ),
-                          ),
-                        ),
+                        SizedBox(height: 20.h),
+
+                        // Info Card
+                        _buildInfoCard(),
+
                         SizedBox(height: 24.h),
 
-                        // User Name Field
-                        _buildLabel('User Name'),
+                        // Full Name Field
+                        _buildLabel('Full Name'),
                         _buildTextField(
-                          controller: _usernameController,
-                          hintText: 'Your User Name',
+                          controller: controller.fullNameController,
+                          hintText: 'Enter your full name',
                         ),
                         SizedBox(height: 16.h),
 
-                        // Email Field
-                        _buildLabel('Email address'),
+                        // Username Field
+                        _buildLabel('Username'),
                         _buildTextField(
-                          controller: _emailController,
-                          hintText: 'Your email address',
+                          controller: controller.usernameController,
+                          hintText: 'Enter username',
                         ),
                         SizedBox(height: 16.h),
 
@@ -197,49 +64,86 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         _buildPhoneField(),
                         SizedBox(height: 16.h),
 
-                        // About me Field
+                        // About me / Introduction Field
                         _buildLabel('About me'),
-                        _buildMultilineTextField(
-                          controller: _aboutController,
-                          hintText: 'Type here',
+                        _buildTextField(
+                          controller: controller.introductionController,
+                          hintText: 'Tell us about yourself',
+                          maxLines: 3,
                         ),
                         SizedBox(height: 16.h),
 
-                        // Gender Dropdown
-                        _buildLabel('Gender'),
-                        _buildDropdown(
-                          value: _gender,
-                          items: ['Select', 'Male', 'Female', 'Other'],
-                          onChanged: (value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
-                        ),
+                        // Email (Read Only)
+                        _buildLabel('Email (Cannot be changed)'),
+                        _buildReadOnlyField(controller.email),
                         SizedBox(height: 16.h),
 
-                        // Age Range Dropdown
-                        _buildLabel('Age Range'),
-                        _buildDropdown(
-                          value: _ageRange,
-                          items: ['Select', '18-25', '26-35', '36-45', '46-60', '60+'],
-                          onChanged: (value) {
-                            setState(() {
-                              _ageRange = value;
-                            });
-                          },
-                        ),
+                        // Gender (Read Only)
+                        _buildLabel('Gender (Cannot be changed)'),
+                        _buildReadOnlyField(controller.gender),
+                        SizedBox(height: 16.h),
+
+                        // Age Range (Read Only)
+                        _buildLabel('Age Range (Cannot be changed)'),
+                        _buildReadOnlyField(controller.ageRange),
                         SizedBox(height: 30.h),
 
                         // Save Button
-                        CustomButton(
-                          text: 'Save',
-                          onTap: () {
-                            // Save profile changes
-                            Get.back();
-                          },
+                        Obx(() => controller.isUpdating.value
+                            ? Container(
+                          width: double.infinity,
+                          height: 50.h,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF09AFB9).withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(25.r),
+                          ),
+                          child: Center(
+                            child: SizedBox(
+                              width: 24.w,
+                              height: 24.w,
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            ),
+                          ),
+                        )
+                            : CustomButton(
+                          text: 'Save Changes',
+                          onTap: () => controller.updateProfile(),
                         ),
-                        SizedBox(height: 20.h),
+                        ),
+
+                        SizedBox(height: 16.h),
+
+                        // Cancel Button
+                        GestureDetector(
+                          onTap: () => Get.back(),
+                          child: Container(
+                            width: double.infinity,
+                            height: 50.h,
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(25.r),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 30.h),
                       ],
                     ),
                   ),
@@ -248,6 +152,76 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAppBar() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      child: Row(
+        children: [
+          // Back Button
+          GestureDetector(
+            onTap: () => Get.back(),
+            child: Container(
+              width: 32.w,
+              height: 32.h,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.15),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+                size: 18.sp,
+              ),
+            ),
+          ),
+          SizedBox(width: 16.w),
+          // Title
+          Text(
+            'Edit Profile',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoCard() {
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFF09AFB9).withOpacity(0.15),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: const Color(0xFF09AFB9).withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.info_outline,
+            color: const Color(0xFF09AFB9),
+            size: 24.sp,
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Text(
+              'You can only edit your name, username, phone and about section.',
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.8),
+                fontSize: 13.sp,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -269,16 +243,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget _buildTextField({
     required TextEditingController controller,
     required String hintText,
+    int maxLines = 1,
   }) {
     return Container(
-      height: 48.h,
       decoration: BoxDecoration(
-        color: Color(0xFF222222),
+        color: const Color(0xFF222222),
         borderRadius: BorderRadius.circular(25.r),
-
       ),
       child: TextField(
         controller: controller,
+        maxLines: maxLines,
         style: TextStyle(
           color: Colors.white,
           fontSize: 14.sp,
@@ -290,38 +264,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             fontSize: 14.sp,
           ),
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMultilineTextField({
-    required TextEditingController controller,
-    required String hintText,
-  }) {
-    return Container(
-      height: 70.h,
-      decoration: BoxDecoration(
-        color: Color(0xFF222222),
-        borderRadius: BorderRadius.circular(25.r),
-
-      ),
-      child: TextField(
-        controller: controller,
-        maxLines: 3,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 14.sp,
-        ),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(
-            color: Colors.white.withOpacity(0.4),
-            fontSize: 14.sp,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 14.h,
           ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         ),
       ),
     );
@@ -329,32 +275,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Widget _buildPhoneField() {
     return Container(
-      height: 48.h,
       decoration: BoxDecoration(
-        color: Color(0xFF222222),
+        color: const Color(0xFF222222),
         borderRadius: BorderRadius.circular(25.r),
-
       ),
       child: Row(
         children: [
           SizedBox(width: 12.w),
           // Flag
           Image.asset(
-            'assets/images/avatar/flag.png', // Bangladesh flag
+            'assets/images/avatar/flag.png',
             width: 24.w,
             height: 16.h,
           ),
           SizedBox(width: 8.w),
           Expanded(
             child: TextField(
-
-
+              controller: controller.phoneController,
+              keyboardType: TextInputType.phone,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 14.sp,
               ),
               decoration: InputDecoration(
-                hintText: '+880',
+                hintText: '+880 1XXX-XXXXXX',
                 hintStyle: TextStyle(
                   color: Colors.white.withOpacity(0.4),
                   fontSize: 14.sp,
@@ -369,48 +313,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildDropdown({
-    required String? value,
-    required List<String> items,
-    required Function(String?) onChanged,
-  }) {
+  Widget _buildReadOnlyField(String value) {
     return Container(
       height: 48.h,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
-        color: Color(0xFF222222),
-        borderRadius: BorderRadius.circular(
-                25.r),
-
+        color: const Color(0xFF222222).withOpacity(0.5),
+        borderRadius: BorderRadius.circular(25.r),
       ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          isExpanded: true,
-          dropdownColor: const Color(0xFF1A1A2E),
-          icon: Icon(
-            Icons.keyboard_arrow_down,
-            color: Colors.white.withOpacity(0.5),
-          ),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14.sp,
-          ),
-          onChanged: onChanged,
-          items: items.map<DropdownMenuItem<String>>((String item) {
-            return DropdownMenuItem<String>(
-              value: item,
-              child: Text(
-                item,
-                style: TextStyle(
-                  color: item == 'Select'
-                      ? Colors.white.withOpacity(0.4)
-                      : Colors.white,
-                ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              value.isEmpty ? 'Not set' : value,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.5),
+                fontSize: 14.sp,
               ),
-            );
-          }).toList(),
-        ),
+            ),
+          ),
+          Icon(
+            Icons.lock_outline,
+            color: Colors.white.withOpacity(0.3),
+            size: 18.sp,
+          ),
+        ],
       ),
     );
   }

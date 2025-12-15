@@ -36,6 +36,7 @@ import '../feature/splash/screen/onboarding_screen.dart';
 import '../feature/splash/screen/question_screen.dart';
 import '../feature/splash/screen/start_quiz_screen.dart';
 import '../feature/splash/screen/your_badge_screen.dart';
+import '../feature/video/my_videos_screen.dart';
 
 class AppRoute {
   static final List<GetPage> pages = [
@@ -253,7 +254,14 @@ class AppRoute {
       page: () => InnerCircleChatScreen(),
       transition: Transition.noTransition,
 
+    ),  GetPage(
+      name: RouteName.videoList,
+      page: () => MyVideosScreen(),
+      transition: Transition.noTransition,
+
     ),
+
+
 
 
 

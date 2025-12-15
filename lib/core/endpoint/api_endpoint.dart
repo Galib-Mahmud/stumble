@@ -13,4 +13,9 @@ class ApiEndpoint {
   static const String submitAnswer = "/authentication/onboarding/steps/question-answer/";
   static const String submitAvatar = "/authentication/onboarding/steps/avatar/";
   static const String introduction = "/authentication/onboarding/steps/introduction/";
+  static const String videoUpload = "/authentication/video-upload/";
+  static const String videoList = "/authentication/video-list/";
+  static const String videoDelete = "/authentication/video-delete/";
+  static const String profile = "/authentication/profile/";
+  static const String profileUpdate = "/authentication/profile/update/";
 }
