@@ -35,17 +35,27 @@ class SignInController extends GetxController {
         },
       );
 
-      print("✅ [LOGIN] Response received: $response");
+
 
       // Safely extract token values
       final accessToken = response['data']?['tokens']?['access'];
       final refreshToken = response['data']?['tokens']?['refresh'];
 
+
+
       if (accessToken != null && refreshToken != null) {
         UserInfo.setAccessToken(accessToken);
         UserInfo.setRefreshToken(refreshToken);
-        print("🟢 [LOGIN] Tokens saved successfully!");
-        Get.toNamed(RouteName.username);
+
+        // Save onboarding status
+        final onboardingCompleted = response['data']?['profile']?['onboarding_completed'] ?? false;
+        await UserInfo.setOnboardingCompleted(onboardingCompleted);
+
+        if (onboardingCompleted == false) {
+          Get.offAllNamed(RouteName.username);
+        } else {
+          Get.offAllNamed(RouteName.mainScreen);
+        }
       } else {
         print("🚫 [LOGIN] Tokens missing in response");
         Get.snackbar("Error", "Invalid response from server");

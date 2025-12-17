@@ -165,7 +165,9 @@ class CustomDrawer extends StatelessWidget {
             _buildMenuItem(
               icon: 'assets/images/icon/dashboard_icon.png',
               label: 'Dashboard',
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(RouteName.homeDashboard);
+              },
             ),
             _buildMenuItem(
               icon: 'assets/images/icon/settings_icon.png',

@@ -18,4 +18,7 @@ class ApiEndpoint {
   static const String videoDelete = "/authentication/video-delete/";
   static const String profile = "/authentication/profile/";
   static const String profileUpdate = "/authentication/profile/update/";
+  static const String onboardingStatus = "/authentication/onboarding/status/";
+
+
 }

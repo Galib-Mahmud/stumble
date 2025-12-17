@@ -1,11 +1,9 @@
-import 'dart:ui';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInfo {
 
   // =======Access Token======= //
-  static void setAccessToken(String token) async {
+  static Future<void> setAccessToken(String token) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('access', token);
   }
@@ -16,7 +14,7 @@ class UserInfo {
   }
 
   // =======Refresh Token======= //
-  static void setRefreshToken(String token) async {
+  static Future<void> setRefreshToken(String token) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('refresh', token);
   }
@@ -37,8 +35,20 @@ class UserInfo {
     return prefs.getString('reset_token');
   }
 
-//
+  // =======Onboarding Completed======= //
+  static Future<void> setOnboardingCompleted(bool value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboarding_completed', value);
+  }
 
+  static Future<bool> getOnboardingCompleted() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('onboarding_completed') ?? false;
+  }
 
-
+  // =======Clear All Data (for logout)======= //
+  static Future<void> clearAll() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
 }
