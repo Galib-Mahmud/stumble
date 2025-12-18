@@ -7,15 +7,17 @@ import 'package:stumble/feature/home/screen/home_dashboard_screen.dart';
 import 'package:stumble/feature/home/screen/orbit_screen.dart';
 import 'package:stumble/feature/home/screen/sos_screen.dart';
 import 'package:stumble/feature/home/screen/your_jurnal_screen.dart';
-import 'package:stumble/feature/splash/screen/question_screen.dart';
+import 'package:stumble/feature/home/websocket/chat_service.dart';
 import 'package:stumble/route/route_name.dart';
+
+// ADD THIS IMPORT - ChatService for dynamic tribe navigation
+
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, this.initialIndex = 0});
 
   final int initialIndex;
 
-  // ✅ Static getter so child screens can access navbar height for bottom padding
   static double get navBarHeight => 120.h;
 
   @override
@@ -24,7 +26,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
-      int _currentIndex = 3;
+  int _currentIndex = 3;
 
   late AnimationController _drawerController;
   late Animation<double> _drawerAnimation;
@@ -74,7 +76,7 @@ class _MainScreenState extends State<MainScreen>
   }
 
   final List<Widget> _pages = [
-    OrbitQuotesScreen() ,
+    OrbitQuotesScreen(),
     SupportScreen(),
     YourJurnalScreen(),
     HomeDashboardScreen(),
@@ -95,18 +97,13 @@ class _MainScreenState extends State<MainScreen>
         extendBody: true,
         body: Stack(
           children: [
-            // Main Content - NO wrapper, screens handle their own bottom padding
             _pages[_currentIndex],
-
-            // Bottom Navigation Bar (floating)
             Positioned(
               left: 0,
               right: 0,
               bottom: 0,
               child: _buildBottomNavigationBar(),
             ),
-
-            // Overlay when drawer is open
             if (_isDrawerOpen)
               AnimatedBuilder(
                 animation: _drawerController,
@@ -128,8 +125,6 @@ class _MainScreenState extends State<MainScreen>
                   );
                 },
               ),
-
-            // Drawer
             AnimatedBuilder(
               animation: _drawerAnimation,
               builder: (context, child) {
@@ -209,11 +204,16 @@ class _MainScreenState extends State<MainScreen>
               ],
             ),
           ),
+
+          // ═══════════════════════════════════════════
+          // CHAT BUTTON - Uses ChatService for dynamic tribe
+          // ═══════════════════════════════════════════
           Positioned(
             top: -25.h,
             child: GestureDetector(
               onTap: () {
-                Get.toNamed(RouteName.innerCircleChat);
+                // This fetches user's tribe from API and navigates
+                ChatService.goToTribeChat();
               },
               child: Container(
                 height: 55.w,
@@ -254,7 +254,6 @@ class _MainScreenState extends State<MainScreen>
     return GestureDetector(
       onTap: () => setState(() {
         _currentIndex = index;
-
       }),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w),

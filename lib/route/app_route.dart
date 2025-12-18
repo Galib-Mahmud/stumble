@@ -251,10 +251,19 @@ class AppRoute {
     ),
     GetPage(
       name: RouteName.innerCircleChat,
-      page: () => InnerCircleChatScreen(),
-      transition: Transition.noTransition,
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>? ?? {};
 
-    ),  GetPage(
+        return InnerCircleChatScreen(
+          tribeId: args['tribeId']?.toString() ?? '',
+          tribeName: args['tribeName']?.toString() ?? 'Inner Circle Chat',
+          apiBaseUrl: args['apiBaseUrl']?.toString() ?? '',
+          accessToken: args['accessToken']?.toString() ?? '',
+          currentUserEmail: args['currentUserEmail']?.toString() ?? '',
+        );
+      },
+      transition: Transition.noTransition,
+    ), GetPage(
       name: RouteName.videoList,
       page: () => MyVideosScreen(),
       transition: Transition.noTransition,
