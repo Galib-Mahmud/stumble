@@ -23,7 +23,7 @@ class OrbitQuotesScreen extends StatelessWidget {
                   Text(
                     'Orbit',
                     style: TextStyle(
-                      fontSize: 28.sp,
+                      fontSize: 26.sp,
                       fontWeight: FontWeight.w400,
                       color: Colors.white,
                     ),

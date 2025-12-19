@@ -3,11 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
+import '../controller/badge_controller.dart';
+
 class YourBadgesScreen extends StatelessWidget {
   const YourBadgesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final BadgesController controller = Get.put(BadgesController());
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -21,13 +25,12 @@ class YourBadgesScreen extends StatelessWidget {
         child: SafeArea(
           child: Column(
             children: [
-              // Top bar with back and share buttons
+              // Top bar
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Back button
                     GestureDetector(
                       onTap: () => Get.back(),
                       child: Container(
@@ -44,11 +47,8 @@ class YourBadgesScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Share button
                     GestureDetector(
-                      onTap: () {
-                        // Share functionality
-                      },
+                      onTap: () {},
                       child: Container(
                         width: 40.w,
                         height: 40.w,
@@ -56,7 +56,7 @@ class YourBadgesScreen extends StatelessWidget {
                           color: Colors.white.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: Image.asset('assets/images/avatar/Capa_1 (1).png')
+                        child: Image.asset('assets/images/avatar/Capa_1 (1).png'),
                       ),
                     ),
                   ],
@@ -81,82 +81,79 @@ class YourBadgesScreen extends StatelessWidget {
 
               // Badges Grid
               Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: GridView.count(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 16.h,
-                    crossAxisSpacing: 12.w,
-                    childAspectRatio: 0.75,
-                    children: [
-                      // Row 1
-                      _buildBadgeItem(
-                        image: 'assets/images/avatar/Frame1.png',
-                        title: 'Pioneer\nBadge',
-                        subtitle: 'Early explorer',
-                        isUnlocked: true,
-                        hasGradientBorder: true,
-                        gradientColors: [Color(0xFFFF6B6B), Color(0xFFFFE66D), Color(0xFF4ECDC4)],
-                      ),
-                      _buildBadgeItem(
-                        image: 'assets/images/avatar/Frame1.png',
-                        title: 'Onboard\nBadge',
-                        subtitle: 'First steps complete',
-                        isUnlocked: false,
-                      ),
-                      _buildBadgeItem(
-                        image: 'assets/images/badges/signal_flare.png',
-                        title: 'Signal Flare\nBadge',
-                        subtitle: 'First post made',
-                        isUnlocked: false,
-                      ),
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
+                  }
 
-                      // Row 2
-                      _buildBadgeItem(
-                        image: 'assets/images/badges/reflection.png',
-                        title: 'Reflection\nBadge',
-                        subtitle: 'First journal entry',
-                        isUnlocked: false,
+                  if (controller.errorMessage.isNotEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            controller.errorMessage.value,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: 14.sp,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 16.h),
+                          ElevatedButton(
+                            onPressed: () => controller.refreshBadges(),
+                            child: const Text('Retry'),
+                          ),
+                        ],
                       ),
-                      _buildBadgeItem(
-                        image: 'assets/images/badges/no_contact.png',
-                        title: 'No Contact\nBadge',
-                        subtitle: 'Boundary milestone',
-                        isUnlocked: false,
-                      ),
-                      _buildBadgeItem(
-                        image: 'assets/images/badges/support_karma.png',
-                        title: 'Support Karma\nBadge',
-                        subtitle: 'Community support',
-                        isUnlocked: false,
-                      ),
+                    );
+                  }
 
-                      // Row 3
-                      _buildBadgeItem(
-                        image: 'assets/images/badges/graduation.png',
-                        title: 'Graduation\nBadge',
-                        subtitle: 'Next stage reached',
-                        isUnlocked: false,
+                  if (controller.activeBadges.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No badges available',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 14.sp,
+                        ),
                       ),
-                      _buildBadgeItem(
-                        image: 'assets/images/badges/evergreen.png',
-                        title: 'Evergreen\nBadge',
-                        subtitle: 'Emerging mentor',
-                        isUnlocked: false,
-                        showSoonTag: true,
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    onRefresh: () => controller.refreshBadges(),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 16.h,
+                          crossAxisSpacing: 12.w,
+                          childAspectRatio: 0.75,
+                        ),
+                        itemCount: controller.activeBadges.length,
+                        itemBuilder: (context, index) {
+                          final badge = controller.activeBadges[index];
+                          return _buildBadgeItem(
+                            controller: controller,
+                            badge: badge,
+                            isFirst: index == 0 && badge['unlocked'] == true,
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                }),
               ),
 
               // Next Button
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
                 child: GestureDetector(
-                  onTap: () {
-                    Get.toNamed(RouteName.mainScreen);
-                  },
+                  onTap: () => Get.toNamed(RouteName.mainScreen),
                   child: Container(
                     height: 46.h,
                     width: double.infinity,
@@ -169,7 +166,7 @@ class YourBadgesScreen extends StatelessWidget {
                           Color(0xFFF13D75),
                           Color(0xFFF86D01),
                         ],
-                        stops: [0.0, 0.53, 1.0], // Fixed: 6.0 -> 1.0
+                        stops: [0.0, 0.53, 1.0],
                       ),
                       borderRadius: BorderRadius.circular(23.r),
                       boxShadow: [
@@ -182,7 +179,7 @@ class YourBadgesScreen extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        'Next', // Fixed: missing text
+                        'Next',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 17.sp,
@@ -202,30 +199,34 @@ class YourBadgesScreen extends StatelessWidget {
   }
 
   Widget _buildBadgeItem({
-    required String image,
-    required String title,
-    required String subtitle,
-    required bool isUnlocked,
-    bool hasGradientBorder = false,
-    List<Color>? gradientColors,
-    bool showSoonTag = false,
+    required BadgesController controller,
+    required Map<String, dynamic> badge,
+    bool isFirst = false,
   }) {
+    final bool isUnlocked = badge['unlocked'] == true;
+    final String code = badge['code'] ?? '';
+    final String name = badge['name'] ?? '';
+    final String description = badge['description'] ?? '';
+    final bool hasGradientBorder = isFirst && isUnlocked;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Badge circle
         Stack(
           alignment: Alignment.center,
           clipBehavior: Clip.none,
           children: [
-            // Outer border (gradient or gray)
             Container(
               width: 80.w,
               height: 80.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: hasGradientBorder && gradientColors != null
-                    ? SweepGradient(colors: gradientColors)
+                gradient: hasGradientBorder
+                    ? const SweepGradient(colors: [
+                  Color(0xFFFF6B6B),
+                  Color(0xFFFFE66D),
+                  Color(0xFF4ECDC4),
+                ])
                     : null,
                 border: !hasGradientBorder
                     ? Border.all(
@@ -241,15 +242,23 @@ class YourBadgesScreen extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isUnlocked
-                        ? Colors.transparent
-                        : const Color(0xFF2A2535),
+                    color: isUnlocked ? Colors.transparent : const Color(0xFF2A2535),
                   ),
                   child: isUnlocked
                       ? ClipOval(
                     child: Image.asset(
-                      image,
+                      controller.getBadgeImage(code),
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: const Color(0xFF2A2535),
+                          child: Icon(
+                            Icons.emoji_events,
+                            color: const Color(0xFFE8734A),
+                            size: 32.sp,
+                          ),
+                        );
+                      },
                     ),
                   )
                       : Center(
@@ -262,36 +271,14 @@ class YourBadgesScreen extends StatelessWidget {
                 ),
               ),
             ),
-
-            // "Soon" tag
-            if (showSoonTag)
-              Positioned(
-                top: -8.h,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF3D3548),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Text(
-                    'Soon',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
           ],
         ),
-
         SizedBox(height: 8.h),
-
-        // Title
         Text(
-          title,
+          name,
           textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: Colors.white,
             fontSize: 12.sp,
@@ -299,13 +286,12 @@ class YourBadgesScreen extends StatelessWidget {
             height: 1.2,
           ),
         ),
-
         SizedBox(height: 2.h),
-
-        // Subtitle
         Text(
-          subtitle,
+          description,
           textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: Colors.white.withOpacity(0.5),
             fontSize: 10.sp,

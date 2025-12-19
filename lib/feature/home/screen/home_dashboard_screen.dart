@@ -81,8 +81,9 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             _buildTopIcon(
               'assets/images/avatar/settings.png',
               onTap: () {
-                // ✅ CHANGED: Now calls MainScreen's drawer
-                Get.find<AppDrawerController>().open();
+
+                Get.toNamed(RouteName.settings);
+
               },
             ),
             SizedBox(width: 12.w),

@@ -256,15 +256,17 @@ class _MainScreenState extends State<MainScreen>
         _currentIndex = index;
       }),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
+
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
               iconPath,
-              width: 24.w,
               height: 24.h,
+              width: 24.w,
+
+
               color: isSelected
                   ? const Color(0xFF4EFFEE)
                   : Colors.white.withOpacity(0.4),

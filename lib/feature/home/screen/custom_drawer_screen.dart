@@ -3,10 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
+import '../../splash/controller/badge_controller.dart';
+import '../controller/profile_controller.dart';
+
 class CustomDrawer extends StatelessWidget {
   final VoidCallback onClose;
 
-  const CustomDrawer({super.key, required this.onClose});
+  CustomDrawer({super.key, required this.onClose});
+  final ProfileController controller = Get.put(ProfileController());
+ final BadgesController badgesController = Get.put(BadgesController());
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +103,9 @@ class CustomDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Daniel Jones',
+                         controller.fullNameController.text.isEmpty
+                            ? 'Not set'
+                            : controller.fullNameController.text,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16.sp,
@@ -107,7 +114,7 @@ class CustomDrawer extends StatelessWidget {
                       ),
                       SizedBox(height: 2.h),
                       Text(
-                        'daniel.jones@example.com',
+                        controller.email.isEmpty ? 'Not set' : controller.email,
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.5),
                           fontSize: 12.sp,
@@ -130,25 +137,64 @@ class CustomDrawer extends StatelessWidget {
                   color: const Color(0xFF232244),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.workspace_premium,
-                      color: const Color(0xFF4CAF50),
-                      size: 16.w,
+                // In your widget
+                child: Obx(() {
+                  // Get first unlocked badge or null
+                  final currentBadge = badgesController.badges
+                      .firstWhereOrNull((b) => b['unlocked'] == true);
+
+                  return InkWell(
+                    onTap: () {
+                      Get.toNamed(RouteName.yourBadges);
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (currentBadge != null) ...[
+                          ClipOval(
+                            child: Image.asset(
+                              badgesController.getBadgeImage(currentBadge['code'] ?? ''),
+                              width: 20.w,
+                              height: 20.w,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.workspace_premium,
+                                  color: const Color(0xFF4CAF50),
+                                  size: 20.w,
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 6.w),
+                          Text(
+                            currentBadge['name'] ?? "Badge",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ] else ...[
+                          Icon(
+                            Icons.workspace_premium,
+                            color: Colors.white.withOpacity(0.5),
+                            size: 20.w,
+                          ),
+                          SizedBox(width: 6.w),
+                          Text(
+                            "No Badge",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.5),
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
-                    SizedBox(width: 6.w),
-                    Text(
-                      "Founder's Badge",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                }),
               ),
             ),
 

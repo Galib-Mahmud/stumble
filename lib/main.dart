@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
-          initialRoute: RouteName.signIn,
+          initialRoute: RouteName.onboarding,
           getPages: AppRoute.pages,
 
           // এই builder add করো - globally সব screen এ apply হবে

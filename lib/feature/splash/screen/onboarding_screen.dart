@@ -83,10 +83,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
       if (onboardingCompleted == true) {
         print("✅ [DEBUG] Going to Main Screen");
-        Get.offAllNamed(RouteName.signIn);
+           Get.toNamed(RouteName.mainScreen);
       } else {
         print("➡️ [DEBUG] Going to Username Screen (next step: $nextStep)");
-        Get.offAllNamed(RouteName.username);
+        Get.toNamed(RouteName.username);
       }
     } catch (e) {
       print("🔥 [API] Error: $e");

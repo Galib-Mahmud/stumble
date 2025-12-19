@@ -19,6 +19,8 @@ class ApiEndpoint {
   static const String profile = "/api/authentication/profile/";
   static const String profileUpdate = "/api/authentication/profile/update/";
   static const String onboardingStatus = "/api/authentication/onboarding/status/";
+  static const String badge = "/api/reward-system/badges-overview/";
+  static const String progressPath = "/api/core-business/progress-path/";
 
 
 }
