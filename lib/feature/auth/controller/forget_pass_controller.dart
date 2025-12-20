@@ -4,6 +4,7 @@ import '../../../core/endpoint/api_client.dart';
 import '../../../core/endpoint/api_endpoint.dart';
 import '../../../core/local_storage/user_info.dart';
 import '../../../route/route_name.dart';
+import '../../splash/screen/app_notification.dart';
 
 
 class ForgetPassController extends GetxController {
@@ -44,7 +45,7 @@ class ForgetPassController extends GetxController {
       }
     } catch (e) {
       print("🔥 [FORGET PASSWORD] Exception caught: $e");
-      Get.snackbar("Error", e.toString());
+      AppNotification.error(e.toString());
     } finally {
       emailController.clear();
     }

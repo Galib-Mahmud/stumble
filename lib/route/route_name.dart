@@ -41,6 +41,9 @@ class RouteName{
   static const String orbit = '/orbit';
   static const String innerCircleChat = '/innerCircleChat';
   static const String videoList = '/videoList';
+  static const String botChat = '/botChat';
+
+
 
 
   //Condition

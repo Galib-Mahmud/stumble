@@ -21,6 +21,8 @@ class ApiEndpoint {
   static const String onboardingStatus = "/api/authentication/onboarding/status/";
   static const String badge = "/api/reward-system/badges-overview/";
   static const String progressPath = "/api/core-business/progress-path/";
+  static const String xpPoints = "/api/reward-system/points-overview/";
+  static const String bots = "/api/chatbot/bots/";
 
 
 }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../core/endpoint/api_client.dart';
 import '../../../core/endpoint/api_endpoint.dart';
 import '../../../route/route_name.dart';
+import '../../splash/screen/app_notification.dart';
 
 
 class SignupController extends GetxController {
@@ -33,7 +34,7 @@ class SignupController extends GetxController {
     final confirmPassword = confirmPasswordController.text;
 
     if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      Get.snackbar("Error", "Please fill all the fields");
+
       return;
     }
 
@@ -71,7 +72,7 @@ class SignupController extends GetxController {
       }
     } catch (e) {
       print("🔥 [REGISTER] Exception caught: $e");
-      Get.snackbar("Error", e.toString());
+      AppNotification.error(e.toString());
     } finally {
       isLoading.value = false;
       print("⏹️ [REGISTER] Loading stopped");

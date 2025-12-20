@@ -23,6 +23,7 @@ import '../feature/condition/screen/settings.dart';
 import '../feature/condition/screen/terms_and_use_screen.dart';
 import '../feature/constellation/screen/constellation_tora.dart';
 import '../feature/constellation/screen/sky_tora_screen.dart';
+import '../feature/home/events/bot_screen.dart';
 import '../feature/home/main_screen.dart';
 import '../feature/home/screen/edit_profile_screen.dart';
 import '../feature/home/screen/home_dashboard_screen.dart';
@@ -268,6 +269,12 @@ class AppRoute {
       page: () => MyVideosScreen(),
       transition: Transition.noTransition,
 
+    ),
+
+    GetPage(
+      name: RouteName.botChat,
+      page: () => BotChatScreen(),
+      transition: Transition.noTransition,
     ),
 
 

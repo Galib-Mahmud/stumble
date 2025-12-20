@@ -66,7 +66,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               _buildSettingsItem(
                 iconPath: 'assets/images/splash/dataRetention.png',
-                title: 'Your path',
+                title: 'Your progress path',
                 onTap: () {
                   Get.toNamed(RouteName.progressPath);
                 },

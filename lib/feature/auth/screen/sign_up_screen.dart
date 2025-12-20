@@ -99,7 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             });
                           },
                         ),
-                        SizedBox(height: 120.h),
+                        SizedBox(height: 150.h),
                         // Privacy Policy Text
                         Center(
                           child: RichText(
@@ -171,31 +171,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ],
                     ),
                     SizedBox(height: 24.h),
-                    // Social Login Buttons
-                    Row(
-                      children: [
-                        // Google Button
-                        Expanded(
-                          child: _buildSocialButton(
-                            iconPath: 'assets/images/splash/google.png',
-                            onTap: () {
-                              // Handle Google sign up
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 16.w),
-                        // Apple Button
-                        Expanded(
-                          child: _buildSocialButton(
-                            iconPath: 'assets/images/splash/apple.png',
-                            onTap: () {
-                              // Handle Apple sign up
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 24.h),
+
                     // Sign In Text
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

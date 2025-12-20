@@ -3,6 +3,7 @@ import '../../../core/endpoint/api_client.dart';
 import '../../../core/endpoint/api_endpoint.dart';
 import '../../../core/local_storage/user_info.dart';
 import '../../../route/route_name.dart';
+import '../../splash/screen/app_notification.dart';
 
 class GetQuestionController extends GetxController {
   final isLoading = false.obs;
@@ -103,7 +104,7 @@ class GetQuestionController extends GetxController {
         Get.snackbar("Error", response?['message'] ?? "Failed to submit");
       }
     } catch (e) {
-      Get.snackbar("Error", "Submit failed: ${e.toString()}");
+      AppNotification.error(e.toString());
     }
   }
 

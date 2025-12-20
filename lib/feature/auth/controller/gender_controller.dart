@@ -4,6 +4,7 @@ import '../../../route/route_name.dart';
 import '../../../core/endpoint/api_client.dart';
 import '../../../core/endpoint/api_endpoint.dart';
 import '../../../core/local_storage/user_info.dart';
+import '../../splash/screen/app_notification.dart';
 
 class GenderController extends GetxController {
   var selectedGender = RxnString(); // "male", "female", "other"
@@ -49,7 +50,7 @@ class GenderController extends GetxController {
         Get.snackbar("Error", response?['message'] ?? "Something went wrong");
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      AppNotification.error(e.toString());
     } finally {
       isLoading.value = false;
     }

@@ -178,7 +178,7 @@ class _MainScreenState extends State<MainScreen>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                SizedBox(width: 20.w),
+                SizedBox(width: 10.w),
                 _buildNavItem(
                   iconPath: 'assets/images/avatar/Orbit.png',
                   label: 'Orbit',
@@ -190,12 +190,13 @@ class _MainScreenState extends State<MainScreen>
                   label: 'SOS',
                   index: 1,
                 ),
-                SizedBox(width: 70.w),
+                SizedBox(width: 65.w),
                 _buildNavItem(
                   iconPath: 'assets/images/avatar/Journal.png',
                   label: 'Journal',
                   index: 2,
                 ),
+                SizedBox(width: 5.w),
                 _buildNavItem(
                   iconPath: 'assets/images/avatar/dash.png',
                   label: 'Dashboard',

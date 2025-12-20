@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stumble/feature/splash/screen/app_notification.dart';
 import '../../../core/endpoint/api_client.dart';
 import '../../../core/endpoint/api_endpoint.dart';
 import '../../../core/local_storage/user_info.dart';
@@ -52,17 +53,18 @@ class SignInController extends GetxController {
         await UserInfo.setOnboardingCompleted(onboardingCompleted);
 
         if (onboardingCompleted == false) {
-          Get.offAllNamed(RouteName.username);
+          Get.toNamed(RouteName.username);
         } else {
-          Get.offAllNamed(RouteName.mainScreen);
+          Get.toNamed(RouteName.mainScreen);
         }
       } else {
         print("🚫 [LOGIN] Tokens missing in response");
-        Get.snackbar("Error", "Invalid response from server");
+       AppNotification.error("Invalid response from server");
       }
     } catch (e) {
       print("🔥 [LOGIN] Exception caught: $e");
-      Get.snackbar("Error", e.toString());
+     AppNotification.error(e.toString());
+
     } finally {
       print("🔚 [LOGIN] Login process finished");
       isLoading.value = false;

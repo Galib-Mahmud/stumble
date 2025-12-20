@@ -3,7 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
-// Import the controller
+// Import the controllers
+import '../controller/xp_controller.dart';
+
+import '../events/bot_controller.dart';
 import 'app_drawer_controller.dart';
 
 class HomeDashboardScreen extends StatefulWidget {
@@ -16,13 +19,13 @@ class HomeDashboardScreen extends StatefulWidget {
 class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   List<bool> taskCompleted = [true, false];
 
-  // ❌ REMOVED: _scaffoldKey - not needed anymore
-  // ❌ REMOVED: drawer - it's now in MainScreen
+  // Initialize Controllers
+  final XpController xpController = Get.put(XpController());
+  final BotController botController = Get.put(BotController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ❌ REMOVED: key, drawer, drawerEnableOpenDragGesture
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.black,
       body: Container(
@@ -47,7 +50,9 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 SizedBox(height: 24.h),
                 _buildXPGaugeCard(),
                 SizedBox(height: 24.h),
-                _buildStumbleEventsSection(),
+
+                SizedBox(height: 24.h),
+                _buildBotsSection(),  // New Bot Section
                 SizedBox(height: 24.h),
                 _buildYourTasksSection(),
                 SizedBox(height: 100.h),
@@ -58,8 +63,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       ),
     );
   }
-
-  // ❌ REMOVED: _buildDrawer() method - not needed anymore
 
   Widget _buildTopBar() {
     return Row(
@@ -81,9 +84,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             _buildTopIcon(
               'assets/images/avatar/settings.png',
               onTap: () {
-
                 Get.toNamed(RouteName.settings);
-
               },
             ),
             SizedBox(width: 12.w),
@@ -160,55 +161,199 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
 
   Widget _buildXPGaugeCard() {
     return GestureDetector(
-      onTap: () {},
-      child: Image.asset(
-        'assets/images/avatar/xpDetails.png',
-        width: double.infinity,
-        fit: BoxFit.fitWidth,
+      onTap: () {
+        xpController.showXpDetailsDialog();
+      },
+      child: Stack(
+        children: [
+          Image.asset(
+            'assets/images/avatar/xpDetails.png',
+            width: double.infinity,
+            fit: BoxFit.fitWidth,
+          ),
+          Positioned(
+            top: 60.h,
+            left: 168.w,
+            child: Obx(() {
+              if (xpController.isLoading.value) {
+                return SizedBox(
+                  width: 20.w,
+                  height: 20.w,
+                  child: const CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                );
+              }
+              return Text(
+                '${xpController.totalPoints.value}',
+                style: TextStyle(
+                  fontSize: 28.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 10,
+                      color: Colors.black.withOpacity(0.5),
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildStumbleEventsSection() {
+
+
+  // ✅ NEW: Bots Section with Horizontal Scroll
+  Widget _buildBotsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Stumble events",
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Stumble events",
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+
+          ],
         ),
         SizedBox(height: 16.h),
-        Row(
-          children: [
-            Expanded(
-              child: _buildEventCard(
-                imagePath: 'assets/images/avatar/event1.png',
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: _buildEventCard(
-                imagePath: 'assets/images/avatar/event2.png',
-              ),
-            ),
-          ],
+        SizedBox(
+          height: 160.h,
+          child: Obx(() {
+            if (botController.isLoading.value) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white.withOpacity(0.5),
+                  strokeWidth: 2,
+                ),
+              );
+            }
+
+            if (botController.bots.isEmpty) {
+              return Center(
+                child: Text(
+                  "No events available",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.white.withOpacity(0.5),
+                  ),
+                ),
+              );
+            }
+
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: botController.bots.length,
+              itemBuilder: (context, index) {
+                final bot = botController.bots[index];
+                return _buildBotCard(bot);
+              },
+            );
+          }),
         ),
       ],
     );
   }
 
-  Widget _buildEventCard({required String imagePath}) {
+  Widget _buildBotCard(BotModel bot) {
     return GestureDetector(
-      onTap: () {},
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.r),
-        child: Image.asset(
-          imagePath,
-          fit: BoxFit.cover,
+      onTap: () {
+        botController.selectBot(bot);
+        Get.toNamed(RouteName.botChat);  // Add this route
+      },
+      child: Container(
+        width: 140.w,
+        margin: EdgeInsets.only(right: 12.w),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              bot.botColor.withOpacity(0.8),
+              bot.botColor.withOpacity(0.4),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: bot.botColor.withOpacity(0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            // Background pattern
+            Positioned(
+              right: -20.w,
+              top: -20.h,
+              child: Icon(
+                bot.botIcon,
+                size: 100.sp,
+                color: Colors.white.withOpacity(0.1),
+              ),
+            ),
+
+            // Content
+            Padding(
+              padding: EdgeInsets.all(14.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Icon
+                  Container(
+                    width: 42.w,
+                    height: 42.w,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Icon(
+                      bot.botIcon,
+                      color: Colors.white,
+                      size: 24.sp,
+                    ),
+                  ),
+                  const Spacer(),
+
+                  // Name
+                  Text(
+                    bot.displayName,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+
+                  // Persona
+                  Text(
+                    bot.persona,
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      color: Colors.white.withOpacity(0.85),
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

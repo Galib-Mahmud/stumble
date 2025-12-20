@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 
 import 'tribe_chat_api_service.dart';
@@ -10,6 +13,7 @@ class InnerCircleChatController extends GetxController {
   // Services
   final TribeChatWebSocketService _wsService = TribeChatWebSocketService();
   final TribeChatApiService _apiService = TribeChatApiService();
+  final ImagePicker _imagePicker = ImagePicker(); // NEW: For image picking
 
   // UI Controllers
   final TextEditingController messageController = TextEditingController();
@@ -38,8 +42,8 @@ class InnerCircleChatController extends GetxController {
   String? _tribeId;
   String? _accessToken;
   String? _currentUserEmail;
-  String? _apiBaseUrl;  // http:// for REST API
-  String? _wsBaseUrl;   // ws:// for WebSocket
+  String? _apiBaseUrl;
+  String? _wsBaseUrl;
 
   @override
   void onInit() {
@@ -58,12 +62,6 @@ class InnerCircleChatController extends GetxController {
   }
 
   /// Initialize chat with tribe ID and auth token
-  ///
-  /// [apiBaseUrl] - REST API URL (e.g., "http://joeapi.dsrt321.online")
-  /// [tribeId] - The tribe/chat room ID
-  /// [accessToken] - JWT Bearer token
-  /// [currentUserEmail] - Current user's email to identify own messages
-  /// [wsBaseUrl] - Optional WebSocket URL (auto-derived from apiBaseUrl if not provided)
   Future<void> initializeChat({
     required String apiBaseUrl,
     required String tribeId,
@@ -71,7 +69,6 @@ class InnerCircleChatController extends GetxController {
     required String currentUserEmail,
     String? wsBaseUrl,
   }) async {
-    // Validate inputs
     if (tribeId.isEmpty) {
       errorMessage.value = 'Invalid tribe ID';
       print('❌ Error: Empty tribe ID');
@@ -90,15 +87,11 @@ class InnerCircleChatController extends GetxController {
       return;
     }
 
-    // Store config
     _apiBaseUrl = apiBaseUrl;
     _tribeId = tribeId;
     _accessToken = accessToken;
     _currentUserEmail = currentUserEmail;
 
-    // Derive WebSocket URL from API URL if not provided
-    // http:// -> ws://
-    // https:// -> wss://
     if (wsBaseUrl != null && wsBaseUrl.isNotEmpty) {
       _wsBaseUrl = wsBaseUrl;
     } else if (apiBaseUrl.startsWith('https://')) {
@@ -115,17 +108,11 @@ class InnerCircleChatController extends GetxController {
     print('   User Email: $_currentUserEmail');
     print('═══════════════════════════════════════════');
 
-    // Setup WebSocket callbacks
     _setupWebSocketCallbacks();
-
-    // Load message history first
     await loadMessageHistory();
-
-    // Then connect to WebSocket for real-time updates
     await connectWebSocket();
   }
 
-  /// Setup WebSocket event callbacks
   void _setupWebSocketCallbacks() {
     _wsService.onConnectionEstablished = _onConnectionEstablished;
     _wsService.onNewMessage = _onNewMessage;
@@ -136,7 +123,6 @@ class InnerCircleChatController extends GetxController {
     _wsService.onDisconnected = _onDisconnected;
   }
 
-  /// Connect to WebSocket
   Future<void> connectWebSocket() async {
     if (_tribeId == null || _accessToken == null || _wsBaseUrl == null) {
       errorMessage.value = 'Missing configuration for WebSocket connection';
@@ -161,7 +147,6 @@ class InnerCircleChatController extends GetxController {
     }
   }
 
-  /// Disconnect from WebSocket
   Future<void> disconnectWebSocket() async {
     await _wsService.disconnect();
     isConnected.value = false;
@@ -183,7 +168,6 @@ class InnerCircleChatController extends GetxController {
 
     final newMessage = TribeMessage.fromJson(messageData, _currentUserEmail ?? '');
 
-    // Avoid duplicates
     if (!messages.any((m) => m.id == newMessage.id)) {
       messages.add(newMessage);
       _scrollToBottom();
@@ -205,14 +189,13 @@ class InnerCircleChatController extends GetxController {
   void _onMessageDeleted(Map<String, dynamic> data) {
     final messageId = data['message_id'] as int?;
     if (messageId == null) return;
-
     messages.removeWhere((m) => m.id == messageId);
   }
 
   void _onReactionUpdate(Map<String, dynamic> data) {
     final messageId = data['message_id'] as int?;
     final emoji = data['emoji'] as String?;
-    final action = data['action'] as String?; // 'added' or 'removed'
+    final action = data['action'] as String?;
     final userId = data['user_id'] as int?;
 
     if (messageId == null || emoji == null || action == null) return;
@@ -222,7 +205,6 @@ class InnerCircleChatController extends GetxController {
 
     final message = messages[index];
     final reactions = List<MessageReaction>.from(message.reactions);
-
     final reactionIndex = reactions.indexWhere((r) => r.emoji == emoji);
 
     if (action == 'added') {
@@ -262,7 +244,6 @@ class InnerCircleChatController extends GetxController {
     final message = data['message'] as String? ?? 'An error occurred';
     errorMessage.value = message;
 
-    // Handle rate limit error (429)
     if (message.contains('429') || message.toLowerCase().contains('rate limit')) {
       Get.snackbar(
         'Slow down!',
@@ -289,12 +270,10 @@ class InnerCircleChatController extends GetxController {
 
   // ==================== Message Actions ====================
 
-  /// Send a new message
   void sendMessage() {
     final text = messageController.text.trim();
     if (text.isEmpty) return;
 
-    // Check rate limit
     if (messagesSentThisMinute.value >= maxMessagesPerMinute) {
       Get.snackbar(
         'Rate Limited',
@@ -322,23 +301,19 @@ class InnerCircleChatController extends GetxController {
     messagesSentThisMinute.value++;
   }
 
-  /// React to a message
   void reactToMessage(int messageId, String emoji) {
     _wsService.sendReaction(messageId, emoji);
   }
 
-  /// Edit a message
   void editMessage(int messageId, String newText) {
     if (newText.trim().isEmpty) return;
     _wsService.editMessage(messageId, newText.trim());
   }
 
-  /// Delete a message
   void deleteMessage(int messageId, {String? reason}) {
     _wsService.deleteMessage(messageId, reason: reason);
   }
 
-  /// Report a message
   void reportMessage(int messageId, String reason) {
     if (reason.trim().isEmpty) return;
     _wsService.reportMessage(messageId, reason.trim());
@@ -352,9 +327,179 @@ class InnerCircleChatController extends GetxController {
     );
   }
 
+  // ==================== NEW: IMAGE SENDING ====================
+
+  void showImagePickerOptions() {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: Color(0xFF1A1A2E),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Send Image',
+              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(color: Colors.blue.withOpacity(0.2), shape: BoxShape.circle),
+                child: const Icon(Icons.photo_library, color: Colors.blue),
+              ),
+              title: const Text('Gallery', style: TextStyle(color: Colors.white)),
+              subtitle: Text('Choose from your photos', style: TextStyle(color: Colors.white.withOpacity(0.6))),
+              onTap: () {
+                Get.back();
+                _pickAndSendImage(ImageSource.gallery);
+              },
+            ),
+            const SizedBox(height: 8),
+            ListTile(
+              leading: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(color: Colors.green.withOpacity(0.2), shape: BoxShape.circle),
+                child: const Icon(Icons.camera_alt, color: Colors.green),
+              ),
+              title: const Text('Camera', style: TextStyle(color: Colors.white)),
+              subtitle: Text('Take a new photo', style: TextStyle(color: Colors.white.withOpacity(0.6))),
+              onTap: () {
+                Get.back();
+                _pickAndSendImage(ImageSource.camera);
+              },
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickAndSendImage(ImageSource source) async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: source,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 70,
+      );
+      if (image == null) return;
+      _showImagePreviewDialog(File(image.path));
+    } catch (e) {
+      print('❌ Error picking image: $e');
+      Get.snackbar('Error', 'Failed to pick image', snackPosition: SnackPosition.TOP, backgroundColor: Colors.red.withOpacity(0.9), colorText: Colors.white);
+    }
+  }
+
+  void _showImagePreviewDialog(File imageFile) {
+    final captionController = TextEditingController();
+
+    Get.dialog(
+      Dialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          width: 300,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                child: SizedBox(
+                  height: 200,
+                  width: double.infinity,
+                  child: Image.file(imageFile, fit: BoxFit.cover, errorBuilder: (c, e, s) => Container(color: Colors.grey[800], child: const Center(child: Icon(Icons.broken_image, color: Colors.white54, size: 48)))),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: captionController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'Add a caption (optional)...',
+                        hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.white.withOpacity(0.2))),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF6B4EAA))),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      ),
+                      maxLines: 2,
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(child: TextButton(onPressed: () => Get.back(), child: const Text('Cancel', style: TextStyle(color: Colors.white70)))),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Obx(() => ElevatedButton(
+                            onPressed: isSending.value ? null : () => _sendImageAsBase64(imageFile, captionController.text),
+                            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF6B4EAA), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
+                            child: isSending.value
+                                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                : const Text('Send', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                          )),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  Future<void> _sendImageAsBase64(File imageFile, String caption) async {
+    if (!isConnected.value) {
+      Get.snackbar('Not Connected', 'Please wait while we reconnect...', snackPosition: SnackPosition.TOP, backgroundColor: Colors.red.withOpacity(0.9), colorText: Colors.white);
+      return;
+    }
+
+    if (messagesSentThisMinute.value >= maxMessagesPerMinute) {
+      Get.snackbar('Rate Limited', 'You can only send $maxMessagesPerMinute messages per minute', snackPosition: SnackPosition.TOP, backgroundColor: Colors.orange.withOpacity(0.9), colorText: Colors.white);
+      return;
+    }
+
+    isSending.value = true;
+
+    try {
+      final bytes = await imageFile.readAsBytes();
+      final base64Image = base64Encode(bytes);
+
+      final extension = imageFile.path.split('.').last.toLowerCase();
+      String mimeType = 'image/jpeg';
+      if (extension == 'png') mimeType = 'image/png';
+      else if (extension == 'gif') mimeType = 'image/gif';
+      else if (extension == 'webp') mimeType = 'image/webp';
+
+      String messageText = caption.isNotEmpty ? '$caption\n[img:$mimeType]$base64Image[/img]' : '[img:$mimeType]$base64Image[/img]';
+
+      _wsService.sendMessage(messageText);
+      messagesSentThisMinute.value++;
+
+      Get.back();
+      print('✅ Image sent as base64 (${bytes.length} bytes)');
+    } catch (e) {
+      print('❌ Error sending image: $e');
+      Get.snackbar('Send Failed', 'Failed to send image. Please try again.', snackPosition: SnackPosition.TOP, backgroundColor: Colors.red.withOpacity(0.9), colorText: Colors.white);
+    } finally {
+      isSending.value = false;
+    }
+  }
+
   // ==================== REST API Methods ====================
 
-  /// Load message history
   Future<void> loadMessageHistory({bool refresh = false}) async {
     if (isLoadingHistory.value) return;
     if (_tribeId == null || _accessToken == null || _apiBaseUrl == null) {
@@ -365,6 +510,7 @@ class InnerCircleChatController extends GetxController {
     if (refresh) {
       _currentPage = 1;
       hasMoreMessages.value = true;
+      messages.clear();
     }
 
     if (!hasMoreMessages.value) return;
@@ -385,10 +531,10 @@ class InnerCircleChatController extends GetxController {
       if (historyMessages.isEmpty) {
         hasMoreMessages.value = false;
       } else {
-        if (refresh) {
+        if (refresh || _currentPage == 1) {
           messages.value = historyMessages;
+          _scrollToBottomAfterBuild();
         } else {
-          // Insert at beginning for older messages
           messages.insertAll(0, historyMessages);
         }
         _currentPage++;
@@ -402,7 +548,6 @@ class InnerCircleChatController extends GetxController {
     }
   }
 
-  /// Request support
   Future<void> requestSupport({
     required SupportMode mode,
     required String message,
@@ -421,66 +566,23 @@ class InnerCircleChatController extends GetxController {
       if (response.isEmergency && response.emergencyContacts != null) {
         _showEmergencyModal(response.emergencyContacts!);
       } else if (response.success) {
-        Get.snackbar(
-          'Support Requested',
-          'Help is on the way',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green.withOpacity(0.9),
-          colorText: Colors.white,
-        );
+        Get.snackbar('Support Requested', 'Help is on the way', snackPosition: SnackPosition.TOP, backgroundColor: Colors.green.withOpacity(0.9), colorText: Colors.white);
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to request support',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red.withOpacity(0.9),
-        colorText: Colors.white,
-      );
+      Get.snackbar('Error', 'Failed to request support', snackPosition: SnackPosition.TOP, backgroundColor: Colors.red.withOpacity(0.9), colorText: Colors.white);
     }
   }
 
-  /// Show emergency contacts modal (for urgent support)
   void _showEmergencyModal(List<EmergencyContact> contacts) {
     Get.dialog(
       AlertDialog(
         backgroundColor: const Color(0xFF1A1A2E),
-        title: const Row(
-          children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.red, size: 28),
-            SizedBox(width: 8),
-            Text(
-              'Get Help Now',
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
+        title: const Row(children: [Icon(Icons.warning_amber_rounded, color: Colors.red, size: 28), SizedBox(width: 8), Text('Get Help Now', style: TextStyle(color: Colors.white))]),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: contacts
-              .map((contact) => ListTile(
-            leading: const Icon(Icons.phone, color: Colors.green),
-            title: Text(
-              contact.name,
-              style: const TextStyle(color: Colors.white),
-            ),
-            subtitle: Text(
-              contact.phone,
-              style: const TextStyle(color: Colors.white70),
-            ),
-            onTap: () {
-              // TODO: Launch phone dialer
-              // launchUrl(Uri.parse('tel:${contact.phone}'));
-            },
-          ))
-              .toList(),
+          children: contacts.map((contact) => ListTile(leading: const Icon(Icons.phone, color: Colors.green), title: Text(contact.name, style: const TextStyle(color: Colors.white)), subtitle: Text(contact.phone, style: const TextStyle(color: Colors.white70)), onTap: () {})).toList(),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Close'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Get.back(), child: const Text('Close'))],
       ),
       barrierDismissible: false,
     );
@@ -488,49 +590,50 @@ class InnerCircleChatController extends GetxController {
 
   // ==================== Utilities ====================
 
-  /// Setup scroll listener for pagination
   void _setupScrollListener() {
     scrollController.addListener(() {
-      // Load more when scrolled to top (older messages)
-      if (scrollController.position.pixels <= 100) {
+      if (scrollController.position.pixels <= 100 && !isLoadingHistory.value && hasMoreMessages.value) {
         loadMessageHistory();
       }
     });
   }
 
-  /// Start rate limit reset timer
   void _startRateLimitTimer() {
-    _rateLimitResetTimer = Timer.periodic(
-      const Duration(minutes: 1),
-          (_) => messagesSentThisMinute.value = 0,
-    );
+    _rateLimitResetTimer = Timer.periodic(const Duration(minutes: 1), (_) => messagesSentThisMinute.value = 0);
   }
 
-  /// Scroll to bottom of chat
   void _scrollToBottom() {
     if (scrollController.hasClients) {
       Future.delayed(const Duration(milliseconds: 100), () {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
+        scrollController.animateTo(scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
       });
     }
   }
 
-  /// Retry connection
+  void _scrollToBottomAfterBuild() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      }
+    });
+  }
+
   void retryConnection() {
     errorMessage.value = '';
     connectWebSocket();
   }
 
-  /// Check if message belongs to current user (for edit/delete options)
+  Future<void> refreshChat() async {
+    await loadMessageHistory(refresh: true);
+    if (!isConnected.value) {
+      await connectWebSocket();
+    }
+  }
+
   bool isMyMessage(TribeMessage message) {
     return message.isMe;
   }
 
-  /// Get message by ID
   TribeMessage? getMessageById(int id) {
     try {
       return messages.firstWhere((m) => m.id == id);

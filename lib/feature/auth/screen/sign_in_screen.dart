@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../../route/route_name.dart';
 import '../../widget/onboarding/custom_button.dart';
 import '../controller/sign_in_controller.dart';
-
+import '../controller/guest_controller.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -16,12 +16,12 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final SignInController controller = Get.put(SignInController());
+  final GuestController guestController = Get.put(GuestController());
 
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-
     super.dispose();
   }
 
@@ -33,7 +33,7 @@ class _SignInScreenState extends State<SignInScreen> {
         height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/splash/Sign In.png'), // Your dark background image
+            image: AssetImage('assets/images/splash/Sign In.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -51,7 +51,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         // Logo centered
                         Center(
                           child: Image.asset(
-                            'assets/images/splash/stumble.png', // Your green logo
+                            'assets/images/splash/stumble.png',
                             height: 60.h,
                             width: 60.w,
                           ),
@@ -86,15 +86,12 @@ class _SignInScreenState extends State<SignInScreen> {
                             });
                           },
                         ),
-
                         SizedBox(height: 16.h),
                         // Forgot Password
                         Center(
                           child: TextButton(
                             onPressed: () {
-
                               Get.toNamed(RouteName.forgetPassword);
-
                             },
                             child: Text(
                               'Forgot password?',
@@ -121,7 +118,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       text: 'Sign in',
                       onTap: () {
                         controller.loginUser();
-
                       },
                     ),
                     SizedBox(height: 24.h),
@@ -153,31 +149,17 @@ class _SignInScreenState extends State<SignInScreen> {
                       ],
                     ),
                     SizedBox(height: 24.h),
-                    // Social Login Buttons
-                    Row(
-                      children: [
-                        // Google Button
-                        Expanded(
-                          child: _buildSocialButton(
-                            iconPath: 'assets/images/splash/google.png',
-                            onTap: () {
-                              // Handle Google sign in
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 16.w),
-                        // Apple Button
-                        Expanded(
-                          child: _buildSocialButton(
-                            iconPath: 'assets/images/splash/apple.png',
-                            onTap: () {
-                              // Handle Apple sign in
-                            },
-                          ),
-                        ),
-                      ],
+
+                    // Guest User Button
+                    CustomButton(
+                      text: 'Continue as Guest',
+                      onTap: () {
+                        guestController.startGuestSession();
+                      },
                     ),
+
                     SizedBox(height: 24.h),
+
                     // Sign Up Text
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -191,9 +173,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-
                             Get.toNamed(RouteName.signUp);
-
                           },
                           child: Text(
                             'Sign Up',
@@ -262,33 +242,6 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
           )
               : null,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSocialButton({
-    required String iconPath,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 52.h,
-        decoration: BoxDecoration(
-          color: const Color(0xFF1E1E2E),
-          borderRadius: BorderRadius.circular(32.r),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.1),
-            width: 1,
-          ),
-        ),
-        child: Center(
-          child: Image.asset(
-            iconPath,
-            height: 24.h,
-            width: 24.w,
-          ),
         ),
       ),
     );
