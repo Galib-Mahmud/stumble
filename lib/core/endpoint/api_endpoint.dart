@@ -23,6 +23,11 @@ class ApiEndpoint {
   static const String progressPath = "/api/core-business/progress-path/";
   static const String xpPoints = "/api/reward-system/points-overview/";
   static const String bots = "/api/chatbot/bots/";
+  static const String notifications = "/api/core-business/notifications/";
+  static const String notificationStats = "/api/core-business/notifications/stats/";
+  // Add these to your ApiEndpoint class
+  static const String tasks = "/api/authentication/tasks/";
+  static String taskById(int id) => "/api/authentication/tasks/$id/";
 
 
 }

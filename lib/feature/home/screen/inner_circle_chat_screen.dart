@@ -663,8 +663,8 @@ class InnerCircleChatScreen extends StatelessWidget {
             SizedBox(height: 12.h),
             _buildSupportOption(icon: Icons.warning_amber, color: Colors.orange, title: 'I\'m struggling right now', subtitle: 'A bot will provide focused support', onTap: () { Get.back(); _showSupportMessageInput(controller, SupportMode.critical); }),
             SizedBox(height: 12.h),
-            _buildSupportOption(icon: Icons.emergency, color: Colors.red, title: 'I need immediate help (SOS)', subtitle: 'Get emergency contact numbers', onTap: () { Get.back(); controller.requestSupport(mode: SupportMode.urgent, message: 'Urgent help needed'); }),
-            SizedBox(height: 20.h),
+            // _buildSupportOption(icon: Icons.emergency, color: Colors.red, title: 'I need immediate help (SOS)', subtitle: 'Get emergency contact numbers', onTap: () { Get.back(); controller.requestSupport(mode: SupportMode.urgent, message: 'Urgent help needed'); }),
+
           ],
         ),
       ),

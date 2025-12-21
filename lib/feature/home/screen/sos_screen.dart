@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../route/route_name.dart';
 import '../../auth/controller/video_record_controller.dart';
@@ -21,6 +22,24 @@ class _SupportScreenState extends State<SupportScreen>
 
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
+
+  // Demo consultation numbers for Critical mode
+  final List<Map<String, String>> consultationNumbers = [
+    {'name': 'Dr. Sarah Johnson', 'number': '+1-800-555-0101', 'specialty': 'Mental Health'},
+    {'name': 'Dr. Michael Chen', 'number': '+1-800-555-0102', 'specialty': 'Crisis Counselor'},
+    {'name': 'Dr. Emily Davis', 'number': '+1-800-555-0103', 'specialty': 'Therapist'},
+    {'name': 'Wellness Center', 'number': '+1-800-555-0104', 'specialty': 'General Support'},
+    {'name': 'Night Support Line', 'number': '+1-800-555-0105', 'specialty': '24/7 Available'},
+  ];
+
+  // Emergency numbers for Urgent mode
+  final List<Map<String, String>> emergencyNumbers = [
+    {'name': 'Emergency Services', 'number': '911', 'icon': 'emergency'},
+    {'name': 'National Crisis Hotline', 'number': '988', 'icon': 'crisis'},
+    {'name': 'Suicide Prevention', 'number': '1-800-273-8255', 'icon': 'prevention'},
+    {'name': 'Crisis Text Line', 'number': 'Text HOME to 741741', 'icon': 'text'},
+    {'name': 'International Emergency', 'number': '112', 'icon': 'international'},
+  ];
 
   @override
   void initState() {
@@ -165,7 +184,7 @@ class _SupportScreenState extends State<SupportScreen>
     );
   }
 
-  // Support Circle
+  // Support Circle - YOUR ORIGINAL CODE
   Widget _buildSupportCircle() {
     return AnimatedBuilder(
       animation: _pulseController,
@@ -189,7 +208,7 @@ class _SupportScreenState extends State<SupportScreen>
     );
   }
 
-  // Record Button
+  // Record Button - YOUR ORIGINAL CODE
   Widget _buildRecordButton() {
     return Obx(() => GestureDetector(
       onTap: controller.isUploading.value ? null : () => _showRecordingDialog(),
@@ -236,7 +255,7 @@ class _SupportScreenState extends State<SupportScreen>
     ));
   }
 
-  // Show Recording Dialog
+  // Show Recording Dialog - YOUR ORIGINAL CODE (UNCHANGED)
   void _showRecordingDialog() {
     // Initialize camera when dialog opens
     controller.initCamera();
@@ -455,7 +474,561 @@ class _SupportScreenState extends State<SupportScreen>
     );
   }
 
-  // Mode Item Button
+  // ============== NEW: MODE POPUP DIALOGS ==============
+
+  // Show Gentle Mode Popup
+  void _showGentleModePopup() {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 60.h),
+        child: Container(
+          constraints: BoxConstraints(maxHeight: 500.h),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF1A3A4A),
+                Color(0xFF0D2535),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(24.r),
+            border: Border.all(
+              color: const Color(0xFF4EFFEE).withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header with close button
+              _buildPopupHeader(
+                title: 'Gentle Support',
+                color: const Color(0xFF4EFFEE),
+                icon: Icons.spa_outlined,
+              ),
+
+              // Scrollable Content
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(24.w),
+                  child: Column(
+                    children: [
+                      // Icon
+                      Container(
+                        width: 100.w,
+                        height: 100.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              const Color(0xFF4EFFEE).withOpacity(0.3),
+                              const Color(0xFF4EFFEE).withOpacity(0.1),
+                            ],
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.touch_app_rounded,
+                          size: 50.w,
+                          color: const Color(0xFF4EFFEE),
+                        ),
+                      ),
+
+                      SizedBox(height: 24.h),
+
+                      // Main Message
+                      Text(
+                        "Please tap on the middle button of this app",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          height: 1.4,
+                        ),
+                      ),
+
+                      SizedBox(height: 16.h),
+
+                      // Description
+                      Text(
+                        "The center support button provides calming exercises and grounding techniques to help you feel better.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white.withOpacity(0.7),
+                          height: 1.5,
+                        ),
+                      ),
+
+                      SizedBox(height: 24.h),
+
+                      // Action Button
+                      GestureDetector(
+                        onTap: () => Get.back(),
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(vertical: 16.h),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF4EFFEE), Color(0xFF00D9C6)],
+                            ),
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Got it!",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: true,
+    );
+  }
+
+  // Show Critical Mode Popup
+  void _showCriticalModePopup() {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
+        child: Container(
+          constraints: BoxConstraints(maxHeight: 600.h),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF3A2A1A),
+                Color(0xFF251A0D),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(24.r),
+            border: Border.all(
+              color: const Color(0xFFFFB74D).withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header with close button
+              _buildPopupHeader(
+                title: 'Critical Support',
+                color: const Color(0xFFFFB74D),
+                icon: Icons.support_agent,
+              ),
+
+              // Scrollable Content
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(20.w),
+                  child: Column(
+                    children: [
+                      // Message
+                      Container(
+                        padding: EdgeInsets.all(16.w),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFB74D).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(
+                            color: const Color(0xFFFFB74D).withOpacity(0.3),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.phone_in_talk,
+                              color: const Color(0xFFFFB74D),
+                              size: 28.w,
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Text(
+                                "Please call our consultation team",
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 20.h),
+
+                      // Consultation Numbers List
+                      Text(
+                        "Available Consultants",
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withOpacity(0.6),
+                        ),
+                      ),
+
+                      SizedBox(height: 12.h),
+
+                      // Numbers List
+                      ...consultationNumbers.map((consultant) =>
+                          _buildConsultantCard(consultant)
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: true,
+    );
+  }
+
+  // Show Urgent Mode Popup
+  void _showUrgentModePopup() {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
+        child: Container(
+          constraints: BoxConstraints(maxHeight: 600.h),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF4A1A1A),
+                Color(0xFF2D0D0D),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(24.r),
+            border: Border.all(
+              color: Colors.red.withOpacity(0.4),
+              width: 1.5,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header with close button
+              _buildPopupHeader(
+                title: 'Emergency Support',
+                color: Colors.red,
+                icon: Icons.emergency,
+              ),
+
+              // Scrollable Content
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(20.w),
+                  child: Column(
+                    children: [
+                      // Warning Banner
+                      Container(
+                        padding: EdgeInsets.all(16.w),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(
+                            color: Colors.red.withOpacity(0.5),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.warning_amber_rounded,
+                              color: Colors.red,
+                              size: 28.w,
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Text(
+                                "Emergency Phone Numbers",
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 20.h),
+
+                      // Emergency Numbers List
+                      ...emergencyNumbers.map((emergency) =>
+                          _buildEmergencyCard(emergency)
+                      ),
+
+                      SizedBox(height: 16.h),
+
+                      // Important Note
+                      Container(
+                        padding: EdgeInsets.all(16.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.favorite,
+                              color: Colors.red.withOpacity(0.8),
+                              size: 28.w,
+                            ),
+                            SizedBox(height: 8.h),
+                            Text(
+                              "You are not alone. Help is available 24/7.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: true,
+    );
+  }
+
+  // Build Popup Header with Close Button
+  Widget _buildPopupHeader({
+    required String title,
+    required Color color,
+    required IconData icon,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24.r),
+          topRight: Radius.circular(24.r),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 24.w),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          // Close Button
+          GestureDetector(
+            onTap: () => Get.back(),
+            child: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.close,
+                color: Colors.white,
+                size: 20.w,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Build Consultant Card for Critical Mode
+  Widget _buildConsultantCard(Map<String, String> consultant) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(14.w),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(
+          color: const Color(0xFFFFB74D).withOpacity(0.2),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 45.w,
+            height: 45.w,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFB74D).withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.person,
+              color: const Color(0xFFFFB74D),
+              size: 24.w,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  consultant['name']!,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  consultant['specialty']!,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.white.withOpacity(0.5),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: () => _makePhoneCall(consultant['number']!),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFB74D),
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.call, color: Colors.black, size: 16.w),
+                  SizedBox(width: 6.w),
+                  Text(
+                    "Call",
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Build Emergency Card for Urgent Mode
+  Widget _buildEmergencyCard(Map<String, String> emergency) {
+    return GestureDetector(
+      onTap: () {
+        if (!emergency['number']!.startsWith('Text')) {
+          _makePhoneCall(emergency['number']!);
+        }
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          color: Colors.red.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(14.r),
+          border: Border.all(
+            color: Colors.red.withOpacity(0.3),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 50.w,
+              height: 50.w,
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.call,
+                color: Colors.red,
+                size: 26.w,
+              ),
+            ),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    emergency['name']!,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    emergency['number']!,
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.red,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Make Phone Call
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber.replaceAll(RegExp(r'[^\d+]'), ''),
+    );
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    }
+  }
+
+  // Mode Item Button - UPDATED TO SHOW POPUPS
   Widget _buildModeItem({
     required int index,
     required String iconPath,
@@ -468,6 +1041,19 @@ class _SupportScreenState extends State<SupportScreen>
           setState(() {
             selectedModeIndex = index;
           });
+
+          // Show appropriate popup based on selected mode
+          switch (index) {
+            case 0:
+              _showGentleModePopup();
+              break;
+            case 1:
+              _showCriticalModePopup();
+              break;
+            case 2:
+              _showUrgentModePopup();
+              break;
+          }
         },
         child: Container(
           decoration: BoxDecoration(

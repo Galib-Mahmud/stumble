@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
+
+import '../../../core/local_storage/user_info.dart';
 import '../../splash/controller/badge_controller.dart';
 import '../controller/profile_controller.dart';
 
@@ -11,7 +13,141 @@ class CustomDrawer extends StatelessWidget {
 
   CustomDrawer({super.key, required this.onClose});
   final ProfileController controller = Get.put(ProfileController());
- final BadgesController badgesController = Get.put(BadgesController());
+  final BadgesController badgesController = Get.put(BadgesController());
+
+  // Handle logout
+  Future<void> _handleLogout(BuildContext context) async {
+    // Show loading indicator
+    Get.dialog(
+      const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    // Clear all tokens using UserInfo
+    await UserInfo.clearAll();
+
+    // Close loading dialog
+    Get.back();
+
+    // Navigate to sign in screen and clear all previous routes
+    Get.offAllNamed(RouteName.onboarding);
+  }
+
+  // Show logout confirmation dialog
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.5),
+      builder: (context) => Dialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24.r),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Logout Icon
+              Container(
+                width: 60.w,
+                height: 60.h,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE57373).withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.logout_rounded,
+                  color: const Color(0xFFE57373),
+                  size: 28.sp,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              // Title
+              Text(
+                'Log Out?',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 12.h),
+              // Content
+              Text(
+                'Are you sure you want to log out from your account?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.6),
+                  fontSize: 14.sp,
+                ),
+              ),
+              SizedBox(height: 24.h),
+              // Buttons Row
+              Row(
+                children: [
+                  // Cancel Button
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        height: 46.h,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2A2A3E),
+                          borderRadius: BorderRadius.circular(23.r),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  // Log out Button
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        _handleLogout(context);
+                      },
+                      child: Container(
+                        height: 46.h,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE57373),
+                          borderRadius: BorderRadius.circular(23.r),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Log out',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +190,6 @@ class CustomDrawer extends StatelessWidget {
                         Icons.close,
                         color: Colors.white.withOpacity(0.9),
                         size: 24.w,
-
                       ),
                     ),
                   ),
@@ -103,7 +238,7 @@ class CustomDrawer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                         controller.fullNameController.text.isEmpty
+                        controller.fullNameController.text.isEmpty
                             ? 'Not set'
                             : controller.fullNameController.text,
                         style: TextStyle(
@@ -153,7 +288,8 @@ class CustomDrawer extends StatelessWidget {
                         if (currentBadge != null) ...[
                           ClipOval(
                             child: Image.asset(
-                              badgesController.getBadgeImage(currentBadge['code'] ?? ''),
+                              badgesController
+                                  .getBadgeImage(currentBadge['code'] ?? ''),
                               width: 20.w,
                               height: 20.w,
                               fit: BoxFit.cover,
@@ -225,14 +361,16 @@ class CustomDrawer extends StatelessWidget {
 
             const Spacer(),
 
-            // Logout
-            _buildMenuItem(
-              icon: 'assets/images/icon/logout.png',
-              label: 'Log out',
-              onTap: () {
-                // Handle logout
-              },
-              isLogout: true,
+            // Logout - Now with dialog
+            Builder(
+              builder: (context) => _buildMenuItem(
+                icon: 'assets/images/icon/logout.png',
+                label: 'Log out',
+                onTap: () {
+                  _showLogoutDialog(context);
+                },
+                isLogout: true,
+              ),
             ),
 
             SizedBox(height: 30.h),
@@ -261,7 +399,7 @@ class CustomDrawer extends StatelessWidget {
           children: [
             Image.asset(
               icon,
-             fit: BoxFit.cover,
+              fit: BoxFit.cover,
               color: isLogout ? const Color(0xFFFF5252) : null,
               errorBuilder: (context, error, stackTrace) {
                 return Icon(

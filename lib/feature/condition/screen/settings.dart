@@ -3,10 +3,75 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
+
+import '../../../core/local_storage/user_info.dart';
 import '../../widget/condition/custom_appbar2.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
+
+  // Handle logout
+  Future<void> _handleLogout(BuildContext context) async {
+    // Show loading indicator
+    Get.dialog(
+      const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    // Clear all tokens using UserInfo
+    await UserInfo.clearAll();
+
+    // Close loading dialog
+    Get.back();
+
+    // Navigate to sign in screen and clear all previous routes
+    Get.offAllNamed(RouteName.onboarding);
+  }
+
+  // Handle delete account
+  Future<void> _handleDeleteAccount(BuildContext context) async {
+    // Show loading indicator
+    Get.dialog(
+      const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    try {
+      // TODO: Call your API to delete account from server
+      // final response = await ApiService.deleteAccount();
+
+      // Clear all tokens using UserInfo
+      await UserInfo.clearAll();
+
+      // Close loading dialog
+      Get.back();
+
+      // Show success message
+      Get.snackbar(
+        'Success',
+        'Your account has been deleted successfully',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+      );
+
+      // Navigate to sign in screen and clear all previous routes
+      Get.offAllNamed(RouteName.onboarding);
+    } catch (e) {
+      // Close loading dialog
+      Get.back();
+
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +98,7 @@ class SettingsScreen extends StatelessWidget {
                 iconPath: 'assets/images/splash/newPassword.png',
                 title: 'New Password',
                 onTap: () {
-                 Get.toNamed(RouteName.forgetPassword);
+                  Get.toNamed(RouteName.forgetPassword);
                 },
               ),
               _buildSettingsItem(
@@ -170,9 +235,24 @@ class SettingsScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Warning Icon
+              Container(
+                width: 60.w,
+                height: 60.h,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE57373).withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.warning_amber_rounded,
+                  color: const Color(0xFFE57373),
+                  size: 32.sp,
+                ),
+              ),
+              SizedBox(height: 16.h),
               // Title
               Text(
-                'Are you sure?',
+                'Delete Account?',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.sp,
@@ -182,7 +262,7 @@ class SettingsScreen extends StatelessWidget {
               SizedBox(height: 12.h),
               // Content
               Text(
-                'Are you sure, you want to delete this account?',
+                'This action cannot be undone. All your data, progress, and account information will be permanently deleted.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.6),
@@ -222,7 +302,7 @@ class SettingsScreen extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
-                        // Handle delete account
+                        _handleDeleteAccount(context);
                       },
                       child: Container(
                         height: 46.h,
@@ -266,9 +346,24 @@ class SettingsScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Logout Icon
+              Container(
+                width: 60.w,
+                height: 60.h,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE57373).withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.logout_rounded,
+                  color: const Color(0xFFE57373),
+                  size: 28.sp,
+                ),
+              ),
+              SizedBox(height: 16.h),
               // Title
               Text(
-                'Are you sure?',
+                'Log Out?',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.sp,
@@ -278,7 +373,7 @@ class SettingsScreen extends StatelessWidget {
               SizedBox(height: 12.h),
               // Content
               Text(
-                'Are you sure, you want to log out from this account?',
+                'Are you sure you want to log out from your account?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.6),
@@ -318,8 +413,7 @@ class SettingsScreen extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
-                        // Handle logout
-                        Get.offAllNamed('/sign_in');
+                        _handleLogout(context);
                       },
                       child: Container(
                         height: 46.h,
