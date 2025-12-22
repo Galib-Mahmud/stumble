@@ -56,7 +56,11 @@ class YourBadgesScreen extends StatelessWidget {
                           color: Colors.white.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: Image.asset('assets/images/avatar/Capa_1 (1).png'),
+                        child: Icon(
+                          Icons.info_outline,
+                          color: Colors.white,
+                          size: 20.sp,
+                        ),
                       ),
                     ),
                   ],
@@ -82,28 +86,43 @@ class YourBadgesScreen extends StatelessWidget {
               // Badges Grid
               Expanded(
                 child: Obx(() {
+                  // Debug print
+                  print('Building badge grid - isLoading: ${controller.isLoading.value}, badges count: ${controller.badges.length}');
+
                   if (controller.isLoading.value) {
                     return const Center(
                       child: CircularProgressIndicator(color: Colors.white),
                     );
                   }
 
-                  if (controller.errorMessage.isNotEmpty) {
+                  if (controller.errorMessage.value.isNotEmpty) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            controller.errorMessage.value,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: 14.sp,
+                          Icon(
+                            Icons.error_outline,
+                            color: Colors.white54,
+                            size: 48.sp,
+                          ),
+                          SizedBox(height: 16.h),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 32.w),
+                            child: Text(
+                              controller.errorMessage.value,
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.7),
+                                fontSize: 14.sp,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 16.h),
                           ElevatedButton(
                             onPressed: () => controller.refreshBadges(),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF6366F1),
+                            ),
                             child: const Text('Retry'),
                           ),
                         ],
@@ -111,20 +130,47 @@ class YourBadgesScreen extends StatelessWidget {
                     );
                   }
 
-                  if (controller.activeBadges.isEmpty) {
+                  // Use badges directly instead of activeBadges getter
+                  final badgesList = controller.badges
+                      .where((b) => b['is_active'] == true)
+                      .toList();
+
+                  print('Filtered badges count: ${badgesList.length}');
+
+                  if (badgesList.isEmpty) {
                     return Center(
-                      child: Text(
-                        'No badges available',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
-                          fontSize: 14.sp,
-                        ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.emoji_events_outlined,
+                            color: Colors.white54,
+                            size: 48.sp,
+                          ),
+                          SizedBox(height: 16.h),
+                          Text(
+                            'No badges available',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            'Total in list: ${controller.badges.length}',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.5),
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   }
 
                   return RefreshIndicator(
                     onRefresh: () => controller.refreshBadges(),
+                    color: const Color(0xFF6366F1),
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: GridView.builder(
@@ -134,13 +180,15 @@ class YourBadgesScreen extends StatelessWidget {
                           crossAxisSpacing: 12.w,
                           childAspectRatio: 0.75,
                         ),
-                        itemCount: controller.activeBadges.length,
+                        itemCount: badgesList.length,
                         itemBuilder: (context, index) {
-                          final badge = controller.activeBadges[index];
+                          final badge = badgesList[index];
+                          final isFirstUnlocked = index == 0 && badge['unlocked'] == true;
+
                           return _buildBadgeItem(
                             controller: controller,
                             badge: badge,
-                            isFirst: index == 0 && badge['unlocked'] == true,
+                            isFirst: isFirstUnlocked,
                           );
                         },
                       ),
@@ -208,6 +256,7 @@ class YourBadgesScreen extends StatelessWidget {
     final String name = badge['name'] ?? '';
     final String description = badge['description'] ?? '';
     final bool hasGradientBorder = isFirst && isUnlocked;
+    final badgeColor = Color(controller.getBadgeColor(code));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -231,7 +280,7 @@ class YourBadgesScreen extends StatelessWidget {
                 border: !hasGradientBorder
                     ? Border.all(
                   color: isUnlocked
-                      ? const Color(0xFFE8734A)
+                      ? badgeColor
                       : Colors.white.withOpacity(0.2),
                   width: 2.w,
                 )
@@ -242,35 +291,45 @@ class YourBadgesScreen extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isUnlocked ? Colors.transparent : const Color(0xFF2A2535),
+                    color: const Color(0xFF2A2535),
                   ),
-                  child: isUnlocked
-                      ? ClipOval(
-                    child: Image.asset(
-                      controller.getBadgeImage(code),
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: const Color(0xFF2A2535),
-                          child: Icon(
-                            Icons.emoji_events,
-                            color: const Color(0xFFE8734A),
-                            size: 32.sp,
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                      : Center(
-                    child: Icon(
-                      Icons.lock,
-                      color: Colors.white.withOpacity(0.4),
-                      size: 28.sp,
+                  child: ClipOval(
+                    child: isUnlocked
+                        ? _buildBadgeImage(controller, code, badgeColor)
+                        : Center(
+                      child: Icon(
+                        Icons.lock,
+                        color: Colors.white.withOpacity(0.4),
+                        size: 28.sp,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
+            // Unlocked indicator
+            if (isUnlocked)
+              Positioned(
+                bottom: -2,
+                right: -2,
+                child: Container(
+                  width: 24.w,
+                  height: 24.w,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF4CAF50),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFF1A1A2E),
+                      width: 2,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 14.sp,
+                  ),
+                ),
+              ),
           ],
         ),
         SizedBox(height: 8.h),
@@ -280,7 +339,7 @@ class YourBadgesScreen extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            color: Colors.white,
+            color: isUnlocked ? Colors.white : Colors.white.withOpacity(0.6),
             fontSize: 12.sp,
             fontWeight: FontWeight.w600,
             height: 1.2,
@@ -300,5 +359,63 @@ class YourBadgesScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildBadgeImage(BadgesController controller, String code, Color badgeColor) {
+    final imagePath = controller.getBadgeImage(code);
+
+    return Image.asset(
+      imagePath,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        print('Badge image error for $code: $error');
+        // Fallback: Show colored icon if asset doesn't exist
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                badgeColor,
+                badgeColor.withOpacity(0.7),
+              ],
+            ),
+          ),
+          child: Center(
+            child: Icon(
+              _getBadgeIcon(code),
+              color: Colors.white,
+              size: 32.sp,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  IconData _getBadgeIcon(String code) {
+    switch (code) {
+      case 'day_one':
+        return Icons.celebration;
+      case 'courage':
+        return Icons.shield;
+      case 'reflection':
+        return Icons.auto_stories;
+      case 'resilience':
+        return Icons.local_fire_department;
+      case 'support_karma':
+        return Icons.favorite;
+      case 'growth':
+        return Icons.trending_up;
+      case 'graduation':
+        return Icons.school;
+      case 'mentor':
+        return Icons.psychology;
+      case 'legacy':
+        return Icons.stars;
+      default:
+        return Icons.emoji_events;
+    }
   }
 }

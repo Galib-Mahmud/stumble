@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
-
 import '../../../core/local_storage/user_info.dart';
 import '../../splash/controller/badge_controller.dart';
 import '../controller/profile_controller.dart';
@@ -17,7 +16,6 @@ class CustomDrawer extends StatelessWidget {
 
   // Handle logout
   Future<void> _handleLogout(BuildContext context) async {
-    // Show loading indicator
     Get.dialog(
       const Center(
         child: CircularProgressIndicator(
@@ -27,17 +25,11 @@ class CustomDrawer extends StatelessWidget {
       barrierDismissible: false,
     );
 
-    // Clear all tokens using UserInfo
     await UserInfo.clearAll();
-
-    // Close loading dialog
     Get.back();
-
-    // Navigate to sign in screen and clear all previous routes
     Get.offAllNamed(RouteName.onboarding);
   }
 
-  // Show logout confirmation dialog
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -52,7 +44,6 @@ class CustomDrawer extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Logout Icon
               Container(
                 width: 60.w,
                 height: 60.h,
@@ -67,7 +58,6 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16.h),
-              // Title
               Text(
                 'Log Out?',
                 style: TextStyle(
@@ -77,7 +67,6 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 12.h),
-              // Content
               Text(
                 'Are you sure you want to log out from your account?',
                 textAlign: TextAlign.center,
@@ -87,10 +76,8 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 24.h),
-              // Buttons Row
               Row(
                 children: [
-                  // Cancel Button
                   Expanded(
                     child: GestureDetector(
                       onTap: () => Navigator.pop(context),
@@ -114,7 +101,6 @@ class CustomDrawer extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 12.w),
-                  // Log out Button
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
@@ -171,12 +157,10 @@ class CustomDrawer extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Logo
                   Image.asset(
                     'assets/images/splash/stumble.png',
                     fit: BoxFit.cover,
                   ),
-                  // Close button
                   GestureDetector(
                     onTap: onClose,
                     child: Container(
@@ -199,71 +183,98 @@ class CustomDrawer extends StatelessWidget {
 
             SizedBox(height: 10.h),
 
-            // Profile Section
+            // ✅ FIXED: Profile Section wrapped in Obx
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Row(
-                children: [
-                  // Avatar
-                  Container(
-                    width: 50.w,
-                    height: 50.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF6B4EAA), Color(0xFF9B6BFF)],
+              child: Obx(() {
+                final profileImage = controller.profileImageUrl;
+                final fullName = controller.profileData.value?.profile.fullName ?? 'Not set';
+                final email = controller.email;
+
+                return Row(
+                  children: [
+                    // ✅ FIXED: Profile Avatar with network image
+                    Container(
+                      width: 50.w,
+                      height: 50.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF6B4EAA), Color(0xFF9B6BFF)],
+                        ),
+                        border: Border.all(
+                          color: const Color(0xFF4EFFEE),
+                          width: 2,
+                        ),
                       ),
-                      border: Border.all(
-                        color: const Color(0xFF4EFFEE),
-                        width: 2,
-                      ),
-                    ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/images/avatar/profile.png',
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.person,
-                            color: Colors.white,
-                            size: 28.w,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  // Name and Email
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        controller.fullNameController.text.isEmpty
-                            ? 'Not set'
-                            : controller.fullNameController.text,
-                        style: TextStyle(
+                      child: ClipOval(
+                        child: profileImage.isNotEmpty
+                            ? Image.network(
+                          profileImage,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white54,
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 28.w,
+                            );
+                          },
+                        )
+                            : Icon(
+                          Icons.person,
                           color: Colors.white,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
+                          size: 28.w,
                         ),
                       ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        controller.email.isEmpty ? 'Not set' : controller.email,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 12.sp,
-                        ),
+                    ),
+                    SizedBox(width: 12.w),
+                    // Name and Email
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            fullName.isEmpty ? 'Not set' : fullName,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 2.h),
+                          Text(
+                            email.isEmpty ? 'Not set' : email,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.5),
+                              fontSize: 12.sp,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                );
+              }),
             ),
 
             SizedBox(height: 12.h),
 
-            // Badge
+            // Badge Section
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Container(
@@ -272,9 +283,7 @@ class CustomDrawer extends StatelessWidget {
                   color: const Color(0xFF232244),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
-                // In your widget
                 child: Obx(() {
-                  // Get first unlocked badge or null
                   final currentBadge = badgesController.badges
                       .firstWhereOrNull((b) => b['unlocked'] == true);
 
@@ -287,19 +296,9 @@ class CustomDrawer extends StatelessWidget {
                       children: [
                         if (currentBadge != null) ...[
                           ClipOval(
-                            child: Image.asset(
-                              badgesController
-                                  .getBadgeImage(currentBadge['code'] ?? ''),
-                              width: 20.w,
-                              height: 20.w,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Icon(
-                                  Icons.workspace_premium,
-                                  color: const Color(0xFF4CAF50),
-                                  size: 20.w,
-                                );
-                              },
+                            child: _buildBadgeImage(
+                              badgesController.getBadgeImage(currentBadge['code'] ?? ''),
+                              currentBadge,
                             ),
                           ),
                           SizedBox(width: 6.w),
@@ -336,7 +335,7 @@ class CustomDrawer extends StatelessWidget {
 
             SizedBox(height: 30.h),
 
-            // Menu Items - All using asset image paths
+            // Menu Items
             _buildMenuItem(
               icon: 'assets/images/icon/video_icon.png',
               label: 'My Videos',
@@ -361,7 +360,6 @@ class CustomDrawer extends StatelessWidget {
 
             const Spacer(),
 
-            // Logout - Now with dialog
             Builder(
               builder: (context) => _buildMenuItem(
                 icon: 'assets/images/icon/logout.png',
@@ -377,6 +375,46 @@ class CustomDrawer extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  // ✅ NEW: Helper to build badge image (handles both asset and network)
+  Widget _buildBadgeImage(String imagePath, Map<String, dynamic> badge) {
+    // Check if API provides image URL
+    final apiImageUrl = badge['image'] ?? badge['image_url'] ?? '';
+
+    if (apiImageUrl.toString().isNotEmpty &&
+        (apiImageUrl.toString().startsWith('http://') ||
+            apiImageUrl.toString().startsWith('https://'))) {
+      // Use network image from API
+      return Image.network(
+        apiImageUrl.toString(),
+        width: 20.w,
+        height: 20.w,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Icon(
+            Icons.workspace_premium,
+            color: const Color(0xFF4CAF50),
+            size: 20.w,
+          );
+        },
+      );
+    }
+
+    // Fallback to local asset
+    return Image.asset(
+      imagePath,
+      width: 20.w,
+      height: 20.w,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Icon(
+          Icons.workspace_premium,
+          color: const Color(0xFF4CAF50),
+          size: 20.w,
+        );
+      },
     );
   }
 

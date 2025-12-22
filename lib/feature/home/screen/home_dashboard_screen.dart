@@ -5,6 +5,7 @@ import 'package:stumble/route/route_name.dart';
 
 // Import the controllers
 import '../controller/notification_controller.dart';
+import '../controller/profile_controller.dart';
 import '../controller/task_controller.dart';
 import '../controller/xp_controller.dart';
 
@@ -24,6 +25,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   final BotController botController = Get.put(BotController());
   final NotificationController notificationController = Get.put(NotificationController());
   final TaskController taskController = Get.put(TaskController());
+  final ProfileController controller = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +97,49 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                   shape: BoxShape.circle,
                 ),
                 child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/avatar/profile.png',
-                    fit: BoxFit.cover,
-                  ),
+                  child: Obx(() {
+                    // Access profileData.value to trigger reactivity, then use getter
+                    final _ = controller.profileData.value; // This triggers Obx rebuild
+                    final profileImage = controller.profileImageUrl;
+
+                    if (profileImage.isEmpty) {
+                      return Container(
+                        color: const Color(0xFF2A2535),
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.white54,
+                          size: 20.sp,
+                        ),
+                      );
+                    }
+
+                    return Image.network(
+                      profileImage,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          color: const Color(0xFF2A2535),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white54,
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: const Color(0xFF2A2535),
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.white54,
+                            size: 20.sp,
+                          ),
+                        );
+                      },
+                    );
+                  }),
                 ),
               ),
             ),

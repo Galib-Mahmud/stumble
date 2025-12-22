@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:stumble/feature/widget/condition/custom_appbar2.dart';
 
 import '../controller/progress_controller.dart';
 
@@ -23,6 +24,7 @@ class ProgressPathScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      appBar: CustomAppBar2(title: '', onBack: () => Get.back()),
       body: Stack(
         fit: StackFit.expand,
         children: [

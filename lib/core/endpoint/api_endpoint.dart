@@ -28,6 +28,7 @@ class ApiEndpoint {
   // Add these to your ApiEndpoint class
   static const String tasks = "/api/authentication/tasks/";
   static String taskById(int id) => "/api/authentication/tasks/$id/";
+  static const String orbitPosts = "/api/authentication/orbit-post-list/";
 
 
 }

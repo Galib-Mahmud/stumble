@@ -1,17 +1,23 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
+
+import '../controller/orbit_controller.dart';
+
 
 class OrbitQuotesScreen extends StatelessWidget {
   const OrbitQuotesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final OrbitController controller = Get.put(OrbitController());
+
     return Container(
       color: Colors.black,
       child: SafeArea(
-        bottom: false, // Don't add safe area at bottom (navbar handles it)
+        bottom: false,
         child: Column(
           children: [
             // Custom App Bar
@@ -29,7 +35,6 @@ class OrbitQuotesScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
-
                     width: 35.w,
                     height: 35.w,
                     decoration: const BoxDecoration(
@@ -66,100 +71,106 @@ class OrbitQuotesScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    left: 16.w,
-                    right: 16.w,
-                    top: 8.h,
-                    bottom: 140.h, // ✅ Bottom padding for navbar
-                  ),
-                  child: Column(
-                    children: [
-                      // Quote Cards Grid
-                      IntrinsicHeight(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Left Column - 2 large cards
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  _buildQuoteCard(
-                                    quote: "You are stronger than you think, even when you feel weak",
-                                    gradientColors: const [
-                                      Color(0xFF87CEEB),
-                                      Color(0xFFDDA0DD),
-                                      Color(0xFFFFB347),
-                                    ],
-                                    height: 280.h,
-                                  ),
-                                  SizedBox(height: 12.h),
-                                  _buildQuoteCard(
-                                    quote: "You are not alone in this: even in darkness, there is a spark waiting to shine",
-                                    gradientColors: const [
-                                      Color(0xFF20B2AA),
-                                      Color(0xFF98FB98),
-                                      Color(0xFFFFB347),
-                                    ],
-                                    height: 300.h,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 12.w),
-                            // Right Column - 4 smaller cards
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  _buildQuoteCard(
-                                    quote: "You are worthy of love, care, and hope - always, no matter what",
-                                    gradientColors: const [
-                                      Color(0xFF6366F1),
-                                      Color(0xFF8B5CF6),
-                                      Color(0xFFEC4899),
-                                    ],
-                                    height: 180.h,
-                                  ),
-                                  SizedBox(height: 12.h),
-                                  _buildQuoteCard(
-                                    quote: "You are worthy of love, care, and hope - always, no matter what",
-                                    gradientColors: const [
-                                      Color(0xFFFCD34D),
-                                      Color(0xFFF97316),
-                                    ],
-                                    height: 180.h,
-                                  ),
-                                  SizedBox(height: 12.h),
-                                  _buildQuoteCard(
-                                    quote: "You are worthy of love, care, and hope - always, no matter what",
-                                    gradientColors: const [
-                                      Color(0xFF06B6D4),
-                                      Color(0xFF3B82F6),
-                                      Color(0xFF10B981),
-                                    ],
-                                    height: 180.h,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                child: Obx(() {
+                  // Loading State
+                  if (controller.isLoading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
                       ),
+                    );
+                  }
 
-                      SizedBox(height: 20.h),
-
-                      // Bottom Motivational Quote Section
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16.r),
-                        child: Image.asset(
-                          'assets/images/splash/orbit.png',
-                          width: double.infinity,
-                          fit: BoxFit.fitWidth,
-                        ),
+                  // Error State
+                  if (controller.errorMessage.value.isNotEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            color: Colors.white54,
+                            size: 48.sp,
+                          ),
+                          SizedBox(height: 16.h),
+                          Text(
+                            controller.errorMessage.value,
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 14.sp,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 16.h),
+                          ElevatedButton(
+                            onPressed: () => controller.refreshPosts(),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF6366F1),
+                            ),
+                            child: const Text('Retry'),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    );
+                  }
+
+                  // Empty State
+                  if (controller.posts.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.auto_awesome,
+                            color: Colors.white54,
+                            size: 48.sp,
+                          ),
+                          SizedBox(height: 16.h),
+                          Text(
+                            'No orbit posts yet',
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  // Posts Grid
+                  return RefreshIndicator(
+                    onRefresh: () => controller.refreshPosts(),
+                    color: const Color(0xFF6366F1),
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.only(
+                        left: 16.w,
+                        right: 16.w,
+                        top: 8.h,
+                        bottom: 140.h,
+                      ),
+                      child: Column(
+                        children: [
+                          // Dynamic Posts Grid
+                          _buildPostsGrid(controller),
+
+                          SizedBox(height: 20.h),
+
+                          // Bottom Motivational Quote Section
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16.r),
+                            child: Image.asset(
+                              'assets/images/splash/orbit.png',
+                              width: double.infinity,
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
               ),
             ),
           ],
@@ -168,8 +179,102 @@ class OrbitQuotesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQuoteCard({
-    required String quote,
+  Widget _buildPostsGrid(OrbitController controller) {
+    final posts = controller.posts;
+
+    if (posts.length == 1) {
+      // Single post - full width
+      return _buildPostCard(
+        post: posts[0],
+        gradientColors: controller.getGradientForIndex(0),
+        height: 300.h,
+      );
+    }
+
+    if (posts.length == 2) {
+      // Two posts - side by side
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: _buildPostCard(
+              post: posts[0],
+              gradientColors: controller.getGradientForIndex(0),
+              height: 280.h,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: _buildPostCard(
+              post: posts[1],
+              gradientColors: controller.getGradientForIndex(1),
+              height: 280.h,
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Multiple posts - Pinterest-style layout
+    List<OrbitPost> leftColumn = [];
+    List<OrbitPost> rightColumn = [];
+
+    for (int i = 0; i < posts.length; i++) {
+      if (i % 2 == 0) {
+        leftColumn.add(posts[i]);
+      } else {
+        rightColumn.add(posts[i]);
+      }
+    }
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left Column
+          Expanded(
+            child: Column(
+              children: leftColumn.asMap().entries.map((entry) {
+                final index = entry.key * 2;
+                final post = entry.value;
+                final isLarge = index % 4 == 0;
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 12.h),
+                  child: _buildPostCard(
+                    post: post,
+                    gradientColors: controller.getGradientForIndex(index),
+                    height: isLarge ? 300.h : 220.h,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          SizedBox(width: 12.w),
+          // Right Column
+          Expanded(
+            child: Column(
+              children: rightColumn.asMap().entries.map((entry) {
+                final index = entry.key * 2 + 1;
+                final post = entry.value;
+                final isLarge = index % 4 == 1;
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 12.h),
+                  child: _buildPostCard(
+                    post: post,
+                    gradientColors: controller.getGradientForIndex(index),
+                    height: isLarge ? 220.h : 300.h,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPostCard({
+    required OrbitPost post,
     required List<Color> gradientColors,
     required double height,
   }) {
@@ -185,7 +290,47 @@ class OrbitQuotesScreen extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Quote Bubble
+          // Background Image (if available)
+          if (post.imageUrl.isNotEmpty)
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16.r),
+                child: CachedNetworkImage(
+                  imageUrl: post.imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: Colors.black26,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white54,
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const SizedBox(),
+                ),
+              ),
+            ),
+
+          // Gradient Overlay for text readability
+          if (post.imageUrl.isNotEmpty)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.r),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.1),
+                      Colors.black.withOpacity(0.6),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+          // Quote/Title Bubble
           Positioned(
             top: 16.h,
             left: 10.w,
@@ -226,7 +371,7 @@ class OrbitQuotesScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 10.h),
                   Text(
-                    quote,
+                    post.title.isNotEmpty ? post.title : post.description,
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
@@ -234,6 +379,8 @@ class OrbitQuotesScreen extends StatelessWidget {
                       height: 1.35,
                     ),
                     textAlign: TextAlign.center,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -244,17 +391,22 @@ class OrbitQuotesScreen extends StatelessWidget {
           Positioned(
             bottom: 14.h,
             right: 14.w,
-            child: Container(
-              width: 36.w,
-              height: 36.w,
-              decoration: BoxDecoration(
-                color: const Color(0xFF5D4037),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Icon(
-                Icons.star,
-                color: const Color(0xFFFFD700),
-                size: 20.sp,
+            child: GestureDetector(
+              onTap: () {
+                // Handle favorite/star action
+              },
+              child: Container(
+                width: 36.w,
+                height: 36.w,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF5D4037),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Icon(
+                  Icons.star,
+                  color: const Color(0xFFFFD700),
+                  size: 20.sp,
+                ),
               ),
             ),
           ),

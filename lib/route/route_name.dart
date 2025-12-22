@@ -59,6 +59,7 @@ class RouteName{
   //Constellation
   static const String constellationTora = '/constellationTora';
   static const String skyTora = '/skyTora';
+  static const String test = '/test';
 
 
 

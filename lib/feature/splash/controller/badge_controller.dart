@@ -1,13 +1,10 @@
+import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:stumble/core/endpoint/api_endpoint.dart';
 import 'package:stumble/core/local_storage/user_info.dart' as local_storage;
 
-import '../../../core/endpoint/api_client.dart';
-
-
 class BadgesController extends GetxController {
-  final ApiClient _apiClient = ApiClient(baseUrl: ApiEndpoint.baseUrl);
-
   RxBool isLoading = false.obs;
   RxString errorMessage = ''.obs;
   RxList<Map<String, dynamic>> badges = <Map<String, dynamic>>[].obs;
@@ -30,26 +27,63 @@ class BadgesController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      final response = await _apiClient.get(
-        ApiEndpoint.badge,
+      final uri = Uri.parse("${ApiEndpoint.baseUrl}${ApiEndpoint.badge}");
+      final response = await http.get(
+        uri,
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
         },
       );
 
-      badges.value = List<Map<String, dynamic>>.from(response['badges'] ?? []);
-      earnedBadges.value = List<String>.from(response['earned_badges'] ?? []);
+      print('Badge API Status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        // Parse badges list
+        if (data['badges'] != null) {
+          badges.value = List<Map<String, dynamic>>.from(data['badges']);
+          print('Badges loaded: ${badges.length}');
+
+          // Debug: Print each badge
+          for (var badge in badges) {
+            print('Badge: ${badge['name']} - is_active: ${badge['is_active']} (${badge['is_active'].runtimeType}) - unlocked: ${badge['unlocked']}');
+          }
+        }
+
+        // Parse earned badges list
+        if (data['earned_badges'] != null) {
+          earnedBadges.value = List<String>.from(data['earned_badges']);
+        }
+        print('Earned badges: $earnedBadges');
+
+        // Force UI update
+        badges.refresh();
+
+      } else {
+        errorMessage.value = "Failed to load badges (${response.statusCode})";
+      }
     } catch (e) {
       errorMessage.value = e.toString();
+      print('Badge fetch error: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
   // Get only active badges
-  List<Map<String, dynamic>> get activeBadges =>
-      badges.where((b) => b['is_active'] == true).toList();
+  List<Map<String, dynamic>> get activeBadges {
+    final active = badges.where((b) {
+      final isActive = b['is_active'];
+      return isActive == true || isActive.toString() == 'true';
+    }).toList();
+    return active;
+  }
+
+  // Get unlocked badges
+  List<Map<String, dynamic>> get unlockedBadges =>
+      badges.where((b) => b['unlocked'] == true).toList();
 
   // Check if badge is unlocked
   bool isBadgeUnlocked(Map<String, dynamic> badge) {
@@ -76,9 +110,34 @@ class BadgesController extends GetxController {
       case 'mentor':
         return 'assets/images/icon/badge8.png';
       case 'legacy':
-        return 'assets/images/icon/badge8.png';
+        return 'assets/images/icon/badge9.png';
       default:
         return 'assets/images/icon/badge1.png';
+    }
+  }
+
+  int getBadgeColor(String code) {
+    switch (code) {
+      case 'day_one':
+        return 0xFF4CAF50;
+      case 'courage':
+        return 0xFFE91E63;
+      case 'reflection':
+        return 0xFF9C27B0;
+      case 'resilience':
+        return 0xFFFF9800;
+      case 'support_karma':
+        return 0xFF2196F3;
+      case 'growth':
+        return 0xFF8BC34A;
+      case 'graduation':
+        return 0xFFFFD700;
+      case 'mentor':
+        return 0xFF00BCD4;
+      case 'legacy':
+        return 0xFFFF5722;
+      default:
+        return 0xFFE8734A;
     }
   }
 
