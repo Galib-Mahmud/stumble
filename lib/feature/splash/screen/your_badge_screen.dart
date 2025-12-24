@@ -197,48 +197,7 @@ class YourBadgesScreen extends StatelessWidget {
                 }),
               ),
 
-              // Next Button
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
-                child: GestureDetector(
-                  onTap: () => Get.toNamed(RouteName.mainScreen),
-                  child: Container(
-                    height: 46.h,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          Color(0xFFEA11E0),
-                          Color(0xFFF13D75),
-                          Color(0xFFF86D01),
-                        ],
-                        stops: [0.0, 0.53, 1.0],
-                      ),
-                      borderRadius: BorderRadius.circular(23.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFF96D01).withOpacity(0.2),
-                          blurRadius: 12.r,
-                          offset: Offset(0, 4.h),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Next',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
             ],
           ),
         ),

@@ -238,7 +238,7 @@ class _TermsScreenState extends State<TermsScreen> {
                     CustomButton(
                       text: "I agree",
                       onTap: () {
-                        Get.toNamed(RouteName.yourBadges);
+                        Get.toNamed(RouteName.mainScreen);
                       },
                     ),
                     SizedBox(height: 16.h),

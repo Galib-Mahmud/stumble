@@ -135,6 +135,12 @@ class SettingsScreen extends StatelessWidget {
                 onTap: () {
                   Get.toNamed(RouteName.progressPath);
                 },
+              ),_buildSettingsItem(
+                iconPath: 'assets/images/splash/dataRetention.png',
+                title: 'Your Badges',
+                onTap: () {
+                  Get.toNamed(RouteName.yourBadges);
+                },
               ),
               SizedBox(height: 24.h),
               // Danger Actions Section
