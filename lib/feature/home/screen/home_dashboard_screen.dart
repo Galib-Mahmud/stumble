@@ -23,7 +23,8 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   // Initialize Controllers
   final XpController xpController = Get.put(XpController());
   final BotController botController = Get.put(BotController());
-  final NotificationController notificationController = Get.put(NotificationController());
+  final NotificationController notificationController =
+  Get.put(NotificationController());
   final TaskController taskController = Get.put(TaskController());
   final ProfileController controller = Get.put(ProfileController());
 
@@ -54,6 +55,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 SizedBox(height: 24.h),
                 _buildXPGaugeCard(),
                 SizedBox(height: 24.h),
+                _buildStumbleEventsSection(),
                 SizedBox(height: 24.h),
                 _buildBotsSection(),
                 SizedBox(height: 24.h),
@@ -98,8 +100,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 ),
                 child: ClipOval(
                   child: Obx(() {
-                    // Access profileData.value to trigger reactivity, then use getter
-                    final _ = controller.profileData.value; // This triggers Obx rebuild
+                    final _ = controller.profileData.value;
                     final profileImage = controller.profileImageUrl;
 
                     if (profileImage.isEmpty) {
@@ -304,6 +305,162 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
+  // ✅ Stumble Events Section - Fixed with height
+  Widget _buildStumbleEventsSection() {
+    final List<Map<String, String>> events = [
+      {
+        'imagePath': 'assets/images/avatar/event1.png',
+        'title': 'Community Meetup',
+      },
+      {
+        'imagePath': 'assets/images/avatar/event2.png',
+        'title': 'Wellness Workshop',
+      },
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Stumble events",
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        SizedBox(height: 16.h),
+        SizedBox(
+          height: 120.h, // ✅ Fixed: height দেওয়া হয়েছে
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            itemCount: events.length,
+            itemBuilder: (context, index) {
+              final event = events[index];
+              return GestureDetector(
+                onTap: () => _showEventPopup(event['title']!),
+                child: Container(
+                  width: 242.w,
+                  height: 130.h,
+                  margin: EdgeInsets.only(right: 12.w),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.r),
+                    child: Image.asset(
+                      event['imagePath']!,
+                      width: 160.w,
+                      height: 120.h,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ✅ Event Popup Dialog
+  void _showEventPopup(String title) {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: EdgeInsets.all(24.w),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E1A2E),
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.event, color: Colors.purpleAccent, size: 40.sp),
+              SizedBox(height: 16.h),
+              Text(
+                "Join \"$title\"?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 24.h),
+              Row(
+                children: [
+                  // NO button - route করবে
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.back();
+                        // Get.toNamed(RouteName.eventDetail); // 👈 তোমার route দাও
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "No",
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  // YES button - শুধু popup close
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
+                          ),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Yes",
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierColor: Colors.black54,
+    );
+  }
+
   Widget _buildBotsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +469,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Stumble events",
+              "Stumble Bots",
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
@@ -337,7 +494,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             if (botController.bots.isEmpty) {
               return Center(
                 child: Text(
-                  "No events available",
+                  "No bots available",
                   style: TextStyle(
                     fontSize: 14.sp,
                     color: Colors.white.withOpacity(0.5),
@@ -444,11 +601,10 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-// ✅ Your Tasks Section - Only Add & Delete
+  // ✅ Your Tasks Section
   Widget _buildYourTasksSection() {
     return Column(
       children: [
-        // Header Row
         Obx(() {
           final isSelecting = taskController.isSelectionMode.value;
           final selectedCount = taskController.selectedTaskIds.length;
@@ -456,7 +612,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Title or Selection Count
               isSelecting
                   ? Row(
                 children: [
@@ -468,30 +623,37 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                         color: Colors.white.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8.r),
                       ),
-                      child: Icon(Icons.close, size: 18.sp, color: Colors.white70),
+                      child: Icon(Icons.close,
+                          size: 18.sp, color: Colors.white70),
                     ),
                   ),
                   SizedBox(width: 12.w),
                   Text(
                     "$selectedCount selected",
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               )
                   : Text(
                 "Your tasks",
-                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-
-              // Action Buttons
               Row(
                 children: [
                   if (isSelecting) ...[
-                    // Select All
                     GestureDetector(
                       onTap: () => taskController.selectAllTasks(),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10.w, vertical: 6.h),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(20.r),
@@ -499,28 +661,34 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                         child: Row(
                           children: [
                             Icon(
-                              taskController.isAllSelected ? Icons.deselect : Icons.select_all,
+                              taskController.isAllSelected
+                                  ? Icons.deselect
+                                  : Icons.select_all,
                               size: 14.sp,
                               color: Colors.white70,
                             ),
                             SizedBox(width: 4.w),
                             Text(
                               taskController.isAllSelected ? "None" : "All",
-                              style: TextStyle(fontSize: 12.sp, color: Colors.white70),
+                              style: TextStyle(
+                                  fontSize: 12.sp, color: Colors.white70),
                             ),
                           ],
                         ),
                       ),
                     ),
                     SizedBox(width: 8.w),
-
-                    // Delete Selected
                     GestureDetector(
-                      onTap: selectedCount > 0 ? () => taskController.showDeleteSelectedConfirmation() : null,
+                      onTap: selectedCount > 0
+                          ? () => taskController.showDeleteSelectedConfirmation()
+                          : null,
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10.w, vertical: 6.h),
                         decoration: BoxDecoration(
-                          color: selectedCount > 0 ? Colors.redAccent.withOpacity(0.2) : Colors.white.withOpacity(0.05),
+                          color: selectedCount > 0
+                              ? Colors.redAccent.withOpacity(0.2)
+                              : Colors.white.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Row(
@@ -528,14 +696,18 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                             Icon(
                               Icons.delete_outline,
                               size: 14.sp,
-                              color: selectedCount > 0 ? Colors.redAccent : Colors.white30,
+                              color: selectedCount > 0
+                                  ? Colors.redAccent
+                                  : Colors.white30,
                             ),
                             SizedBox(width: 4.w),
                             Text(
                               "Delete",
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: selectedCount > 0 ? Colors.redAccent : Colors.white30,
+                                color: selectedCount > 0
+                                    ? Colors.redAccent
+                                    : Colors.white30,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -544,32 +716,34 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                       ),
                     ),
                   ] else ...[
-                    // Select Button
                     if (taskController.tasks.isNotEmpty)
                       GestureDetector(
                         onTap: () => taskController.enterSelectionMode(),
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 6.h),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(20.r),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.checklist_rounded, size: 14.sp, color: Colors.white70),
+                              Icon(Icons.checklist_rounded,
+                                  size: 14.sp, color: Colors.white70),
                               SizedBox(width: 4.w),
-                              Text("Select", style: TextStyle(fontSize: 12.sp, color: Colors.white70)),
+                              Text("Select",
+                                  style: TextStyle(
+                                      fontSize: 12.sp, color: Colors.white70)),
                             ],
                           ),
                         ),
                       ),
                     SizedBox(width: 8.w),
-
-                    // Add Button
                     GestureDetector(
                       onTap: () => taskController.showAddTaskSheet(),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10.w, vertical: 6.h),
                         decoration: BoxDecoration(
                           color: Colors.greenAccent.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(20.r),
@@ -580,7 +754,11 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                             SizedBox(width: 4.w),
                             Text(
                               "Add",
-                              style: TextStyle(fontSize: 12.sp, color: Colors.greenAccent, fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colors.greenAccent,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ],
                         ),
@@ -593,13 +771,14 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           );
         }),
         SizedBox(height: 20.h),
-
-        // Task List
         Obx(() {
           if (taskController.isLoading.value) {
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 30.h),
-              child: CircularProgressIndicator(color: Colors.white.withOpacity(0.5), strokeWidth: 2),
+              child: CircularProgressIndicator(
+                color: Colors.white.withOpacity(0.5),
+                strokeWidth: 2,
+              ),
             );
           }
 
@@ -608,15 +787,22 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
               padding: EdgeInsets.symmetric(vertical: 40.h),
               child: Column(
                 children: [
-                  Icon(Icons.task_alt, size: 48.sp, color: Colors.white.withOpacity(0.3)),
+                  Icon(Icons.task_alt,
+                      size: 48.sp, color: Colors.white.withOpacity(0.3)),
                   SizedBox(height: 12.h),
-                  Text("No tasks yet", style: TextStyle(fontSize: 16.sp, color: Colors.white.withOpacity(0.5))),
+                  Text(
+                    "No tasks yet",
+                    style: TextStyle(
+                        fontSize: 16.sp, color: Colors.white.withOpacity(0.5)),
+                  ),
                   SizedBox(height: 8.h),
                   GestureDetector(
                     onTap: () => taskController.showAddTaskSheet(),
                     child: Text(
                       "Tap + Add to create your first task",
-                      style: TextStyle(fontSize: 14.sp, color: Colors.greenAccent.withOpacity(0.7)),
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.greenAccent.withOpacity(0.7)),
                     ),
                   ),
                 ],
@@ -659,16 +845,19 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           duration: const Duration(milliseconds: 200),
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.blueAccent.withOpacity(0.15) : Colors.white.withOpacity(0.05),
+            color: isSelected
+                ? Colors.blueAccent.withOpacity(0.15)
+                : Colors.white.withOpacity(0.05),
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: isSelected ? Colors.blueAccent.withOpacity(0.5) : Colors.white.withOpacity(0.1),
+              color: isSelected
+                  ? Colors.blueAccent.withOpacity(0.5)
+                  : Colors.white.withOpacity(0.1),
               width: isSelected ? 1.5 : 1,
             ),
           ),
           child: Row(
             children: [
-              // Selection checkbox (only in selection mode)
               if (isSelecting)
                 Container(
                   width: 28.w,
@@ -678,7 +867,9 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                     shape: BoxShape.circle,
                     color: isSelected ? Colors.blueAccent : Colors.transparent,
                     border: Border.all(
-                      color: isSelected ? Colors.blueAccent : Colors.white.withOpacity(0.3),
+                      color: isSelected
+                          ? Colors.blueAccent
+                          : Colors.white.withOpacity(0.3),
                       width: 1.5,
                     ),
                   ),
@@ -686,8 +877,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                       ? Icon(Icons.check, size: 16.sp, color: Colors.white)
                       : null,
                 ),
-
-              // Task Info
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -703,11 +892,14 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                     SizedBox(height: 4.h),
                     Row(
                       children: [
-                        Icon(Icons.access_time, size: 14.sp, color: Colors.white.withOpacity(0.4)),
+                        Icon(Icons.access_time,
+                            size: 14.sp, color: Colors.white.withOpacity(0.4)),
                         SizedBox(width: 6.w),
                         Text(
                           task.duration,
-                          style: TextStyle(fontSize: 13.sp, color: Colors.white.withOpacity(0.5)),
+                          style: TextStyle(
+                              fontSize: 13.sp,
+                              color: Colors.white.withOpacity(0.5)),
                         ),
                       ],
                     ),

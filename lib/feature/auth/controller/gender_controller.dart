@@ -45,7 +45,7 @@ class GenderController extends GetxController {
 
       if (response != null && response['success'] == true) {
         // Navigate to next screen
-        Get.toNamed(RouteName.question);
+        Get.toNamed(RouteName.findConstellation);
       } else {
         Get.snackbar("Error", response?['message'] ?? "Something went wrong");
       }

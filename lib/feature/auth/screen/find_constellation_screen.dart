@@ -172,7 +172,7 @@ class _FindConstellationScreenState extends State<FindConstellationScreen> {
                     CustomButton(
                       text: "Take a quiz",
                       onTap: () {
-                        Get.toNamed(RouteName.selectAvatar);
+                        Get.toNamed(RouteName.question);
 
                       },
                     ),
