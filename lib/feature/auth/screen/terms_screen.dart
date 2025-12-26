@@ -238,7 +238,7 @@ class _TermsScreenState extends State<TermsScreen> {
                     CustomButton(
                       text: "I agree",
                       onTap: () {
-                        Get.toNamed(RouteName.mainScreen);
+                        Get.toNamed(RouteName.constellationTora);
                       },
                     ),
                     SizedBox(height: 16.h),

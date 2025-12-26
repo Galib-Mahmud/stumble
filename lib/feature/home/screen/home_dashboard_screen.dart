@@ -307,14 +307,20 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
 
   // ✅ Stumble Events Section - Fixed with height
   Widget _buildStumbleEventsSection() {
-    final List<Map<String, String>> events = [
+    final List<Map<String, dynamic>> events = [
       {
         'imagePath': 'assets/images/avatar/event1.png',
         'title': 'Community Meetup',
+        'popupQuestion': 'Did you make a journal today?',
+        'noRoute': RouteName.createJurnal,
+        'yesRoute': null, // just close popup on Yes
       },
       {
         'imagePath': 'assets/images/avatar/event2.png',
         'title': 'Wellness Workshop',
+        'popupQuestion': 'Have you completed your wellness activity?',
+        'noRoute': null, // just close popup on No
+        'yesRoute': RouteName.orbit, // 👈 Change to your desired route
       },
     ];
 
@@ -331,7 +337,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         ),
         SizedBox(height: 16.h),
         SizedBox(
-          height: 120.h, // ✅ Fixed: height দেওয়া হয়েছে
+          height: 120.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -339,7 +345,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             itemBuilder: (context, index) {
               final event = events[index];
               return GestureDetector(
-                onTap: () => _showEventPopup(event['title']!),
+                onTap: () => _showEventPopup(event), // 👈 Pass full event map
                 child: Container(
                   width: 242.w,
                   height: 130.h,
@@ -372,8 +378,8 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-  // ✅ Event Popup Dialog
-  void _showEventPopup(String title) {
+// ✅ Event Popup Dialog - Now handles different events
+  void _showEventPopup(Map<String, dynamic> event) {
     Get.dialog(
       Dialog(
         backgroundColor: Colors.transparent,
@@ -389,7 +395,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
               Icon(Icons.event, color: Colors.purpleAccent, size: 40.sp),
               SizedBox(height: 16.h),
               Text(
-                "Join \"$title\"?",
+                event['popupQuestion'] ?? "Did you complete this activity?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18.sp,
@@ -400,12 +406,14 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
               SizedBox(height: 24.h),
               Row(
                 children: [
-                  // NO button - route করবে
+                  // NO button
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
                         Get.back();
-                        // Get.toNamed(RouteName.eventDetail); // 👈 তোমার route দাও
+                        if (event['noRoute'] != null) {
+                          Get.toNamed(event['noRoute']);
+                        }
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -426,10 +434,15 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                     ),
                   ),
                   SizedBox(width: 12.w),
-                  // YES button - শুধু popup close
+                  // YES button
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => Get.back(),
+                      onTap: () {
+                        Get.back();
+                        if (event['yesRoute'] != null) {
+                          Get.toNamed(event['yesRoute']);
+                        }
+                      },
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12.h),
                         decoration: BoxDecoration(
