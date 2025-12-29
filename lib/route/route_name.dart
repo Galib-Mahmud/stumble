@@ -42,6 +42,9 @@ class RouteName{
   static const String innerCircleChat = '/innerCircleChat';
   static const String videoList = '/videoList';
   static const String botChat = '/botChat';
+  static const String stumbleSky = '/stumbleSky';
+  static const String favoriteOrbit = '/favoriteOrbit';
+
 
 
 

@@ -6,7 +6,6 @@ import 'package:stumble/route/route_name.dart';
 
 import '../controller/orbit_controller.dart';
 
-
 class OrbitQuotesScreen extends StatelessWidget {
   const OrbitQuotesScreen({super.key});
 
@@ -153,7 +152,7 @@ class OrbitQuotesScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           // Dynamic Posts Grid
-                          _buildPostsGrid(controller),
+                          _buildPostsGrid(controller, context),
 
                           SizedBox(height: 20.h),
 
@@ -179,7 +178,7 @@ class OrbitQuotesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPostsGrid(OrbitController controller) {
+  Widget _buildPostsGrid(OrbitController controller, BuildContext context) {
     final posts = controller.posts;
 
     if (posts.length == 1) {
@@ -188,6 +187,8 @@ class OrbitQuotesScreen extends StatelessWidget {
         post: posts[0],
         gradientColors: controller.getGradientForIndex(0),
         height: 300.h,
+        controller: controller,
+        context: context,
       );
     }
 
@@ -201,6 +202,8 @@ class OrbitQuotesScreen extends StatelessWidget {
               post: posts[0],
               gradientColors: controller.getGradientForIndex(0),
               height: 280.h,
+              controller: controller,
+              context: context,
             ),
           ),
           SizedBox(width: 12.w),
@@ -209,6 +212,8 @@ class OrbitQuotesScreen extends StatelessWidget {
               post: posts[1],
               gradientColors: controller.getGradientForIndex(1),
               height: 280.h,
+              controller: controller,
+              context: context,
             ),
           ),
         ],
@@ -244,6 +249,8 @@ class OrbitQuotesScreen extends StatelessWidget {
                     post: post,
                     gradientColors: controller.getGradientForIndex(index),
                     height: isLarge ? 300.h : 220.h,
+                    controller: controller,
+                    context: context,
                   ),
                 );
               }).toList(),
@@ -263,6 +270,8 @@ class OrbitQuotesScreen extends StatelessWidget {
                     post: post,
                     gradientColors: controller.getGradientForIndex(index),
                     height: isLarge ? 220.h : 300.h,
+                    controller: controller,
+                    context: context,
                   ),
                 );
               }).toList(),
@@ -277,6 +286,8 @@ class OrbitQuotesScreen extends StatelessWidget {
     required OrbitPost post,
     required List<Color> gradientColors,
     required double height,
+    required OrbitController controller,
+    required BuildContext context,
   }) {
     return Container(
       height: height,
@@ -387,28 +398,30 @@ class OrbitQuotesScreen extends StatelessWidget {
             ),
           ),
 
-          // Star Button
+          // Star Button - Reactive to favorite status
           Positioned(
             bottom: 14.h,
             right: 14.w,
-            child: GestureDetector(
-              onTap: () {
-                // Handle favorite/star action
-              },
+            child: Obx(() => GestureDetector(
+              onTap: () => controller.toggleFavorite(post, context),
               child: Container(
                 width: 36.w,
                 height: 36.w,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF5D4037),
+                  color: post.isFavorite.value
+                      ? const Color(0xFFFFD700)
+                      : const Color(0xFF5D4037),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
-                  Icons.star,
-                  color: const Color(0xFFFFD700),
+                  post.isFavorite.value ? Icons.star : Icons.star_border,
+                  color: post.isFavorite.value
+                      ? Colors.white
+                      : const Color(0xFFFFD700),
                   size: 20.sp,
                 ),
               ),
-            ),
+            )),
           ),
         ],
       ),

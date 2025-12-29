@@ -141,6 +141,12 @@ class SettingsScreen extends StatelessWidget {
                 onTap: () {
                   Get.toNamed(RouteName.yourBadges);
                 },
+              ),_buildSettingsItem(
+                iconPath: 'assets/images/splash/dataRetention.png',
+                title: 'Stumble Sky',
+                onTap: () {
+                  Get.toNamed(RouteName.stumbleSky);
+                },
               ),
               SizedBox(height: 24.h),
               // Danger Actions Section

@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:stumble/feature/constellation/controller/favorite_orbit_screen.dart';
+import 'package:stumble/feature/constellation/screen/stumble_sky.dart';
 import 'package:stumble/feature/home/screen/orbit_screen.dart';
 
 import 'package:stumble/route/route_name.dart';
@@ -240,6 +242,14 @@ class AppRoute {
     GetPage(
       name: RouteName.botChat,
       page: () => BotChatScreen(),
+      transition: Transition.noTransition,
+    ),GetPage(
+      name: RouteName.stumbleSky,
+      page: () => StumbleSkyScreen(),
+      transition: Transition.noTransition,
+    ),GetPage(
+      name: RouteName.favoriteOrbit,
+      page: () => FavoriteOrbitScreen(),
       transition: Transition.noTransition,
     ),
   ];

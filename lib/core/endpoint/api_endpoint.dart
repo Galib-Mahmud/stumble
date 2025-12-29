@@ -29,6 +29,9 @@ class ApiEndpoint {
   static const String tasks = "/api/authentication/tasks/";
   static String taskById(int id) => "/api/authentication/tasks/$id/";
   static const String orbitPosts = "/api/authentication/orbit-post-list/";
+  static const String supportRequest = "/api/chatbot/support/request/";
+  static const String favoriteOrbitPost = "/api/authentication/favorite-orbit-post/";
+
 
 
 }

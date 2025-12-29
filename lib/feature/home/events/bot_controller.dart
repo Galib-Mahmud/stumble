@@ -36,17 +36,17 @@ class BotModel {
   // Get color based on bot name
   Color get botColor {
     switch (name.toLowerCase()) {
-      case 'blue':
+      case 'aquila':
         return const Color(0xFF2196F3);
-      case 'red':
+      case 'azuris':
         return const Color(0xFFE53935);
-      case 'yellow':
+      case 'ignis':
         return const Color(0xFFFFB300);
-      case 'white':
+      case 'luma':
         return const Color(0xFFB0BEC5);
-      case 'sara':
+      case 'solen':
         return const Color(0xFFE91E63);
-      case 'joe':
+      case 'terra':
         return const Color(0xFF4CAF50);
       default:
         return const Color(0xFF00BCD4);
@@ -55,18 +55,18 @@ class BotModel {
 
   // Get icon based on persona
   IconData get botIcon {
-    switch (persona.toLowerCase()) {
-      case 'reflective listener':
+    switch (persona) {
+      case 'The Vision':
         return Icons.hearing;
-      case 'routine architect':
+      case 'The Listener':
         return Icons.architecture;
-      case 'motivational coach':
+      case 'The Flame':
         return Icons.fitness_center;
-      case 'empathetic friend':
+      case 'The Spark':
         return Icons.favorite;
-      case 'mindfulness mentor':
+      case 'The Architect':
         return Icons.self_improvement;
-      case 'optimistic companion':
+      case 'The Ground':
         return Icons.wb_sunny;
       default:
         return Icons.smart_toy;
@@ -194,7 +194,7 @@ class BotController extends GetxController {
     chatMessages.clear();
     // Add welcome message from bot
     chatMessages.add(ChatMessage(
-      message: "Hi! I'm ${bot.displayName}, your ${bot.persona}. ${bot.description} How can I help you today?",
+      message: "Hi! I'm ${bot.displayName},  ${bot.persona}. ${bot.description} How can I help you today?",
       isUser: false,
     ));
   }

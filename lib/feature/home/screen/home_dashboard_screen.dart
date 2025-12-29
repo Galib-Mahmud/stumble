@@ -6,6 +6,7 @@ import 'package:stumble/route/route_name.dart';
 // Import the controllers
 import '../controller/notification_controller.dart';
 import '../controller/profile_controller.dart';
+import '../controller/quote_controller.dart';
 import '../controller/task_controller.dart';
 import '../controller/xp_controller.dart';
 
@@ -231,30 +232,62 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
+  // Initialize controller at the top of your screen/widget
+  final QuoteController quoteController = Get.put(QuoteController());
+
   Widget _buildWelcomeText() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Let's grow",
+    return Obx(() {
+      final quoteText = quoteController.quote.value;
+
+      if (quoteController.isLoading.value) {
+        return Text(
+          "Loading...",
           style: TextStyle(
             fontSize: 32.sp,
             fontWeight: FontWeight.w400,
             color: Colors.white,
             height: 1.2,
           ),
+        );
+      }
+
+      if (quoteText.isEmpty) {
+        // Fallback text
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Let's grow",
+              style: TextStyle(
+                fontSize: 32.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.white,
+                height: 1.2,
+              ),
+            ),
+            Text(
+              "a little today",
+              style: TextStyle(
+                fontSize: 32.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.white,
+                height: 1.2,
+              ),
+            ),
+          ],
+        );
+      }
+
+      return Text(
+        quoteText,
+        style: TextStyle(
+          fontSize: 28.sp,
+          fontWeight: FontWeight.w400,
+          color: Colors.white,
+          height: 1.3,
         ),
-        Text(
-          "a little today",
-          style: TextStyle(
-            fontSize: 32.sp,
-            fontWeight: FontWeight.w400,
-            color: Colors.white,
-            height: 1.2,
-          ),
-        ),
-      ],
-    );
+      );
+    });
   }
 
   Widget _buildXPGaugeCard() {
@@ -318,9 +351,9 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       {
         'imagePath': 'assets/images/avatar/event2.png',
         'title': 'Wellness Workshop',
-        'popupQuestion': 'Have you completed your wellness activity?',
+        'popupQuestion': 'Scroll Your Orbit?',
         'noRoute': null, // just close popup on No
-        'yesRoute': RouteName.orbit, // 👈 Change to your desired route
+        'yesRoute': RouteName.favoriteOrbit, // 👈 Change to your desired route
       },
     ];
 

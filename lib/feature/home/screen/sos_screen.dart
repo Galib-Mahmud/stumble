@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../route/route_name.dart';
 import '../../auth/controller/video_record_controller.dart';
+import '../controller/support_controller.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
@@ -17,20 +18,12 @@ class SupportScreen extends StatefulWidget {
 class _SupportScreenState extends State<SupportScreen>
     with SingleTickerProviderStateMixin {
   final VideoRecordController controller = Get.put(VideoRecordController());
+  final SupportController supportController = Get.put(SupportController());
 
   int selectedModeIndex = 0; // 0: Gentle, 1: Critical, 2: Urgent
 
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
-
-  // Demo consultation numbers for Critical mode
-  final List<Map<String, String>> consultationNumbers = [
-    {'name': 'Dr. Sarah Johnson', 'number': '+1-800-555-0101', 'specialty': 'Mental Health'},
-    {'name': 'Dr. Michael Chen', 'number': '+1-800-555-0102', 'specialty': 'Crisis Counselor'},
-    {'name': 'Dr. Emily Davis', 'number': '+1-800-555-0103', 'specialty': 'Therapist'},
-    {'name': 'Wellness Center', 'number': '+1-800-555-0104', 'specialty': 'General Support'},
-    {'name': 'Night Support Line', 'number': '+1-800-555-0105', 'specialty': '24/7 Available'},
-  ];
 
   // Emergency numbers for Urgent mode
   final List<Map<String, String>> emergencyNumbers = [
@@ -184,7 +177,7 @@ class _SupportScreenState extends State<SupportScreen>
     );
   }
 
-  // Support Circle - YOUR ORIGINAL CODE
+  // Support Circle
   Widget _buildSupportCircle() {
     return AnimatedBuilder(
       animation: _pulseController,
@@ -208,7 +201,7 @@ class _SupportScreenState extends State<SupportScreen>
     );
   }
 
-  // Record Button - YOUR ORIGINAL CODE
+  // Record Button
   Widget _buildRecordButton() {
     return Obx(() => GestureDetector(
       onTap: controller.isUploading.value ? null : () => _showRecordingDialog(),
@@ -255,9 +248,8 @@ class _SupportScreenState extends State<SupportScreen>
     ));
   }
 
-  // Show Recording Dialog - YOUR ORIGINAL CODE (UNCHANGED)
+  // Show Recording Dialog
   void _showRecordingDialog() {
-    // Initialize camera when dialog opens
     controller.initCamera();
 
     Get.dialog(
@@ -272,7 +264,6 @@ class _SupportScreenState extends State<SupportScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Header
               Container(
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
@@ -310,8 +301,6 @@ class _SupportScreenState extends State<SupportScreen>
                   ],
                 ),
               ),
-
-              // Camera Preview
               Obx(() => Container(
                 height: 350.h,
                 width: double.infinity,
@@ -332,8 +321,6 @@ class _SupportScreenState extends State<SupportScreen>
                   ),
                 ),
               )),
-
-              // Recording Timer
               Obx(() => controller.isRecording.value
                   ? Container(
                 padding: EdgeInsets.symmetric(
@@ -369,13 +356,10 @@ class _SupportScreenState extends State<SupportScreen>
                 ),
               )
                   : const SizedBox.shrink()),
-
-              // Action Buttons
               Padding(
                 padding: EdgeInsets.all(16.w),
                 child: Obx(() => Row(
                   children: [
-                    // Cancel Button
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
@@ -405,13 +389,11 @@ class _SupportScreenState extends State<SupportScreen>
                       ),
                     ),
                     SizedBox(width: 12.w),
-                    // Record/Stop Button
                     Expanded(
                       flex: 2,
                       child: GestureDetector(
                         onTap: () async {
                           if (controller.isRecording.value) {
-                            // Stop recording and upload
                             final file = await controller.stopRecording();
                             controller.disposeCamera();
                             Get.back();
@@ -419,7 +401,6 @@ class _SupportScreenState extends State<SupportScreen>
                               await controller.uploadVideo(file);
                             }
                           } else {
-                            // Start recording
                             await controller.startRecording();
                           }
                         },
@@ -474,9 +455,9 @@ class _SupportScreenState extends State<SupportScreen>
     );
   }
 
-  // ============== NEW: MODE POPUP DIALOGS ==============
+  // ============== MODE POPUP DIALOGS ==============
 
-  // Show Gentle Mode Popup
+  // Show Gentle Mode Popup - STATIC (No API call)
   void _showGentleModePopup() {
     Get.dialog(
       Dialog(
@@ -502,20 +483,16 @@ class _SupportScreenState extends State<SupportScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Header with close button
               _buildPopupHeader(
                 title: 'Gentle Support',
                 color: const Color(0xFF4EFFEE),
                 icon: Icons.spa_outlined,
               ),
-
-              // Scrollable Content
               Flexible(
                 child: SingleChildScrollView(
                   padding: EdgeInsets.all(24.w),
                   child: Column(
                     children: [
-                      // Icon
                       Container(
                         width: 100.w,
                         height: 100.w,
@@ -534,10 +511,7 @@ class _SupportScreenState extends State<SupportScreen>
                           color: const Color(0xFF4EFFEE),
                         ),
                       ),
-
                       SizedBox(height: 24.h),
-
-                      // Main Message
                       Text(
                         "Please tap on the middle button of this app",
                         textAlign: TextAlign.center,
@@ -548,10 +522,7 @@ class _SupportScreenState extends State<SupportScreen>
                           height: 1.4,
                         ),
                       ),
-
                       SizedBox(height: 16.h),
-
-                      // Description
                       Text(
                         "The center support button provides calming exercises and grounding techniques to help you feel better.",
                         textAlign: TextAlign.center,
@@ -562,10 +533,7 @@ class _SupportScreenState extends State<SupportScreen>
                           height: 1.5,
                         ),
                       ),
-
                       SizedBox(height: 24.h),
-
-                      // Action Button
                       GestureDetector(
                         onTap: () => Get.back(),
                         child: Container(
@@ -601,108 +569,15 @@ class _SupportScreenState extends State<SupportScreen>
     );
   }
 
-  // Show Critical Mode Popup
+  // Show Critical Mode Popup - DYNAMIC (API call)
   void _showCriticalModePopup() {
-    Get.dialog(
-      Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
-        child: Container(
-          constraints: BoxConstraints(maxHeight: 600.h),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF3A2A1A),
-                Color(0xFF251A0D),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(24.r),
-            border: Border.all(
-              color: const Color(0xFFFFB74D).withOpacity(0.3),
-              width: 1,
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header with close button
-              _buildPopupHeader(
-                title: 'Critical Support',
-                color: const Color(0xFFFFB74D),
-                icon: Icons.support_agent,
-              ),
+    // Call API for critical mode
+    supportController.requestSupport('critical');
 
-              // Scrollable Content
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(20.w),
-                  child: Column(
-                    children: [
-                      // Message
-                      Container(
-                        padding: EdgeInsets.all(16.w),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFB74D).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(16.r),
-                          border: Border.all(
-                            color: const Color(0xFFFFB74D).withOpacity(0.3),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.phone_in_talk,
-                              color: const Color(0xFFFFB74D),
-                              size: 28.w,
-                            ),
-                            SizedBox(width: 12.w),
-                            Expanded(
-                              child: Text(
-                                "Please call our consultation team",
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
 
-                      SizedBox(height: 20.h),
-
-                      // Consultation Numbers List
-                      Text(
-                        "Available Consultants",
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white.withOpacity(0.6),
-                        ),
-                      ),
-
-                      SizedBox(height: 12.h),
-
-                      // Numbers List
-                      ...consultationNumbers.map((consultant) =>
-                          _buildConsultantCard(consultant)
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      barrierDismissible: true,
-    );
   }
 
-  // Show Urgent Mode Popup
+  // Show Urgent Mode Popup - STATIC (No API call)
   void _showUrgentModePopup() {
     Get.dialog(
       Dialog(
@@ -728,20 +603,16 @@ class _SupportScreenState extends State<SupportScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Header with close button
               _buildPopupHeader(
                 title: 'Emergency Support',
                 color: Colors.red,
                 icon: Icons.emergency,
               ),
-
-              // Scrollable Content
               Flexible(
                 child: SingleChildScrollView(
                   padding: EdgeInsets.all(20.w),
                   child: Column(
                     children: [
-                      // Warning Banner
                       Container(
                         padding: EdgeInsets.all(16.w),
                         decoration: BoxDecoration(
@@ -772,17 +643,11 @@ class _SupportScreenState extends State<SupportScreen>
                           ],
                         ),
                       ),
-
                       SizedBox(height: 20.h),
-
-                      // Emergency Numbers List
                       ...emergencyNumbers.map((emergency) =>
                           _buildEmergencyCard(emergency)
                       ),
-
                       SizedBox(height: 16.h),
-
-                      // Important Note
                       Container(
                         padding: EdgeInsets.all(16.w),
                         decoration: BoxDecoration(
@@ -850,7 +715,6 @@ class _SupportScreenState extends State<SupportScreen>
               ),
             ),
           ),
-          // Close Button
           GestureDetector(
             onTap: () => Get.back(),
             child: Container(
@@ -863,87 +727,6 @@ class _SupportScreenState extends State<SupportScreen>
                 Icons.close,
                 color: Colors.white,
                 size: 20.w,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Build Consultant Card for Critical Mode
-  Widget _buildConsultantCard(Map<String, String> consultant) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
-      padding: EdgeInsets.all(14.w),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(
-          color: const Color(0xFFFFB74D).withOpacity(0.2),
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 45.w,
-            height: 45.w,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFB74D).withOpacity(0.2),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.person,
-              color: const Color(0xFFFFB74D),
-              size: 24.w,
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  consultant['name']!,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  consultant['specialty']!,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.white.withOpacity(0.5),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          GestureDetector(
-            onTap: () => _makePhoneCall(consultant['number']!),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFB74D),
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.call, color: Colors.black, size: 16.w),
-                  SizedBox(width: 6.w),
-                  Text(
-                    "Call",
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
               ),
             ),
           ),
@@ -1028,7 +811,7 @@ class _SupportScreenState extends State<SupportScreen>
     }
   }
 
-  // Mode Item Button - UPDATED TO SHOW POPUPS
+  // Mode Item Button
   Widget _buildModeItem({
     required int index,
     required String iconPath,
@@ -1045,13 +828,13 @@ class _SupportScreenState extends State<SupportScreen>
           // Show appropriate popup based on selected mode
           switch (index) {
             case 0:
-              _showGentleModePopup();
+              _showGentleModePopup(); // Static
               break;
             case 1:
-              _showCriticalModePopup();
+              _showCriticalModePopup(); // Dynamic - API call
               break;
             case 2:
-              _showUrgentModePopup();
+              _showUrgentModePopup(); // Static
               break;
           }
         },

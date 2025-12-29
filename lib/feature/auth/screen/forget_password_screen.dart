@@ -48,18 +48,38 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 20.h),
-                        // Logo centered
-                        Center(
-                          child: Image.asset(
-                            'assets/images/splash/stumble.png',
-                            height: 60.h,
-                            width: 60.w,
-                          ),
+                        // Row with Back Button and Logo
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Back Button
+                            GestureDetector(
+                              onTap: () => Get.back(),
+                              child: Container(
+                                width: 32.w,
+                                height: 32.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.15),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.arrow_back,
+                                  color: Colors.white,
+                                  size: 18.sp,
+                                ),
+                              ),
+                            ),
+                            // Logo
+                            Image.asset(
+                              'assets/images/splash/stumble.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 30.h),
+                        SizedBox(height: 80.h),
                         // Forget Password Title
                         Text(
-                          'Forget Password',
+                          ' Forget Password',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 28.sp,
