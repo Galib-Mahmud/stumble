@@ -5,8 +5,6 @@ import 'package:get/get.dart';
 
 import '../../home/controller/orbit_controller.dart';
 
-
-
 class FavoriteOrbitScreen extends StatelessWidget {
   const FavoriteOrbitScreen({super.key});
 
@@ -14,9 +12,9 @@ class FavoriteOrbitScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final OrbitController controller = Get.put(OrbitController());
 
-    return Container(
-      color: Colors.black,
-      child: SafeArea(
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
         bottom: false,
         child: Column(
           children: [
@@ -25,12 +23,11 @@ class FavoriteOrbitScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
               child: Row(
                 children: [
-                  // Back Button
                   GestureDetector(
                     onTap: () => Get.back(),
                     child: Container(
                       width: 35.w,
-                      height: 35.w,
+                      height: 35.h,
                       decoration: const BoxDecoration(
                         color: Color(0xFF3D3D3D),
                         shape: BoxShape.circle,
@@ -52,7 +49,6 @@ class FavoriteOrbitScreen extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  // Star Icon
                   Icon(
                     Icons.star,
                     color: const Color(0xFFFFD700),
@@ -95,7 +91,7 @@ class FavoriteOrbitScreen extends StatelessWidget {
                         children: [
                           Container(
                             width: 80.w,
-                            height: 80.w,
+                            height: 80.h,
                             decoration: BoxDecoration(
                               color: const Color(0xFFFFD700).withOpacity(0.1),
                               shape: BoxShape.circle,
@@ -110,39 +106,17 @@ class FavoriteOrbitScreen extends StatelessWidget {
                           Text(
                             'No favorite orbits yet',
                             style: TextStyle(
-                              color: Colors.white,
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ),
                           SizedBox(height: 8.h),
                           Text(
                             'Star your favorite orbits to see them here',
                             style: TextStyle(
-                              color: Colors.white54,
                               fontSize: 14.sp,
-                            ),
-                          ),
-                          SizedBox(height: 24.h),
-                          ElevatedButton(
-                            onPressed: () => Get.back(),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF6366F1),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 32.w,
-                                vertical: 12.h,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
-                            child: Text(
-                              'Explore Orbits',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              color: Colors.white54,
                             ),
                           ),
                         ],
@@ -150,107 +124,26 @@ class FavoriteOrbitScreen extends StatelessWidget {
                     );
                   }
 
-                  // Favorite Posts - Horizontal Scroll
+                  // Vertical Scroll List
                   return RefreshIndicator(
                     onRefresh: () => controller.fetchFavoriteOrbitPosts(),
                     color: const Color(0xFF6366F1),
-                    child: SingleChildScrollView(
+                    child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Count Text
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20.w),
-                            child: Text(
-                              '${controller.favoritePosts.length} Favorite${controller.favoritePosts.length > 1 ? 's' : ''}',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 16.h),
+                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                      itemCount: controller.favoritePosts.length,
+                      itemBuilder: (context, index) {
+                        final favoritePost = controller.favoritePosts[index];
+                        final post = favoritePost.orbitPost;
+                        final gradientColors = controller.getGradientForIndex(index);
 
-                          // Horizontal Scroll List
-                          SizedBox(
-                            height: 280.h,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              physics: const BouncingScrollPhysics(),
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              itemCount: controller.favoritePosts.length,
-                              itemBuilder: (context, index) {
-                                final favoritePost = controller.favoritePosts[index];
-                                final post = favoritePost.orbitPost;
-                                final gradientColors = controller.getGradientForIndex(index);
-
-                                return _buildFavoriteCard(
-                                  post: post,
-                                  gradientColors: gradientColors,
-                                  controller: controller,
-                                  context: context,
-                                );
-                              },
-                            ),
-                          ),
-
-                          SizedBox(height: 30.h),
-
-                          // Bottom Motivational Section
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20.w),
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.all(20.w),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    const Color(0xFF6366F1).withOpacity(0.3),
-                                    const Color(0xFF8B5CF6).withOpacity(0.3),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(16.r),
-                                border: Border.all(
-                                  color: const Color(0xFF6366F1).withOpacity(0.3),
-                                ),
-                              ),
-                              child: Column(
-                                children: [
-                                  Icon(
-                                    Icons.auto_awesome,
-                                    color: const Color(0xFFFFD700),
-                                    size: 32.sp,
-                                  ),
-                                  SizedBox(height: 12.h),
-                                  Text(
-                                    'Your Inspiration Collection',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  Text(
-                                    'These are the moments that inspire you. Keep adding more!',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          SizedBox(height: 100.h),
-                        ],
-                      ),
+                        return _buildFavoriteCard(
+                          post: post,
+                          gradientColors: gradientColors,
+                          controller: controller,
+                          context: context,
+                        );
+                      },
                     ),
                   );
                 }),
@@ -269,8 +162,8 @@ class FavoriteOrbitScreen extends StatelessWidget {
     required BuildContext context,
   }) {
     return Container(
-      width: 200.w,
-      margin: EdgeInsets.only(right: 16.w),
+      height: 200.h,
+      margin: EdgeInsets.only(bottom: 16.h),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.r),
         gradient: LinearGradient(
@@ -281,8 +174,8 @@ class FavoriteOrbitScreen extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: gradientColors.first.withOpacity(0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            blurRadius: 12.r,
+            offset: Offset(0, 6.h),
           ),
         ],
       ),
@@ -333,7 +226,7 @@ class FavoriteOrbitScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Star Badge
+                // Top Row - Star Badge & Remove Button
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -358,21 +251,19 @@ class FavoriteOrbitScreen extends StatelessWidget {
                           Text(
                             'Favorite',
                             style: TextStyle(
-                              color: Colors.white,
                               fontSize: 11.sp,
                               fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ),
                         ],
                       ),
                     ),
-
-                    // Remove from favorites button
                     GestureDetector(
                       onTap: () => controller.toggleFavorite(post, context),
                       child: Container(
                         width: 32.w,
-                        height: 32.w,
+                        height: 32.h,
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
                           shape: BoxShape.circle,
@@ -389,7 +280,7 @@ class FavoriteOrbitScreen extends StatelessWidget {
 
                 const Spacer(),
 
-                // Quote Bubble
+                // Quote Content
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: 12.w,
@@ -408,7 +299,6 @@ class FavoriteOrbitScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Quote Icon
                       Container(
                         width: 24.w,
                         height: 18.h,
@@ -421,8 +311,8 @@ class FavoriteOrbitScreen extends StatelessWidget {
                             '66',
                             style: TextStyle(
                               fontSize: 10.sp,
-                              color: Colors.white,
                               fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -436,7 +326,7 @@ class FavoriteOrbitScreen extends StatelessWidget {
                           color: Colors.black87,
                           height: 1.3,
                         ),
-                        maxLines: 3,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],

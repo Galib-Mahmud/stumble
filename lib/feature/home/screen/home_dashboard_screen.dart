@@ -336,14 +336,14 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   Widget _buildStumbleEventsSection() {
     final List<Map<String, dynamic>> events = [
       {
-        'imagePath': 'assets/images/avatar/event2.png',
+        'imagePath': 'assets/images/avatar/event1.png',
         'title': 'Community Meetup',
         'popupQuestion': 'Did you do your journal today?',
         'noRoute': RouteName.createJurnal,
         'yesRoute': null,
       },
       {
-        'imagePath': 'assets/images/avatar/event1.png',
+        'imagePath': 'assets/images/avatar/event2.png',
         'title': 'Wellness Workshop',
         'popupQuestion': 'Scroll my orbit for inspiration ',
         'noRoute': null,
