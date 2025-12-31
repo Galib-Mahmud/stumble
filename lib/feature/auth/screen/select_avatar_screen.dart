@@ -231,61 +231,9 @@ class _SelectAvatarScreenState extends State<SelectAvatarScreen> {
                         return const SizedBox.shrink();
                       }),
 
-                      // Divider
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 2,
-                              color: Colors.white.withOpacity(0.2),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: Text(
-                              'or',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.6),
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: 2,
-                              color: Colors.white.withOpacity(0.2),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16.h),
 
-                      // Add photo button
-                      GestureDetector(
-                        onTap: () => controller.pickImageFromGallery(),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF183A37),
-                            borderRadius: BorderRadius.circular(25.r),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.add, color: Colors.white, size: 20.sp),
-                              SizedBox(width: 8.w),
-                              Text(
-                                "Add your photo",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+
+
 
                       SizedBox(height: 40.h),
                     ],

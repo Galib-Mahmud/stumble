@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../route/route_name.dart';
 import '../../auth/controller/video_record_controller.dart';
 import '../controller/support_controller.dart';
+import '../websocket/chat_service.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
@@ -457,122 +458,23 @@ class _SupportScreenState extends State<SupportScreen>
 
   // ============== MODE POPUP DIALOGS ==============
 
-  // Show Gentle Mode Popup - STATIC (No API call)
-  void _showGentleModePopup() {
-    Get.dialog(
-      Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 60.h),
-        child: Container(
-          constraints: BoxConstraints(maxHeight: 500.h),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF1A3A4A),
-                Color(0xFF0D2535),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(24.r),
-            border: Border.all(
-              color: const Color(0xFF4EFFEE).withOpacity(0.3),
-              width: 1,
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildPopupHeader(
-                title: 'Gentle Support',
-                color: const Color(0xFF4EFFEE),
-                icon: Icons.spa_outlined,
-              ),
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(24.w),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 100.w,
-                        height: 100.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              const Color(0xFF4EFFEE).withOpacity(0.3),
-                              const Color(0xFF4EFFEE).withOpacity(0.1),
-                            ],
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.touch_app_rounded,
-                          size: 50.w,
-                          color: const Color(0xFF4EFFEE),
-                        ),
-                      ),
-                      SizedBox(height: 24.h),
-                      Text(
-                        "Please tap on the middle button of this app",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          height: 1.4,
-                        ),
-                      ),
-                      SizedBox(height: 16.h),
-                      Text(
-                        "The center support button provides calming exercises and grounding techniques to help you feel better.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white.withOpacity(0.7),
-                          height: 1.5,
-                        ),
-                      ),
-                      SizedBox(height: 24.h),
-                      GestureDetector(
-                        onTap: () => Get.back(),
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(vertical: 16.h),
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF4EFFEE), Color(0xFF00D9C6)],
-                            ),
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Got it!",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      barrierDismissible: true,
-    );
-  }
+
 
   // Show Critical Mode Popup - DYNAMIC (API call)
   void _showCriticalModePopup() {
     // Call API for critical mode
     supportController.requestSupport('critical');
+    // Navigate to chat (same as main screen chat button)
+    ChatService.goToTribeChat();
+
+
+
+  }  void __showGentleModePopup() {
+    // Call API for critical mode
+    supportController.requestSupport('gentle');
+    // Navigate to chat (same as main screen chat button)
+    ChatService.goToTribeChat();
+
 
 
   }
@@ -828,7 +730,7 @@ class _SupportScreenState extends State<SupportScreen>
           // Show appropriate popup based on selected mode
           switch (index) {
             case 0:
-              _showGentleModePopup(); // Static
+              __showGentleModePopup(); // Static
               break;
             case 1:
               _showCriticalModePopup(); // Dynamic - API call

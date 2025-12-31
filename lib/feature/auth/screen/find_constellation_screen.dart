@@ -170,7 +170,7 @@ class _FindConstellationScreenState extends State<FindConstellationScreen> {
                   children: [
                     // Take a quiz Button
                     CustomButton(
-                      text: "Take a quiz",
+                      text: " Find Your Constellation",
                       onTap: () {
                         Get.toNamed(RouteName.question);
 
@@ -178,31 +178,19 @@ class _FindConstellationScreenState extends State<FindConstellationScreen> {
                     ),
                     SizedBox(height: 20.h),
                     // Pricing Text
-                    Text(
-                      "\$2.49/month, billed yearly\nat \$29.99",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.white.withOpacity(0.6),
-                        height: 1.5,
-                      ),
-                    ),
-                    SizedBox(height: 16.h),
-                    // Restore purchases
-                    GestureDetector(
-                      onTap: () {
-                        // Handle restore purchases
-                      },
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
                       child: Text(
-                        "Restore purchases",
+                        "A group of peers and guide bots to help you be relationship ready ",
+                        textAlign: TextAlign.left,
                         style: TextStyle(
-                          fontSize: 18.sp,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400,
+                          fontSize: 14.sp,
+                          color: Colors.white.withOpacity(0.6),
+                          height: 1.5,
                         ),
                       ),
                     ),
-                    SizedBox(height: 30.h),
+
                   ],
                 ),
               ),

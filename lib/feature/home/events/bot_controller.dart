@@ -53,23 +53,23 @@ class BotModel {
     }
   }
 
-  // Get icon based on persona
-  IconData get botIcon {
+  // Get icon image path based on persona
+  String get botIconPath {
     switch (persona) {
       case 'The Vision':
-        return Icons.hearing;
+        return "assets/images/avatar/aquila.png";
       case 'The Listener':
-        return Icons.architecture;
+        return "assets/images/avatar/azuris.png";
       case 'The Flame':
-        return Icons.fitness_center;
+        return "assets/images/avatar/ignis.png";
       case 'The Spark':
-        return Icons.favorite;
+        return "assets/images/avatar/luma.png";
       case 'The Architect':
-        return Icons.self_improvement;
+        return "assets/images/avatar/solen.png";
       case 'The Ground':
-        return Icons.wb_sunny;
+        return "assets/images/avatar/terra.png";
       default:
-        return Icons.smart_toy;
+        return "assets/images/avatar/profile.png";
     }
   }
 }
@@ -148,7 +148,6 @@ class BotController extends GetxController {
         final dynamic decoded = json.decode(response.body);
         print("🔍 Decoded Type: ${decoded.runtimeType}");
 
-        // Handle if response is a Map with 'data' key or direct List
         List<dynamic> data;
         if (decoded is List) {
           data = decoded;
@@ -192,9 +191,8 @@ class BotController extends GetxController {
   void selectBot(BotModel bot) {
     currentBot.value = bot;
     chatMessages.clear();
-    // Add welcome message from bot
     chatMessages.add(ChatMessage(
-      message: "Hi! I'm ${bot.displayName},  ${bot.persona}. ${bot.description} How can I help you today?",
+      message: "Hi! I'm ${bot.displayName}, ${bot.persona}. ${bot.description} How can I help you today?",
       isUser: false,
     ));
   }
@@ -218,7 +216,6 @@ class BotController extends GetxController {
     try {
       isSending.value = true;
 
-      // ✅ FIX: Build correct endpoint
       final endpoint = "${ApiEndpoint.baseUrl}/api/chatbot/chatbot/${currentBot.value!.name}/";
 
       print("📤 Sending message to: $endpoint");
@@ -234,8 +231,6 @@ class BotController extends GetxController {
           "user_input": message.trim(),
         }),
       );
-
-      // ... বাকি code same
 
       print("📡 Chat Response Status: ${response.statusCode}");
       print("📄 Chat Response Body: ${response.body}");

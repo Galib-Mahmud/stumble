@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
-// Import the controllers
 import '../controller/notification_controller.dart';
 import '../controller/profile_controller.dart';
 import '../controller/quote_controller.dart';
@@ -21,13 +20,13 @@ class HomeDashboardScreen extends StatefulWidget {
 }
 
 class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
-  // Initialize Controllers
   final XpController xpController = Get.put(XpController());
   final BotController botController = Get.put(BotController());
   final NotificationController notificationController =
   Get.put(NotificationController());
   final TaskController taskController = Get.put(TaskController());
   final ProfileController controller = Get.put(ProfileController());
+  final QuoteController quoteController = Get.put(QuoteController());
 
   @override
   Widget build(BuildContext context) {
@@ -232,9 +231,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-  // Initialize controller at the top of your screen/widget
-  final QuoteController quoteController = Get.put(QuoteController());
-
   Widget _buildWelcomeText() {
     return Obx(() {
       final quoteText = quoteController.quote.value;
@@ -252,7 +248,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       }
 
       if (quoteText.isEmpty) {
-        // Fallback text
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -303,8 +298,8 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             fit: BoxFit.fitWidth,
           ),
           Positioned(
-            top: 60.h,
-            left: 168.w,
+            top: 80.h,
+            left: 155.w,
             child: Obx(() {
               if (xpController.isLoading.value) {
                 return SizedBox(
@@ -338,22 +333,21 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-  // ✅ Stumble Events Section - Fixed with height
   Widget _buildStumbleEventsSection() {
     final List<Map<String, dynamic>> events = [
       {
-        'imagePath': 'assets/images/avatar/event1.png',
+        'imagePath': 'assets/images/avatar/event2.png',
         'title': 'Community Meetup',
-        'popupQuestion': 'Did you make a journal today?',
+        'popupQuestion': 'Did you do your journal today?',
         'noRoute': RouteName.createJurnal,
-        'yesRoute': null, // just close popup on Yes
+        'yesRoute': null,
       },
       {
-        'imagePath': 'assets/images/avatar/event2.png',
+        'imagePath': 'assets/images/avatar/event1.png',
         'title': 'Wellness Workshop',
-        'popupQuestion': 'Scroll Your Orbit?',
-        'noRoute': null, // just close popup on No
-        'yesRoute': RouteName.favoriteOrbit, // 👈 Change to your desired route
+        'popupQuestion': 'Scroll my orbit for inspiration ',
+        'noRoute': null,
+        'yesRoute': RouteName.favoriteOrbit,
       },
     ];
 
@@ -361,7 +355,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Stumble events",
+          "Stumble guides",
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
@@ -370,7 +364,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         ),
         SizedBox(height: 16.h),
         SizedBox(
-          height: 120.h,
+          height: 150.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -378,10 +372,10 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             itemBuilder: (context, index) {
               final event = events[index];
               return GestureDetector(
-                onTap: () => _showEventPopup(event), // 👈 Pass full event map
+                onTap: () => _showEventPopup(event),
                 child: Container(
                   width: 242.w,
-                  height: 130.h,
+                  height: 140.h,
                   margin: EdgeInsets.only(right: 12.w),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16.r),
@@ -398,7 +392,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                     child: Image.asset(
                       event['imagePath']!,
                       width: 160.w,
-                      height: 120.h,
+                      height: 140.h,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -411,7 +405,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-// ✅ Event Popup Dialog - Now handles different events
   void _showEventPopup(Map<String, dynamic> event) {
     Get.dialog(
       Dialog(
@@ -439,7 +432,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
               SizedBox(height: 24.h),
               Row(
                 children: [
-                  // NO button
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
@@ -467,7 +459,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                     ),
                   ),
                   SizedBox(width: 12.w),
-                  // YES button
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
@@ -515,7 +506,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Stumble Bots",
+              "Stumble guides",
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
@@ -540,7 +531,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             if (botController.bots.isEmpty) {
               return Center(
                 child: Text(
-                  "No bots available",
+                  "No guides available",
                   style: TextStyle(
                     fontSize: 14.sp,
                     color: Colors.white.withOpacity(0.5),
@@ -592,13 +583,18 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         ),
         child: Stack(
           children: [
+            // Background decorative image
             Positioned(
-              right: -20.w,
-              top: -20.h,
-              child: Icon(
-                bot.botIcon,
-                size: 100.sp,
-                color: Colors.white.withOpacity(0.1),
+              right: -1.w,
+              top: -1.h,
+              child: Opacity(
+                opacity: 1,
+                child: Image.asset(
+                  bot.botIconPath,
+                  width: 100.w,
+                  height: 100.w,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Padding(
@@ -606,17 +602,24 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Bot icon container
                   Container(
                     width: 42.w,
                     height: 42.w,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12.r),
+
+                      shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      bot.botIcon,
-                      color: Colors.white,
-                      size: 24.sp,
+                    child: ClipRRect(
+
+                      child: Image.asset(
+                        bot.botIconPath,
+                        width: 42.w,
+                        height: 42.w,
+                        fit: BoxFit.cover,
+
+                      ),
                     ),
                   ),
                   const Spacer(),
@@ -647,7 +650,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     );
   }
 
-  // ✅ Your Tasks Section
   Widget _buildYourTasksSection() {
     return Column(
       children: [
@@ -726,7 +728,8 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                     SizedBox(width: 8.w),
                     GestureDetector(
                       onTap: selectedCount > 0
-                          ? () => taskController.showDeleteSelectedConfirmation()
+                          ? () =>
+                          taskController.showDeleteSelectedConfirmation()
                           : null,
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -796,7 +799,8 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.add, size: 14.sp, color: Colors.greenAccent),
+                            Icon(Icons.add,
+                                size: 14.sp, color: Colors.greenAccent),
                             SizedBox(width: 4.w),
                             Text(
                               "Add",

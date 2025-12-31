@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 
 import 'bot_controller.dart';
 
-
 class BotChatScreen extends StatelessWidget {
   const BotChatScreen({super.key});
 
@@ -17,7 +16,6 @@ class BotChatScreen extends StatelessWidget {
       appBar: _buildAppBar(controller),
       body: Column(
         children: [
-          // Chat Messages
           Expanded(
             child: Obx(() {
               return ListView.builder(
@@ -31,16 +29,12 @@ class BotChatScreen extends StatelessWidget {
               );
             }),
           ),
-
-          // Typing Indicator
           Obx(() {
             if (controller.isSending.value) {
               return _buildTypingIndicator(controller);
             }
             return const SizedBox.shrink();
           }),
-
-          // Input Field
           _buildInputField(controller),
         ],
       ),
@@ -49,10 +43,11 @@ class BotChatScreen extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar(BotController controller) {
     return AppBar(
+
       backgroundColor: const Color(0xFF1A1A1A),
       elevation: 0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20.sp),
+        icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 18.sp),
         onPressed: () => Get.back(),
       ),
       title: Obx(() {
@@ -62,16 +57,19 @@ class BotChatScreen extends StatelessWidget {
         return Row(
           children: [
             Container(
-              width: 40.w,
-              height: 40.w,
+              width: 30.w,
+              height: 28.w,
               decoration: BoxDecoration(
                 color: bot.botColor.withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                bot.botIcon,
-                color: bot.botColor,
-                size: 22.sp,
+              child: ClipOval(
+                child: Image.asset(
+                  bot.botIconPath,
+                  width: 40.w,
+                  height: 40.w,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             SizedBox(width: 12.w),
@@ -81,7 +79,7 @@ class BotChatScreen extends StatelessWidget {
                 Text(
                   bot.displayName,
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
@@ -89,7 +87,7 @@ class BotChatScreen extends StatelessWidget {
                 Text(
                   bot.persona,
                   style: TextStyle(
-                    fontSize: 12.sp,
+                    fontSize: 11.sp,
                     color: Colors.white.withOpacity(0.6),
                   ),
                 ),
@@ -114,7 +112,8 @@ class BotChatScreen extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
       child: Row(
-        mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+        isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isUser) ...[
@@ -125,10 +124,13 @@ class BotChatScreen extends StatelessWidget {
                 color: bot?.botColor.withOpacity(0.2) ?? Colors.grey,
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                bot?.botIcon ?? Icons.smart_toy,
-                color: bot?.botColor ?? Colors.grey,
-                size: 18.sp,
+              child: ClipOval(
+                child: Image.asset(
+                  bot?.botIconPath ?? "assets/images/avatar/profile.png",
+                  width: 32.w,
+                  height: 32.w,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             SizedBox(width: 8.w),
@@ -177,10 +179,13 @@ class BotChatScreen extends StatelessWidget {
               color: bot?.botColor.withOpacity(0.2) ?? Colors.grey,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              bot?.botIcon ?? Icons.smart_toy,
-              color: bot?.botColor ?? Colors.grey,
-              size: 18.sp,
+            child: ClipOval(
+              child: Image.asset(
+                bot?.botIconPath ?? "assets/images/avatar/profile.png",
+                width: 32.w,
+                height: 32.w,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(width: 8.w),
