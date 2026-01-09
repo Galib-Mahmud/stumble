@@ -7,6 +7,7 @@ import '../../splash/screen/app_notification.dart';
 
 class GetQuestionController extends GetxController {
   final isLoading = false.obs;
+  final isSubmitting = false.obs; // 👈 Add this line
   final questions = <Map<String, dynamic>>[].obs;
   final currentQuestionIndex = 0.obs;
   final selectedOptionId = Rxn<int>(); // Single selected option ID
@@ -119,14 +120,22 @@ class GetQuestionController extends GetxController {
       return;
     }
 
-    await submitAnswer(questionId, selected);
+    // 👇 Start loading
+    isSubmitting.value = true;
 
-    if (currentQuestionIndex.value < questions.length - 1) {
-      currentQuestionIndex.value++;
-      selectedOptionId.value = null; // Reset for next question
-    } else {
-      Get.toNamed(RouteName.selectAvatar);
-      Get.snackbar("Completed", "All questions answered!");
+    try {
+      await submitAnswer(questionId, selected);
+
+      if (currentQuestionIndex.value < questions.length - 1) {
+        currentQuestionIndex.value++;
+        selectedOptionId.value = null;
+      } else {
+        Get.toNamed(RouteName.selectAvatar);
+        Get.snackbar("Completed", "All questions answered!");
+      }
+    } finally {
+      // 👇 Stop loading
+      isSubmitting.value = false;
     }
   }
 }

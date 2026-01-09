@@ -253,14 +253,42 @@ class QuestionScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(bottom: 80.h, top: 10.h),
                       child: Obx(() {
-                        return controller.hasSelection
-                            ? CustomButton(
-                          text: controller.currentStep == controller.totalSteps
-                              ? 'Finish'
-                              : 'Next',
-                          onTap: () => controller.nextQuestion(),
-                        )
-                            : Container(
+                        // 👇 Submitting হলে loading দেখাও
+                        if (controller.isSubmitting.value) {
+                          return Container(
+                            height: 46.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF09AFB9), Color(0xFFF96D01)],
+                              ),
+                              borderRadius: BorderRadius.circular(23.r),
+                            ),
+                            child: const Center(
+                              child: SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
+                        // 👇 Selection থাকলে active button
+                        if (controller.hasSelection) {
+                          return CustomButton(
+                            text: controller.currentStep == controller.totalSteps
+                                ? 'Finish'
+                                : 'Next',
+                            onTap: () => controller.nextQuestion(),
+                          );
+                        }
+
+                        // 👇 Selection না থাকলে disabled button
+                        return Container(
                           height: 46.h,
                           width: double.infinity,
                           decoration: BoxDecoration(

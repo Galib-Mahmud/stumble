@@ -48,6 +48,13 @@ dependencies:
   url_launcher: ^6.3.2
   file_picker: ^10.3.8
   cached_network_image: ^3.4.1
+  flutter_launcher_icons: ^0.14.4
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/avatar/iosICON.jpeg"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/images/avatar/iosICON.jpeg"
 
 
 dev_dependencies:
