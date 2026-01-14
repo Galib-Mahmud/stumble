@@ -1,28 +1,120 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:stumble/core/endpoint/api_endpoint.dart';
 import 'package:stumble/core/local_storage/user_info.dart' as local_storage;
 
+class ConstellationData {
+  final String name;
+  final String displayName;
+  final String subtitle;
+  final String backgroundImage;
+  final Color primaryColor;
+
+  ConstellationData({
+    required this.name,
+    required this.displayName,
+    required this.subtitle,
+    required this.backgroundImage,
+    required this.primaryColor,
+  });
+}
+
 class ConstellationController extends GetxController {
   RxBool isLoading = false.obs;
   RxString errorMessage = ''.obs;
 
-  // Primary tribe data
   Rx<Map<String, dynamic>> primaryTribe = Rx<Map<String, dynamic>>({});
   RxList<Map<String, dynamic>> tribes = <Map<String, dynamic>>[].obs;
 
-  // Computed values for easy access
   RxString constellationName = ''.obs;
   RxString constellationDescription = ''.obs;
   RxString userAvatar = ''.obs;
   RxString tribeName = ''.obs;
+
+  // Constellation mappings - map backend tribe names to designs
+  static final Map<String, ConstellationData> constellationMap = {
+    // Stillroot - Green/Teal (Image 1)
+    'stillroot': ConstellationData(
+      name: 'stillroot',
+      displayName: 'Stillroot',
+      subtitle: 'A space to steady and soft.',
+      backgroundImage: 'assets/images/avatar/constellation_stillroot.png',
+      primaryColor: const Color(0xFF4EEABC),
+    ),
+
+    // Flowline - Blue/Cyan (Image 2)
+    'flowline': ConstellationData(
+      name: 'flowline',
+      displayName: 'Flowline',
+      subtitle: 'This is where your constellation rises.',
+      backgroundImage: 'assets/images/avatar/constellation_flowline.png',
+      primaryColor: const Color(0xFF00D4FF),
+    ),
+
+    // Emberpath - Orange/Red (Image 3)
+    'emberpath': ConstellationData(
+      name: 'emberpath',
+      displayName: 'Emberpath',
+      subtitle: 'A space for truth to rise above.',
+      backgroundImage: 'assets/images/avatar/constellation_emberpath.png',
+      primaryColor: const Color(0xFFFF8A65),
+    ),
+
+    // Highwind - Purple (Image 4)
+    'highwind': ConstellationData(
+      name: 'highwind',
+      displayName: 'Highwind',
+      subtitle: 'A space where clarity opens gently.',
+      backgroundImage: 'assets/images/avatar/constellation_highwind.png',
+      primaryColor: const Color(0xFFCB6CE6),
+    ),
+
+    // Map your actual backend tribe names here
+    'next_horizon': ConstellationData(
+      name: 'next_horizon',
+      displayName: 'Flowline',
+      subtitle: 'This is where your constellation rises.',
+      backgroundImage: 'assets/images/constellation/constellation_flowline.png',
+      primaryColor: const Color(0xFF00D4FF),
+    ),
+
+    'tora': ConstellationData(
+      name: 'tora',
+      displayName: 'Stillroot',
+      subtitle: 'A space to steady and soft.',
+      backgroundImage: 'assets/images/constellation/constellation_stillroot.png',
+      primaryColor: const Color(0xFF4EEABC),
+    ),
+  };
+
+  // Default constellation
+  static final ConstellationData defaultConstellation = ConstellationData(
+    name: 'default',
+    displayName: 'Your Constellation',
+    subtitle: 'A space to grow and discover.',
+    backgroundImage: 'assets/images/constellation/constellation_stillroot.png',
+    primaryColor: const Color(0xFF4EEABC),
+  );
 
   @override
   void onInit() {
     super.onInit();
     fetchUserTribes();
   }
+
+  // Get current constellation data based on tribe name
+  ConstellationData get currentConstellation {
+    final name = tribeName.value.toLowerCase();
+    return constellationMap[name] ?? defaultConstellation;
+  }
+
+  // Get background image path
+  String get backgroundImage => currentConstellation.backgroundImage;
+
+  // Get primary color
+  Color get primaryColor => currentConstellation.primaryColor;
 
   Future<void> fetchUserTribes() async {
     final token = await local_storage.UserInfo.getAccessToken();
@@ -51,17 +143,14 @@ class ConstellationController extends GetxController {
         final data = json.decode(response.body);
 
         if (data['success'] == true && data['data'] != null) {
-          // Parse tribes list
           if (data['data']['tribes'] != null) {
             tribes.value = List<Map<String, dynamic>>.from(data['data']['tribes']);
             print('Tribes loaded: ${tribes.length}');
           }
 
-          // Parse primary tribe
           if (data['data']['primary_tribe'] != null) {
             primaryTribe.value = Map<String, dynamic>.from(data['data']['primary_tribe']);
 
-            // Extract tribe details
             final tribeData = primaryTribe.value['tribe'];
             if (tribeData != null) {
               constellationName.value = tribeData['display_name'] ?? 'Your Constellation';
@@ -69,10 +158,11 @@ class ConstellationController extends GetxController {
               tribeName.value = tribeData['name'] ?? '';
             }
 
-            // Extract user avatar
             userAvatar.value = primaryTribe.value['user_avatar'] ?? '';
 
             print('Primary Tribe: ${constellationName.value}');
+            print('Tribe Name: ${tribeName.value}');
+            print('Background: ${backgroundImage}');
             print('Description: ${constellationDescription.value}');
             print('User Avatar: ${userAvatar.value}');
           }
@@ -90,20 +180,18 @@ class ConstellationController extends GetxController {
     }
   }
 
-  // Get subtitle based on tribe name
+  // Get subtitle based on current constellation
   String getSubtitle() {
-    switch (tribeName.value) {
-      case 'next_horizon':
-        return 'Growth and rediscovery';
-      case 'tora':
-        return 'A space to steady and soften';
-      default:
-        return 'A space to steady and soften';
-    }
+    return currentConstellation.subtitle;
   }
 
-  // Refresh data
-  Future<void> refreshTribes() async {
-    await fetchUserTribes();
+  // Get display name
+  String getDisplayName() {
+    if (constellationName.value.isNotEmpty) {
+      return constellationName.value;
+    }
+    return currentConstellation.displayName;
   }
+
+  Future<void> refreshTribes() async => await fetchUserTribes();
 }

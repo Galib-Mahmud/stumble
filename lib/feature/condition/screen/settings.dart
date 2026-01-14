@@ -105,30 +105,30 @@ class SettingsScreen extends StatelessWidget {
                 iconPath: 'assets/images/splash/termsofuse.png',
                 title: 'Terms of Use',
                 onTap: () {
+                  Get.toNamed(RouteName.termsAndUse);
+                },
+              ),
+              // _buildSettingsItem(
+              //   iconPath: 'assets/images/splash/privacypolicy.png',
+              //   title: 'Privacy Policy',
+              //   onTap: () {
+              //     Get.toNamed(RouteName.privacyPolicy);
+              //   },
+              // ),
+              _buildSettingsItem(
+                iconPath: 'assets/images/splash/disclaimers.png',
+                title: 'Terms & Privacy',
+                onTap: () {
                   Get.toNamed(RouteName.terms);
                 },
               ),
-              _buildSettingsItem(
-                iconPath: 'assets/images/splash/privacypolicy.png',
-                title: 'Privacy Policy',
-                onTap: () {
-                  Get.toNamed(RouteName.privacyPolicy);
-                },
-              ),
-              _buildSettingsItem(
-                iconPath: 'assets/images/splash/disclaimers.png',
-                title: 'Disclaimers',
-                onTap: () {
-                  Get.toNamed(RouteName.disclaimers);
-                },
-              ),
-              _buildSettingsItem(
-                iconPath: 'assets/images/splash/dataRetention.png',
-                title: 'Data Retention',
-                onTap: () {
-                  Get.toNamed(RouteName.dataRetention);
-                },
-              ),
+              // _buildSettingsItem(
+              //   iconPath: 'assets/images/splash/dataRetention.png',
+              //   title: 'Data Retention',
+              //   onTap: () {
+              //     Get.toNamed(RouteName.dataRetention);
+              //   },
+              // ),
               _buildSettingsItem(
                 iconPath: 'assets/images/splash/dataRetention.png',
                 title: 'Your progress path',

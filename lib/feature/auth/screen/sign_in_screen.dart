@@ -150,15 +150,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     SizedBox(height: 24.h),
 
-                    // Guest User Button
-                    CustomButton(
-                      text: 'Continue as Guest',
-                      onTap: () {
-                        guestController.startGuestSession();
-                      },
-                    ),
 
-                    SizedBox(height: 24.h),
 
                     // Sign Up Text
                     Row(

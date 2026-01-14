@@ -60,7 +60,7 @@ class _TermsScreenState extends State<TermsScreen> {
                         // Logo
                         Image.asset(
                           'assets/images/splash/stumble.png',
-                         fit: BoxFit.cover,
+                          fit: BoxFit.cover,
                         ),
                       ],
                     ),
@@ -141,7 +141,7 @@ class _TermsScreenState extends State<TermsScreen> {
                         // Title
                         Center(
                           child: Text(
-                            "Terms",
+                            "Terms & Policies",
                             style: TextStyle(
                               fontSize: 22.sp,
                               fontWeight: FontWeight.bold,
@@ -150,6 +150,10 @@ class _TermsScreenState extends State<TermsScreen> {
                           ),
                         ),
                         SizedBox(height: 30.h),
+
+                        // ==================== TERMS OF USE ====================
+                        _buildMainHeader("Terms of Use"),
+                        SizedBox(height: 16.h),
 
                         // Eligibility Section
                         _buildSectionHeader(
@@ -197,7 +201,7 @@ class _TermsScreenState extends State<TermsScreen> {
                             children: [
                               const TextSpan(
                                 text:
-                                    "By using this app you agree not to upload post or share content ",
+                                "By using this app you agree not to upload post or share content ",
                               ),
                               TextSpan(
                                 text: "read more",
@@ -209,6 +213,111 @@ class _TermsScreenState extends State<TermsScreen> {
                               ),
                             ],
                           ),
+                        ),
+
+                        _buildDivider(),
+
+                        // ==================== PRIVACY POLICY ====================
+                        _buildMainHeader("Privacy Policy"),
+                        SizedBox(height: 16.h),
+                        Text(
+                          "We respect your privacy.",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+                        _buildSection(
+                          number: "1",
+                          title: "What We Collect",
+                          content:
+                          "• Basic account info (email, age range, avatar).\n"
+                              "• Optional mood logs, journal entries, content preferences.\n"
+                              "• Device + usage data (for performance & safety).",
+                        ),
+                        _buildSection(
+                          number: "2",
+                          title: "How We Use It",
+                          content:
+                          "• To personalize your experience (e.g., mood-based content).\n"
+                              "• To keep the community safe (moderation + fraud prevention).\n"
+                              "• To improve Stumble (analytics, bug fixes).",
+                        ),
+                        _buildSection(
+                          number: "3",
+                          title: "What We Don't Do",
+                          content: "• We do not sell personal data.\n"
+                              "• We do not share identifiable info without consent.",
+                        ),
+                        _buildSection(
+                          number: "4",
+                          title: "Sharing",
+                          content:
+                          "• Anonymized insights may be shared with partners (opt-in only).\n"
+                              "• Third-party vendors (hosting, analytics) must follow strict data security rules.",
+                        ),
+                        _buildSection(
+                          number: "5",
+                          title: "Your Rights",
+                          content: "• Download your data.\n"
+                              "• Delete your data anytime.\n"
+                              "• Control notifications + preferences.",
+                        ),
+
+                        _buildDivider(),
+
+                        // ==================== DATA RETENTION & DELETION ====================
+                        _buildMainHeader("Data Retention & Deletion Policy"),
+                        SizedBox(height: 16.h),
+                        _buildSection(
+                          number: "1",
+                          title: "Retention",
+                          content: "• Account data kept while you are active.\n"
+                              "• Inactive accounts may be archived after 12 months.\n"
+                              "• Aggregated, anonymized insights may be retained for research/analytics.",
+                        ),
+                        _buildSection(
+                          number: "2",
+                          title: "Deletion",
+                          content:
+                          "• You may request deletion at any time (in-app or via support).\n"
+                              "• Deletion = removal of journal entries, posts, DMs, and account info within 30 days.\n"
+                              "• Backups may persist for up to 90 days before permanent erasure.",
+                        ),
+                        _buildSection(
+                          number: "3",
+                          title: "Export",
+                          content:
+                          "• Users may download a copy of their personal data before deletion.",
+                        ),
+
+                        _buildDivider(),
+
+                        // ==================== DISCLAIMERS ====================
+                        _buildMainHeader("Disclaimers"),
+                        SizedBox(height: 16.h),
+                        _buildSection(
+                          number: "1",
+                          title: "Not a Substitute",
+                          content:
+                          "Stumble is not a substitute for therapy or medical advice.",
+                        ),
+                        _buildSection(
+                          number: "2",
+                          title: "Crisis Resources",
+                          content:
+                          "If you are in crisis, use the Support Button for resources — or call:\n\n"
+                              "• U.S. & Canada: 988 Suicide & Crisis Lifeline\n"
+                              "• UK & Ireland: Samaritans at 116 123\n"
+                              "• Elsewhere: See findahelpline.com for local hotlines",
+                        ),
+                        _buildSection(
+                          number: "3",
+                          title: "Peer Support Only",
+                          content:
+                          "Stumble is a peer-support and wellness tool only.",
                         ),
 
                         SizedBox(height: 30.h),
@@ -223,6 +332,7 @@ class _TermsScreenState extends State<TermsScreen> {
                             ),
                           ),
                         ),
+                        SizedBox(height: 20.h),
                       ],
                     ),
                   ),
@@ -248,7 +358,7 @@ class _TermsScreenState extends State<TermsScreen> {
                         // Navigate to privacy policy
                       },
                       child: Text(
-                        "Privacy Policy & Terms & services",
+                        "Privacy Policy & Terms & Services",
                         style: TextStyle(
                           fontSize: 13.sp,
                           color: Colors.white.withOpacity(0.6),
@@ -263,6 +373,25 @@ class _TermsScreenState extends State<TermsScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMainHeader(String title) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 18.sp,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF09AFB9),
         ),
       ),
     );
@@ -316,6 +445,66 @@ class _TermsScreenState extends State<TermsScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildSection({
+    required String number,
+    required String title,
+    required String content,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$number. ',
+                style: TextStyle(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          Padding(
+            padding: EdgeInsets.only(left: 18.w),
+            child: Text(
+              content,
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: Colors.white.withOpacity(0.8),
+                height: 1.5,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 24.h),
+      child: Container(
+        height: 1,
+        color: Colors.white.withOpacity(0.2),
+      ),
     );
   }
 }

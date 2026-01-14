@@ -28,6 +28,7 @@ class _SupportScreenState extends State<SupportScreen>
 
   // Emergency numbers for Urgent mode
   final List<Map<String, String>> emergencyNumbers = [
+    {'name': 'Stumble(Admin)', 'number': '+1(480)7447899', 'icon': 'emergency'},
     {'name': 'Emergency Services', 'number': '911', 'icon': 'emergency'},
     {'name': 'National Crisis Hotline', 'number': '988', 'icon': 'crisis'},
     {'name': 'Suicide Prevention', 'number': '1-800-273-8255', 'icon': 'prevention'},

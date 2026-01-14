@@ -355,7 +355,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Stumble guides",
+          "Daily Tasks ",
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
@@ -506,7 +506,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Stumble guides",
+              "Stumble Guides",
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
@@ -564,14 +564,6 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
         width: 140.w,
         margin: EdgeInsets.only(right: 12.w),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              bot.botColor.withOpacity(0.8),
-              bot.botColor.withOpacity(0.4),
-            ],
-          ),
           borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
@@ -581,70 +573,66 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
             ),
           ],
         ),
-        child: Stack(
-          children: [
-            // Background decorative image
-            Positioned(
-              right: -1.w,
-              top: -1.h,
-              child: Opacity(
-                opacity: 1,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.r),
+          child: Stack(
+            children: [
+              // Full background image
+              Positioned.fill(
                 child: Image.asset(
                   bot.botIconPath,
-                  width: 100.w,
-                  height: 100.w,
                   fit: BoxFit.cover,
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(14.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Bot icon container
-                  Container(
-                    width: 42.w,
-                    height: 42.w,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-
-                      shape: BoxShape.circle,
+              // Gradient overlay for text readability
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        bot.botColor.withOpacity(0.7),
+                        bot.botColor.withOpacity(0.9),
+                      ],
+                      stops: const [0.3, 0.7, 1.0],
                     ),
-                    child: ClipRRect(
-
-                      child: Image.asset(
-                        bot.botIconPath,
-                        width: 42.w,
-                        height: 42.w,
-                        fit: BoxFit.cover,
-
+                  ),
+                ),
+              ),
+              // Text content at bottom
+              Positioned(
+                left: 14.w,
+                right: 14.w,
+                bottom: 14.h,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      bot.displayName,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    bot.displayName,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                    SizedBox(height: 4.h),
+                    Text(
+                      bot.persona,
+                      style: TextStyle(
+                        fontSize: 11.sp,
+                        color: Colors.white.withOpacity(0.85),
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    bot.persona,
-                    style: TextStyle(
-                      fontSize: 11.sp,
-                      color: Colors.white.withOpacity(0.85),
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -687,7 +675,7 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 ],
               )
                   : Text(
-                "Your tasks",
+                "Your Reminders",
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,

@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stumble/route/route_name.dart';
 
+import '../../constellation/controller/conseltation_controller.dart';
+import '../../home/controller/profile_controller.dart';
 import '../../widget/onboarding/custom_button.dart';
 import '../controller/share_your_mind_controller.dart';
 
@@ -15,13 +17,10 @@ class ShareYourMindScreen extends StatefulWidget {
 
 class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
   final ShareYourMindController controller = Get.put(ShareYourMindController());
-
+  final ProfileController Pcontroller = Get.put(ProfileController());
 
   final int currentStep = 6;
   final int totalSteps = 8;
-
-  // Selected avatar from previous screen (pass this via arguments)
-  final String selectedAvatar = 'assets/images/avatar/avatar5.png';
 
   @override
   void dispose() {
@@ -73,7 +72,7 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
                         // Logo
                         Image.asset(
                           'assets/images/splash/stumble.png',
-                         fit: BoxFit.cover,
+                          fit: BoxFit.cover,
                         ),
                       ],
                     ),
@@ -100,8 +99,6 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
                                           Color(0xFF09AFB9),
                                           Color(0xFFFFAD72),
                                           Color(0xFFF96D01),
-
-
                                         ],
                                       ),
                                       borderRadius: BorderRadius.circular(3.r),
@@ -165,24 +162,57 @@ class _ShareYourMindScreenState extends State<ShareYourMindScreen> {
                         ),
                         SizedBox(height: 24.h),
 
-                        // Avatar
-                        Container(
-                          width: 80.w,
-                          height: 80.h,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: const Color(0xFF09AFB9),
-                              width: 3,
+                        // Avatar - FIXED: Single Obx with observable used inside
+                        Obx(() {
+                          final _ = Pcontroller.profileData.value; // This triggers rebuild
+                          final profileImage = Pcontroller.profileImageUrl;
+
+                          return Container(
+                            width: 90.w,
+                            height: 90.w,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
                             ),
-                          ),
-                          child: ClipOval(
-                            child: Image.asset(
-                              selectedAvatar,
-                              fit: BoxFit.cover,
+                            child: ClipOval(
+                              child: profileImage.isEmpty
+                                  ? Container(
+                                color: const Color(0xFF2A2535),
+                                child: Icon(
+                                  Icons.person,
+                                  color: Colors.white54,
+                                  size: 20.sp,
+                                ),
+                              )
+                                  : Image.network(
+                                profileImage,
+                                fit: BoxFit.cover,
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Container(
+                                    color: const Color(0xFF2A2535),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white54,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: const Color(0xFF2A2535),
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.white54,
+                                      size: 20.sp,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        }),
+
                         SizedBox(height: 24.h),
 
                         // Text Input Box
